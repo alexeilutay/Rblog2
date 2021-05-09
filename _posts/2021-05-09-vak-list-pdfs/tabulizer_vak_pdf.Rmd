@@ -250,7 +250,3 @@ I do not have plans to update it, so if you need the fresh version there are 2 o
 a) the current list in PDF format can be found at VAK site, and then one needs just to run all the scripts above to get the result.
 
 b) the current list in Word can also be found at VAK site. So one may try to match the journal titles and identify the new ones to be added manually to this dataset.  
-
-### Acknowledgements
-
-
