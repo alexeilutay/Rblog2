@@ -1,0 +1,256 @@
+---
+title: "Extracting the Tables from PDF"
+description: |
+  In this post I am using a [tabulizer](https://docs.ropensci.org/tabulizer/) to extract a large table from 853-page PDF, containing a list of VAK (Russian) journal titles.   
+author:
+  - first_name: "Aleksei"
+    last_name: "Lutai" 
+    url: https://www.linkedin.com/in/lutaya/
+    orcid_id: 0000-0003-1341-781X
+date: 05-08-2021
+categories:
+  - russian data
+  - tabulizer
+  - r
+  - gov data
+creative_commons: CC BY
+output:
+  distill::distill_article:
+    self_contained: false
+    code_folding: true
+    highlight: kate
+    highlight_downlit: true
+    toc: true
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+library(tidyverse)
+library(tabulizer)
+dir <- "D://Data/vak/"
+```
+
+### Introduction
+
+The VAK list is a Russian thing, or rather "the THING", for the Russian scientific community. VAK abbreviation stands for "Higher attestation Commission" under the Ministry of education and science of the Russian Federation. This commission approves a list of the Russian journal titles credited for PhD/Doctoral qualifications. The rules are that prior to defending PhD or Doctoral degree the candidate has to publish the main results within at least N publications in the journals that are:
+
+- either indexed in one of the authoritative A&I/citation databases (Scopus/WoS/GeoRef/AGRIS/CAS/...),
+- or present in the VAK list in question. 
+
+Putting it in a more straightforward way, VAK defines which scientific journals are worthy to publish in. And the also manage the degree registration process. The almighty state regulator, so to say, which does not excuse them for not publishing this list in a machine-readable format. Most versions I saw were either a simplified lists in Word (just journal titles) or more detailed tables in PDF, but never a properly documented CSV/XLSX. Not very convenient as the table is 800+ pages long.
+
+Well, that's a task for R/tabulizer.
+
+A fresh version of VAK list can be found [here](https://vak.minobrnauki.gov.ru/documents#tab=_tab:editions~). In this exercise I am going to use the last version of PDF file I have, dated as of April 8, 2021. But as they update the list almost every few months, the exercise will have to be repeated.    
+
+### 1. Splitting PDFs
+
+My general approach to parsing PDFs is first to split the large file into separate one-page PDF files, and then to parse them. This payoff for this additional work is that the process can be controlled - I can see how many pages are processed, fix the code if there is a strange table or simply re-run that particular page later.
+
+Tabulizer can parse multi-page PDFs, but who would like to start the process again and again after finding the unexpected errors in a 853-page document? There is an attribute "page" in tabulizer::extract_tables, so one can try a cycle approach to extract the tables page by page, but on my laptop an execution time started to increase with every cycle and after 5-6 pages froze.
+
+The files of 20-50 pages are splitted with tabulizer::split_pdf very quickly, but with this file I got a message **java.lang.OutOfMemoryError: Java heap space** message. The known solution is to allocate Java more memory with **options(java.parameters = "-Xmx8g")** ([1](https://www.rdocumentation.org/packages/tabulizer/versions/0.2.2), [2](https://stackoverflow.com/questions/34624002/r-error-java-lang-outofmemoryerror-java-heap-space#44143679)), but my laptop is just 8 Gb and I am using Win10/RStudio, so the extra memory assignment has not helped.
+
+Eventually I splitted the PDF to 853 one-page PDF files with [PDF24](https://tools.pdf24.org/). It took approximately 3 minutes and, no, this is not an advertisement.
+
+### 2. Parsing PDF files
+
+In order to extract a table from PDF I am using tabulizer::extract_tables function with an attribute "columns" that requires a list with x coordinates of the borders between the columns. If a table has 5 columns, pass to the function 4 x-coordinates.  
+
+My general approach is to measure the x distances in PDF in mm (using the build-in measuring tool) and then convert (pro-rate) them to px (for the latter I use a page width in px returned by tabulizer::get_page_dims function). Please see the comments in the code.  
+
+```{r eval=FALSE, echo=TRUE, include=TRUE}
+dir_pdf <- paste0(dir, "pdf/")
+#reading the list of all one-page PDFs
+pdfs <- list.files(dir_pdf, full.names = TRUE)
+
+#getting x-size of the page (width) 
+page_width <- get_page_dims(pdfs[1]) %>% unlist() %>% .[1]  #595.32
+
+#the x-distances (converting from mm to px)
+col_borders <- c(25, 82.5, 106, 176)*(page_width/210)
+
+colnames <- c("no", "title", "issn", "subject", "as_of")
+
+for (i in 1:length(pdfs)){
+  columns <- extract_tables(file = pdfs[i], 
+                            columns = list(col_borders),
+                            guess = FALSE,  encoding="UTF-8", 
+                            output = "matrix") 
+  tab <- as.data.frame(columns)
+  # sometimes the last column is getting lost (if empty)
+  colnames(tab) <- colnames[1:ncol(tab)]
+  # saving in files with the names like 001.csv. 056.csv, 123.csv, etc 
+  write_excel_csv(tab, paste0(dir_pdf, 
+                              str_extract(paste0("00",i),"\\d{3}$"),
+                              ".csv"))
+  print(i)
+}
+
+```
+
+Parsing 1-page PDF takes approximately 2 seconds, so a whole procedure took about 30 min.
+
+The next step would be to merge all csv-files into one (using purrr::map_df) and clean the data.
+
+```{r eval=FALSE, echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+merged_data <- list.files(dir_pdf, full.names = TRUE) %>% 
+  # selecting only CSV files
+  .[grepl("csv",.)] %>% 
+  # merging it with purrr::map_df function
+  map_df(~read_csv(.x, col_types = cols(.default = col_character())))
+
+```
+
+The result is a dataset with 50021 rows comprising the broken cell values. The first 7 rows are not a part of the original table, but are originated from a text that preceded the table in the original file - we will remove it.
+
+Luckily the text in the original table was aligned to the top of the cells and there was a column with the row numbers that left intact by parsing procedure. This simplifies our task - the positions of non-empty values in the first column correspond to the top border of the rows. And once we know the borders of the row, all we are left to do is to merge in each column all the strings values relating to the particular rows in the original tables.
+
+First, we will mark all rows that correspond to the original rows by copying the top border tag in the column "no" down from one top border position to the other. This can be done with tidyr::fill("down") function.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, echo = TRUE, include=TRUE}
+merged_data_clean <- merged_data[-c(1:7),] %>% 
+  fill(no, .direction = "down")
+```
+
+As now we have marked all the original rows with the tags in the column "no", at the mext steps we will be using "no" as a grouping variable to glue up the string values together with dplyr::summarise(... = paste(., collapse = " ")). I will do this separately for ISSN, titles, and the subject codes.  
+
+### 3. Cleaning the ISSNs
+
+In addition to common problems with ISSN lists (dash/hyphen/minus), the lists originating from Russia suffers from Cyrillic "X" letters. So I wrote a special function to clean all spaces, normalize the hyphens, and glue the ISSN values via comma (for some journals there are 2 values).
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, echo = TRUE, include=TRUE}
+# function to extract ISSSN
+extract_issn <- function(text){
+  issn<-gsub("\u0425","X", text)
+  issn<-gsub("\u0445","X", issn)
+  issn <- gsub("\u002D|\u2010|\u2011|\u2012|\u2013|\u2014|-","-", issn)
+  issn<-gsub("\\s\\-\\s","\\-", issn)
+  issn<-toupper(issn)
+  issn <- ifelse(nchar(issn)==8, 
+                 paste(substr(issn, 1, 4), substr(issn, 5, 8), sep = "-"), issn)
+  issn<-sapply(str_extract_all(issn, pattern="[[0-9]X\\-]+"),
+               function(x) paste0(x, collapse = ","))
+  issn
+}
+
+md1 <- merged_data_clean %>% select(no, issn) %>% 
+  group_by(no) %>% 
+  summarize_all(~paste(unique(na.omit(.x)), collapse = " ")) %>%
+  ungroup() %>% 
+  mutate(issn = extract_issn(issn))
+```
+
+### 4. Cleaning the titles
+
+Some journal titles are accompanied with the comments in round brackets, which we will extract into a separate column. Some titles are also accompanied with the english title, but they have irregular format, so we will not process it.    
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, echo = TRUE, include=TRUE}
+md2 <- merged_data_clean %>% select(no, title) %>% 
+  group_by(no) %>% 
+  summarize_all(~paste(unique(na.omit(.x)), collapse = " ")) %>%
+  ungroup() %>% 
+  # extracting the main title part (before the round bracket)
+  mutate(title_main = str_extract(title, "^[^\\(]+")) %>% 
+  # extracting everything after the round bracket
+  mutate(comments = str_extract(title, "\\(.+?\\)")) %>% 
+  mutate_at(c("title_main", "comments"), ~str_squish(gsub("\\|"," ", .x)))
+```
+
+### 5. Extracting the subject areas
+
+Each journal is accompanied with a list of subject codes and subejct names, and also with the dates since when the subject code was assigned to the title. These rules are desined to prevent the specialists to score from publishing in the non-relevant journals. Well, one may argue that there is nothing wrong if say a mathematician contributes to the medical journal, but VAK has been designed to set the rules, not to argue. 
+
+As the subject column containg long strings, there were many broken cells, which we now need to clean up from separators. In order to make this table more convenient, let's also extract the subject codes into a separate column and re-pack the subejcts under the "as_of" dates. This, I guess, is the least interesting part of the story for non-Russian readers. 
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, echo = TRUE, include=TRUE}
+md3 <- merged_data_clean %>% select(no, subject, as_of) %>% 
+  fill(as_of, .direction = "down") %>%
+  group_by(no, as_of) %>% 
+  summarize(subject = paste(na.omit(subject), collapse = " ")) %>%
+  ungroup()  
+
+md3 <- md3 %>% 
+  # extracting the subject codes
+  mutate(subjs = str_extract_all(subject, 
+                                 "\\d{2}\\.\\d{2}\\.\\d{2}[^\\(]+")) %>% 
+  unnest(subjs) %>% 
+  mutate(subjs = str_extract_all(subjs, 
+                                 "\\d{2}\\.\\d{2}\\.\\d{2}[^\\d]+")) %>% 
+  unnest(subjs) %>%  
+  mutate(subjs = str_squish(subjs), 
+         subjs = gsub("\\,$|\\.$|\\;$","", subjs)) %>%
+  mutate(subj_codes = str_extract(subjs, 
+                                  "\\d{2}\\.\\d{2}\\.\\d{2}")) %>% 
+  group_by(no, as_of) %>% 
+  summarize_at(c("subjs", "subj_codes"), 
+               ~paste(unique(na.omit(.x)), collapse = " | ")) %>% 
+  mutate(subjects = paste0("[", subjs, "] ")) %>% 
+  # re-packing the subjects with the starting dates
+  unite("subjects", c("as_of", "subjs"), sep = ": ") %>% 
+  group_by(no) %>% 
+  summarize(subjects = paste(subjects, collapse = " || "),
+            subj_codes= paste(subj_codes, collapse = " | ")) %>% 
+  ungroup()
+
+## let's also sort the subj_codes in the cell
+md3 <- md3 %>% 
+  mutate(subj_codes = str_split(subj_codes," \\| ")) %>% 
+  unnest(subj_codes) %>% 
+  arrange(subj_codes) %>% 
+  group_by(no, subjects) %>% 
+  summarize(subj_codes= paste(subj_codes, collapse = " | ")) %>% 
+  ungroup()
+```
+
+### 6. Merging
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, echo = TRUE, include=TRUE}
+data_clean <- md1 %>% left_join(md2) %>% left_join(md3) %>% 
+  mutate(no = as.numeric(gsub("\\.", "", no))) %>% 
+  arrange(no)
+
+data_clean %>% write_excel_csv(paste0(dir, "2021_04_vak_list_parsed_data.csv"))
+```
+
+The final dataset is a bit too heavy to incroporate into this html, so I put here first 50 rows in DT::datatable format, with filtering & sorting features, and the buttons to make the columns visible (few columns are already hidden) and to download the table excerpt in csv or excel format.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+read_csv(paste0(dir, "2021_04_vak_list_parsed_data.csv"),
+         col_types = cols(.default = col_character(), no = col_integer())) %>% 
+  .[1:50,] %>% 
+  DT::datatable(rownames = FALSE, escape = FALSE, 
+                class = 'compact', extensions = 'Buttons', 
+         options = list(deferRender = TRUE, autoWidth = TRUE, 
+                        buttons = list(I('colvis'),'csv', 'excel'),
+                        ordering = TRUE, scrollX = TRUE, 
+                        dom = 'Bfrtip', pageLength = 5, 
+              columnDefs = list(
+                list(visible = FALSE,targets = c(2,4:5)),
+                list(width = '200px', targets = c(3:4)),
+                list(width = '400px', targets = c(5:6)),
+                list(className = 'dt-left', targets = c(0:6)))
+              )
+         )
+```
+
+The full version of parsed table is uploaded to Figshare.
+
+Lutay, Alexei (2021): VAK list of journal titles v.2021.04.08. figshare. Dataset. [https://doi.org/10.6084/m9.figshare.14561814](https://doi.org/10.6084/m9.figshare.14561814).
+
+### 7. How to update this list
+
+I do not have plans to update it, so if you need the fresh version there are 2 options.
+
+a) the current list in PDF format can be found at VAK site, and then one needs just to run all the scripts above to get the result.
+
+b) the current list in Word can also be found at VAK site. So one may try to match the journal titles and identify the new ones to be added manually to this dataset.  
+
+### Acknowledgements
+
+

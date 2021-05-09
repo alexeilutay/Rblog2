@@ -1,0 +1,38 @@
+---
+title: "About ConviviaR Tools"
+description: |
+  Thanks for your interest and visiting this page. I put here some notes that can answer the classical "about" questions.
+---
+
+### What is this blog about?
+
+This blog is about using R language for various tasks. I expect that majority of the posts will be associated with the topics as follows:
+
+- science of science / scientometrics / PIDs
+- open data / gov data / citizen science
+- open science / Wiki
+- "last man standing" office routines 
+
+### Who is the author?
+
+My name is Lutay Aleksei ([LinkedIn](https://www.linkedin.com/in/lutaya/), [Twitter](https://twitter.com/Waydze1)). Few years ago I decided to learn R programming and it brought a lot of fun into my digital routines. The drawback is that now I have a way too many R projects and datasets that I am unlikely to use myself in future. That's why I decided to make this blog in order to share those of my scripts and data that could be interesting to other people.     
+
+### Why in English?
+
+I live and work in Russia, and some of this blog's topics are of particular interest for the Russian community. But as this blog is mainly about using R, I decided to write in English. Yes, it is not my native language, so my apologies to those who are sensitive to incorrect use of English language.
+
+### What is conviviaR?
+
+This blog's title is a connotation to the term "convivial tools" introduced in 1973 by [Ivan Illich](https://en.wikipedia.org/wiki/Ivan_Illich) in his book ["Tools for Conviviality"](https://en.wikipedia.org/wiki/Tools_for_Conviviality). Illich believed that, instead of enforcing power or compulsion, the tools should encourage participation and sociability:
+
+>"Convivial tools are those which give each person who uses them the greatest opportunity to enrich the environment with the fruits of his or her vision. Industrial tools deny this possibility to those who use them, and they allow their designers to determine the meaning and expectations of others."
+
+To me R is quite a convivial tool due to sharing culture and a spirit of cooperation within [#rstats community](https://twitter.com/hashtag/rstats?src=hashtag_click) - these things are very embracing and encouraging for the newcomers.
+
+### Any conflicts of interest?
+
+In this blog I will share only my own views that do not represent my employee's standing. If you feel that any of my post have a conflict of interest or abuse anyone's rights or feelings, please let me know about that.
+
+### How to contact?
+
+**As the modern governments and corporations seem to share a vision that blocking the Internet resources can help them to achieve their goals, I may be not quick to respond through the abovementioned channels. If you really need to contact me, please send me an email to alexei(dot)lutay(at)gmail(dot)com.**

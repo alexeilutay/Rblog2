@@ -1,0 +1,65 @@
+
+```{r, layout="l-body-outset", fig.width=6, fig.height=1.5}
+
+```
+
+```{r, layout="l-body-outset"}
+paged_table(mtcars)
+```
+
+l-body
+l-body-outset
+l-page
+layout="l-screen-inset shaded"
+l-screen-inset   /adds 15 px on each side
+l-screen
+
+## EXTERNAL FIGURES
+
+If you are including a figure from an external source, it’s good practice to delineate this by applying the external class and adding a caption indicating where it is from. For example:
+
+```{r fig.cap="Figure from https://example.com", out.extra="class=external"}
+knitr::include_graphics("images/heatmap.png")
+
+
+CROSSREFING FIGURES
+
+```{r diamonds, fig.cap="Diamond Prices"}
+library(ggplot2)
+ggplot(diamonds, aes(carat, price)) + geom_smooth() +
+  facet_grid(~ cut)
+```
+
+\@ref(fig:diamonds)
+
+====================================================
+FOOTNOTES
+Footnotes use standard Pandoc markdown notation, for example ^[This will become a hover-able footnote]. The number of the footnote will be automatically generated.This will become a hover-able footnote 1
+
+ASIDE
+You can also optionally include notes in the gutter of the article (immediately to the right of the article text). To do this use the <aside> tag.
+
+<aside>
+This content will appear in the gutter of the article.
+</aside>
+
+This content will appear in the gutter of the article.
+
+FIGURES / ASIDE
+You can also include figures in the gutter. Just enclose the code chunk which generates the figure in an <aside> tag:
+
+<aside>
+```{r}
+ggplot(mtcars, aes(hp, mpg)) + geom_point() + geom_smooth()
+```
+</aside>
+
+## Acknowledgments {.appendix}
+
+This is a place to recognize people and institutions. It may also be a good place
+to acknowledge and cite software that makes your work possible.
+
+## Author Contributions {.appendix}
+
+We strongly encourage you to include an author contributions statement briefly 
+describing what each author did.
