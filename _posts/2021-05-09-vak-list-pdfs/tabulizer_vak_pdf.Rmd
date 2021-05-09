@@ -7,7 +7,7 @@ author:
     last_name: "Lutai" 
     url: https://www.linkedin.com/in/lutaya/
     orcid_id: 0000-0003-1341-781X
-date: 05-08-2021
+date: 05-09-2021
 categories:
   - russian data
   - tabulizer
