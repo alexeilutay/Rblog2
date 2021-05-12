@@ -566,7 +566,7 @@ Anyway, please use these data with caution, regarding the empty fields as a warn
 
 ### Shared data
 
-The original PDF file, the parsed and revised data in CSV format, and 2 datasets (issn+, crossref+) are available at [Figshare](Lutay, Alexei (2021): VAK list and the related datasets. figshare. Dataset. https://doi.org/10.6084/m9.figshare.14571528).
+The original PDF file, the parsed and revised data in CSV format, and 2 datasets (issn+, crossref+) are available at [Figshare](https://doi.org/10.6084/m9.figshare.14571528).
 
 For those who would like to re-use or quote it, please do not hesitate - no permission is required. This post and figshare repository provide ready-to-go citation texts.
 
