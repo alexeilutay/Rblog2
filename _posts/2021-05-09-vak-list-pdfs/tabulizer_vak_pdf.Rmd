@@ -1,7 +1,7 @@
 ---
 title: "Extracting the Tables from PDF"
 description: |
-  In this post I am using a [tabulizer](https://docs.ropensci.org/tabulizer/) to extract a large table from 853-page PDF, containing a list of VAK (Russian) journal titles.   
+  In this post I am using a R package tabulizer to extract a large table from 853-page PDF, containing a list of VAK (Russian) journal titles.   
 author:
   - first_name: "Aleksei"
     last_name: "Lutai" 
@@ -10,7 +10,6 @@ author:
 date: 05-09-2021
 categories:
   - russian data
-  - tabulizer
   - r
   - gov data
 creative_commons: CC BY

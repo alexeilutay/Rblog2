@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
   <meta name="generator" content="distill" />
-  <link rel="alternate" type="application/rss+xml" href="https://beta.rstudioconnect.com/content/1142123134/index.xml" />
+  <link rel="alternate" type="application/rss+xml" href="https://dwayzer.netlify.app/index.xml" />
 
   <style type="text/css">
   /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
@@ -2162,9 +2162,9 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   /*-- ARTICLE APPENDIX --*/
   d-appendix {
     --heading-size:    15px;
-    --heading-color:   rgba(0, 0, 0, 0.65);
+    --heading-color:   rgba(0, 0, 0, 0.8);
     --text-size:       0.9em;
-    --text-color:      rgba(0, 0, 0, 0.5);
+    --text-color:      rgba(0, 0, 0, 0.8);
   }
   
   /*-- WEBSITE HEADER + FOOTER --*/
@@ -2250,7 +2250,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     color: #431c5d;
     line-height: 1.2; 
     font-weight: 400;
-    font-size: 1.1em;
+    font-size: 1em;
     padding: 1px 0px;
   }
   
@@ -2289,8 +2289,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   element, d-article details{
   	font-size: 14px;
   	color: #e05915;
-  }
-  </style>
+  }</style>
   <style type="text/css">
   /* base style */
   
@@ -2634,21 +2633,42 @@ function init_posts_list() {
 <div class="posts-container posts-with-sidebar posts-apply-limit l-screen-inset">
 <div class="posts-list">
 <h1 class="posts-list-caption" data-caption="dwayzeR">dwayzeR</h1>
-<a href="posts/2021-05-09-vak-list-pdfs/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":["russian data","tabulizer","r","gov data"]}</script>
+<a href="posts/2021-05-10-vak-titles-in-crossref/" class="post-preview">
+<script class="post-metadata" type="text/json">{"categories":["russian data","issn.org","crossref","r","gov data"]}</script>
 <div class="metadata">
-<div class="publishedDate">May 8, 2021</div>
+<div class="publishedDate">May 11, 2021</div>
 </div>
-<div class="thumbnail"></div>
+<div class="thumbnail">
+<img src="posts/2021-05-10-vak-titles-in-crossref/images/vak_titles_in_crossref.png"/>
+</div>
+<div class="description">
+<h2>Checking VAK titles in CrossRef</h2>
+<div class="dt-tags">
+<div class="dt-tag">russian data</div>
+<div class="dt-tag">issn.org</div>
+<div class="dt-tag">crossref</div>
+<div class="dt-tag">r</div>
+<div class="dt-tag">gov data</div>
+</div>
+<p>In this post I am checking how many academic journals from the Russian white list (VAK) deposited their 2020/2021 publications in CrossRef. To do that I queried portal.issn.org &amp; CrossRef, and parsed PDF &amp; JSON files, what I think makes this post of interest to those who analyze the academic journals.</p>
+</div>
+</a>
+<a href="posts/2021-05-09-vak-list-pdfs/" class="post-preview">
+<script class="post-metadata" type="text/json">{"categories":["russian data","r","gov data"]}</script>
+<div class="metadata">
+<div class="publishedDate">May 9, 2021</div>
+</div>
+<div class="thumbnail">
+<img/>
+</div>
 <div class="description">
 <h2>Extracting the Tables from PDF</h2>
 <div class="dt-tags">
 <div class="dt-tag">russian data</div>
-<div class="dt-tag">tabulizer</div>
 <div class="dt-tag">r</div>
 <div class="dt-tag">gov data</div>
 </div>
-<p>In this post I am using a [tabulizer](https://docs.ropensci.org/tabulizer/) to extract a large table from 853-page PDF, containing a list of VAK (Russian) journal titles.</p>
+<p>In this post I am using a R package tabulizer to extract a large table from 853-page PDF, containing a list of VAK (Russian) journal titles.</p>
 </div>
 </a>
 </div>
@@ -2658,23 +2678,27 @@ function init_posts_list() {
 <ul>
 <li>
 <a href="#category:articles">articles</a>
+<span class="category-count">(2)</span>
+</li>
+<li>
+<a href="#category:crossref">crossref</a>
 <span class="category-count">(1)</span>
 </li>
 <li>
 <a href="#category:gov_data">gov data</a>
+<span class="category-count">(2)</span>
+</li>
+<li>
+<a href="#category:issn.org">issn.org</a>
 <span class="category-count">(1)</span>
 </li>
 <li>
 <a href="#category:r">r</a>
-<span class="category-count">(1)</span>
+<span class="category-count">(2)</span>
 </li>
 <li>
 <a href="#category:russian_data">russian data</a>
-<span class="category-count">(1)</span>
-</li>
-<li>
-<a href="#category:tabulizer">tabulizer</a>
-<span class="category-count">(1)</span>
+<span class="category-count">(2)</span>
 </li>
 </ul>
 </div>
@@ -2683,7 +2707,7 @@ function init_posts_list() {
 <a href="#">More articles &raquo;</a>
 </div>
 </div>
-<!--/radix_placeholder_article_listing-->
+<!--/radix_placeholder_article_listing-->
 
 <div class="d-title">
 <h1>dwayzeR</h1>

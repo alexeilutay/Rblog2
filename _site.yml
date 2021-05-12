@@ -4,7 +4,7 @@ theme: lavlav.css
 description: |
   Using R to solve the practical tasks in the library information science and other fields.  
 output_dir: "_site"
-base_url: https://beta.rstudioconnect.com/content/1142123134/
+base_url: https://dwayzer.netlify.app/
 google_analytics: "G-W1EX0W2M3D"
 rss:
   full_content: true
