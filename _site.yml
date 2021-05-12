@@ -7,7 +7,7 @@ output_dir: "_site"
 base_url: https://dwayzer.netlify.app/
 google_analytics: "G-W1EX0W2M3D"
 rss:
-  full_content: true
+  full_content: false
 navbar:
   logo: images/dwayzer.png
   right:
