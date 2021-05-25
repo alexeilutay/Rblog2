@@ -7,7 +7,26 @@
     <description>Using R to solve the practical tasks in the library information science and other fields.  
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Wed, 12 May 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 24 May 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>RIRO - Russian Index of the Research Organizations</title>
+      <dc:creator>Aleksei Lutai</dc:creator>
+      <dc:creator>Ivan Sterligov</dc:creator>
+      <link>https://dwayzer.netlify.app/posts/2021-05-24-riro</link>
+      <description>With Web of Science &amp; Scopus, ROR &amp; GRID, Wikidata &amp; Microsoft Academic, ISNI &amp; other providers of the research organization identifiers, is there a need for another one? In this post I am going to answer this question by telling you about RIRO project, launched by me and Ivan Sterligov today. You will see what RORI is, how to get the data, and what value it can provide for the bibliometric research.</description>
+      <category>russian data</category>
+      <category>organization identifier</category>
+      <category>scopus</category>
+      <category>r</category>
+      <category>wikidata</category>
+      <category>web of science</category>
+      <category>ror</category>
+      <category>riro</category>
+      <category>microsoft academic</category>
+      <guid>https://dwayzer.netlify.app/posts/2021-05-24-riro</guid>
+      <pubDate>Mon, 24 May 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://dwayzer.netlify.app/posts/2021-05-24-riro/images/RIRO_identifiers_for_3_orgs.png" medium="image" type="image/png" width="2834" height="1574"/>
+    </item>
     <item>
       <title>Checking VAK titles in CrossRef</title>
       <dc:creator>Aleksei Lutai</dc:creator>

@@ -1,0 +1,738 @@
+---
+title: "RIRO - Russian Index of the Research Organizations"
+description: |
+  With Web of Science & Scopus, ROR & GRID, Wikidata & Microsoft Academic, ISNI & other providers of the research organization identifiers, is there a need for another one? In this post I am going to answer this question by telling you about RIRO project, launched by me and Ivan Sterligov today. You will see what RORI is, how to get the data, and what value it can provide for the bibliometric research.
+author:
+  - first_name: "Aleksei"
+    last_name: "Lutai" 
+    url: https://www.linkedin.com/in/lutaya/
+    orcid_id: 0000-0003-1341-781X
+  - first_name: "Ivan"
+    last_name: "Sterligov"
+    orcid_id: 0000-0001-9736-4713   
+date: 05-25-2021
+categories:
+  - russian data
+  - organization identifier
+  - scopus
+  - r
+  - wikidata
+  - web of science
+  - ror
+  - riro
+  - microsoft academic
+creative_commons: CC BY
+preview: images/RIRO_identifiers_for_3_orgs.png
+output:
+  distill::distill_article:
+    self_contained: false
+    code_folding: true
+    highlight: kate
+    highlight_downlit: true
+    toc: true
+    toc_depth: 3
+    toc_float: true
+---
+
+```{r eval=TRUE, message=FALSE, warning=FALSE, include=FALSE, echo=TRUE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+
+library(tidyverse)
+library(extrafont)
+library(DT)
+library(scales)
+
+options(DT.options = list(pageLength = 5, dom = "Brftip",  
+  deferRender = TRUE, ordering = TRUE, autoWidth = TRUE, scrollX = TRUE))
+
+onedrive <- list.dirs("C:/Users", recursive = FALSE) %>% 
+  .[grepl("alexe|WD|lutay",.)] %>% list.dirs(., recursive = FALSE) %>% 
+  .[grepl("onedrive",., ignore.case = TRUE)]
+
+## create dir for RIRO tables (example)
+dir <- "D://RIRO_tables/"
+if(!dir.exists(dir)){dir.create(dir)}
+
+## create dir for images (blog)
+img_dir <- paste0(getwd(), "/images/")
+if(!dir.exists(img_dir)){dir.create(img_dir)}
+
+```
+
+```{r eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+your_zenodo_token <- read_file(paste0(onedrive, "/zenodo.txt"))
+```
+
+### What is RIRO?
+
+[RIRO](https://github.com/OpenRIRO) is a public, open, and autonomous project, designed to link the numerous identifiers of the Russian organizations to the existing legal entities.
+
+- __public__ as anyone can use it (free as in speech);  
+- __open__ as anyone can contribute to it (no strings attached); 
+- __autonomous__ as it is self-governed (free as a bird).  
+
+In its current form RIRO v.1.0 is a set of tables linking the organization identifiers and profiles provided by [ROR](https://ror.org/), [GRID](https://www.grid.ac/), [Wikidata](https://www.wikidata.org/), [Microsoft Academic](https://academic.microsoft.com/home), [Scopus](https://www.elsevier.com/solutions/scopus), [SciVal](https://www.elsevier.com/solutions/scival), [Web of Science](https://clarivate.com/webofsciencegroup), [InCites](https://clarivate.com/webofsciencegroup/solutions/incites/) to the Russian legal entities.
+
+The RIRO tables are available at Zenodo RIRO community: https://zenodo.org/communities/riro/.
+
+The code & examples of use will be shared via GitHub: https://github.com/OpenRIRO.
+
+The news & related information will be updated at [web site](https://openriro.github.io/).
+
+### Why do we need RIRO?  
+
+The databases mentioned above have assigned the identifiers to the organizations and put some efforts into curation process, but none of them is confident when it comes to:
+
+- covering the small, less prominent organizations (terra incognita)  
+
+- updating the account reorganizations (what government can resist to it?)  
+
+As a result, the identifiers provided by the international services suffer from a patchy coverage and have a limited value for the research assessment and scientometric analysis.
+
+With RIRO we aim to:
+
+- create, update, and share a public dataset of the organization identifiers that reflects not only their current statuses, but also their recent (at least) transformations;
+
+- asssess how complete is a representation of the Russian organizations in the international registries; 
+
+- attract the researh community's attention to the new information services and its features.
+
+### Selection Criteria for Organizations
+
+As RORI is about research, any organization that appears in the affiliations texts of the scientific publications is a good candidate for RORI. And yet some organizations have been prioritized for v.1.0, those are:
+
+- state (federal/regonal) organizations doing fundamental or applied research (research centres, scientific institutes, universities, large clinical centers or hospitals, reserves, museums, etc.);
+
+- private organizations (mostly universities).
+
+We have not (even) reviewed the entities associated with the Russian state corporations (RosAtom, RosSpace, RosTech) and the military ones.
+
+### RIRO dataset {#dataset}
+
+The RIRO dataset v.1.0 is a set of CSV tables, having a primary key named code, so one can easily join the tables or build a database. 
+
+The CSV tables can be downloaded from Zenodo [community](https://zenodo.org/communities/riro/), via [OAI-PMH Harvesting API](https://zenodo.org/oai2d?verb=ListRecords&set=user-riro&metadataPrefix=oai_dc) or by using [REST API](https://developers.zenodo.org/).
+
+Below I demonstrate how to download the dataset using [zen4R](https://github.com/eblondel/zen4R) package. This will require of you to do the following actions: 
+
+1. Install [zen4R] package (https://github.com/eblondel/zen4R))
+
+```{r eval=FALSE, include=FALSE}
+require("remotes")
+remotes::install_github("eblondel/zen4R")
+library(zen4R)
+```
+
+2. [Register](https://zenodo.org/signup/) at Zenodo
+
+3. Obtain a token [here](https://zenodo.org/account/settings/applications/tokens/new/)
+
+```{r eval=FALSE, echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+# initialize a session
+zenodo <- ZenodoManager$new(token = your_zenodo_token,  logger = "INFO")
+
+# request the Concept ID (more info -> https://help.zenodo.org/#versioning)
+my_rec <- zenodo$getRecordByConceptId("4775290")
+
+# get the list of files with names and URLs
+files <- my_rec$files %>% map_df(~.x %>% flatten()) %>% select(filename, filesize, download)
+
+# if you set a folder named RIRO_tables for files, download them with
+walk2(files$download, paste0(dir, files$filename), 
+      ~download.file(url =.x, destfile = .y))
+
+# At https://help.zenodo.org/#versioning Zenodo says that:
+# Currently the Concept DOI resolves to the landing page of the latest version of your record. 
+# This is not fully correct, and in the future we will change this to create a landing page 
+# specifically representing the concept behind the record and all of its versions.
+# so one day we may have to retrieve the latest DOI my_rec$getLastDOI() or smth else 
+```
+
+Let's see what we have downloaded.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE}
+riro_files <- list.files(dir, full.names = TRUE)
+riro_files_info <- riro_files  %>% file.info() %>% select(size)
+riro_files_info
+```
+
+There are 11 files with an approx. total size `r round(sum(riro_files_info$size)/1000000*0.9537,1)` MB.   
+
+Below are the parts of each table corresponding to the 3 organizations:
+
+- Komi Federal Research Centre of the Ural branch of the Russian Academy of Sciences
+- Tomsk National Medical Research Centre
+- Russian Technological University MIREA
+
+I selected these organizations as they came through a chain of reorganizations in the last 10 years. 
+
+### Table 1 - Official Info
+
+Table 1 comprises the basic organization details - OGRN (Primary State Registration Number), INN (Taxpayer Identification Number), KPP (Tax Registration Reason Code), full & short names, status {active, liquidated, in reorganization process}, and the branch type {head or branch}.
+
+A table below lists the legal entities found by OGRN and their branches (the branch organization and its head entity share same OGRN and INN). To save some space a column with the short names column is not included.
+
+```{r message=FALSE, warning=FALSE, echo=FALSE, eval=TRUE}
+t1 <- riro_files[1] %>% read_csv(col_types = cols(.default = col_character())) 
+
+# filtering data for 3 organizations by OGRN 
+test_group <- t1 %>% filter(ogrn %in% c("1021100511332", "1037739552740", "1027000861568"))
+
+test_group %>% select(code, level, status, name_full, ogrn, inn, kpp) %>% 
+  datatable(rownames = FALSE, filter = "none", escape = FALSE, class = "row-border", 
+      options = list(columnDefs = list(list(width = '650px', targets = c(3)))))
+```
+
+Each row has its unique "code" which serves as a primary key for all the RIRO tables.
+
+### Table 2 - Locations and Geodata
+
+Table 2 comprises the full address and its separate parts (in Russian), accompanied with the geocode, geo coordinates and time zone. Table 2 is the only table in RIRO that corresponds 1:1 to Table 1 via "code". The other tables can have few rows for unique code.    
+
+```{r message=FALSE, warning=FALSE, echo=FALSE, eval=TRUE}
+t2 <- riro_files[2] %>% read_csv(col_types = cols(.default = col_character()))  
+
+t2 %>% filter(code %in% test_group$code) %>% 
+  datatable(rownames = FALSE, filter = "none", escape = FALSE, 
+            class = "row-border", 
+            options = list(columnDefs = list(
+              list(width = '450px', targets = c(6)))))
+```
+
+### Table 3 - Hierarchy
+
+This is a very important table, as it links the parent organizations not only to its existing branches, but also to the predecessors (for convenience, in this document both will be referred as "children accounts").
+
+Table 3 does not pretend to be complete for few reasons:
+
+a) the list includes only the last predecessors of the current organizations, so there is no historical perspective from 2000s or from USSR.
+
+b) some organizations have many branch offices (e.g. hospitals), but information about their hierarchy has little or no value from research assessment perspective. Therefore, for some organizations RIRO does not show the branches. The organizations including the branches are mainly the federal organizations (subdued to the ministries and the federal agencies).
+
+The "child_code" is a code for the children account, the values in the "relation" column reflect a nature of their subordination (it can be a branch or a predecessor). 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE}
+t3 <- riro_files[3] %>% read_csv(col_types = cols(.default = col_character()))
+
+full_test <- t3 %>% filter(code %in% test_group$code) %>% arrange(desc(code)) %>% 
+  mutate(relation = ifelse(relation == "Филиал", "Branch","Predecessor"))
+
+full_test %>% datatable(rownames = FALSE, filter = "none", escape = FALSE, class = "row-border", 
+            options = list(autoWidth = FALSE, 
+                           columnDefs = list(list(className = 'dt-center', targets = c(0:2)))))
+```
+
+Thus, using a list of OGRNs for 3 selected organizations, we extracted from Table 1 `r n_distinct(test_group$code)` entities with unique codes (head & branch organizations), further used to retrieve a list of all the predecessors. As a result we have build a list of `r n_distinct(c(full_test$code, full_test$child_code))` entities with unique code values.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE}
+hierarchy <- full_test %>% 
+  add_row(code = unique(full_test$code), 
+          child_code = unique(full_test$code),
+          relation = "Parent_Org") %>% 
+  rename(parent_code = code, code = child_code) %>% 
+  arrange(parent_code, relation) 
+```
+
+Now we can see how many branches & predecessors exist for 3 selected orgs. 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE}
+hierarchy %>% count(parent_code, relation) %>% 
+  pivot_wider(names_from = relation, 
+              values_from = n, values_fill = 0) %>%
+  select(parent_code, Parent_Org, Branch, Predecessor) %>% 
+  datatable(rownames = FALSE, filter = "none", 
+            escape = FALSE, class = "row-border", 
+            options = list(autoWidth = FALSE, 
+  columnDefs = list(list(className = 'dt-center', 
+                         targets = c(0:3)))))
+```
+
+We will use this hierarchy to gather the matched identifiers from other RIRO tables (see below).  
+
+### Table 4 - ROR
+
+Research Organizations Registry (ROR) is an international project launched in 2019 with an ambitious goal to create a public ORCID-like registry for the research organizations. It inherits a lot from GRID (Global Research Identifier Database) and (I guess) from Wikidata. The ROR organization info can be downloaded as a [JSON dump](https://figshare.com/collections/ROR_Data/4596503) or retrieved via [API](https://github.com/ror-community/ror-api). 
+
+Table 4 contains not all the Russian records from ROR, but only those that we matched to the organizations present in RORI.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE}
+t4 <- riro_files[4] %>% read_csv(col_types = cols(.default = col_character()))  
+
+hierarchy %>% inner_join(t4, by = "code") %>% 
+  arrange(parent_code) %>% select(-parent_code, - relation, -ror_isni) %>% 
+  datatable(rownames = FALSE, filter = "none", 
+            escape = FALSE, class = "row-border", 
+            options = list(columnDefs = list(
+              list(width = '250px', targets = c(3:4)),
+              list(width = '350px', targets = c(5)),
+              list(width = '450px', targets = c(8)))))
+```
+
+The column "Relationships" have the composite values of following structure: 
+
+`label:xxxx|type:yyyyyy|id:https://ror.org/zzzzz`, 
+
+with 3 units (label, type, id) for the relative (according to ROR) organizations. 
+
+But in cases like our example such references can be misleading! According to ROR the research institutes of the Komi Federal Research Center have different parents:
+
+- label:Department of Chemistry and Material Sciences|type:Parent|id:059tqvg48
+- label:Ural Branch of the Russian Academy of Sciences|type:Parent|id:02s4h3z39
+- label:Russian Academy of Sciences|type:Parent|id:05qrfxd25
+
+So for a single organization ROR shows 4 accounts subordinating to three different RAS structures. 
+
+The actual truth is that the found 4 research institutes of the Komi Federal Research Center **ceased to exist as legal entities 3 years ago**, they were merged into one federal research center in May 2018.
+
+**Using the Table 3, one can gather the related identifiers and qualify them as corresponding to a branch or a predecessor.**
+
+### Table 5 - Wikidata 
+
+WikiData is a public repository of structured data originating from multiple sources. Some sources are more or less consistent (like CrossRef or ISSN), but there's also a lot of Wikidata records that are created and modified by people. As a result, even though Wikidata offers a pre-defined templates for the universities or research organizations, Wikidata profiles have a lot of unpopulated fields.
+
+The table 5 comprises a list of fields found in the Wikidata profiles for the organizations, but not a full copy. Moreover, Table 5 include only those Russian research organizations that match to the organizations in RIRO.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE}
+t5 <- riro_files[5] %>% read_csv(col_types = cols(.default = col_character())) 
+
+hierarchy %>% inner_join(t5, by = "code") %>% 
+  arrange(parent_code) %>% 
+  select(-parent_code, - relation, -wd_item) %>%  
+  mutate_at(c("wikipedia_eng", "wikipedia_rus", "wd_itemaltlabel", "wd_altlabel"),
+            ~ifelse(is.na(.x),.x, paste0(substr(.x,1,40),"...")))%>% 
+  datatable(rownames = FALSE, filter = "none", escape = FALSE, class = "row-border", 
+            options = list(columnDefs = list(
+              list(width = '250px', targets = c(2:4)),
+              list(width = '150px', targets = c(6:9)))))
+```
+
+### Table 6 - Scopus
+
+Scopus is a (one of leading) citation index accumulating the metadata from 20k+ journal titles, selected conference sources, and some academic book titles. Table 6 lists the Scopus affiliation profiles matched to the organizations in RIRO, and also a number of publications under Scopus affiliation profile (on a data of request, April 2021). 
+
+Scopus Affiliation IDs can be used for search queries via online UI or the [API-service](https://dev.elsevier.com/scopus.html). The latter has few wrappers for [python](https://pybliometrics.readthedocs.io/en/stable/) and [R](https://github.com/muschellij2/rscopus) that make working with API more comfortable.
+
+Please note that matching the Scopus affiliation profiles to RIRO organizations is based on the affiliation name and location. It does not guarantee that all the publications in the profile are assigned to it correctly. More details on how to edit the affiliation profiles in Scopus can be found on [Elsevier web site](https://service.elsevier.com/app/answers/detail/a_id/25554/supporthub/scopus/). 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE}
+t6 <- riro_files[6] %>% read_csv(col_types = cols(.default = col_character())) 
+
+hierarchy %>% inner_join(t6, by = "code") %>% 
+  arrange(parent_code) %>% select(-parent_code, - relation) %>% 
+  datatable(rownames = FALSE, filter = "none", escape = FALSE, class = "row-border", 
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = c(0,6)),
+              list(width = '350px', targets = c(2:3)))))
+```
+
+### Table 7 - Microsoft Academic
+
+[Microsoft Academic Graph](https://www.microsoft.com/en-us/research/project/microsoft-academic-graph/) (MAG) is a database created based on the information extracted with Bing-parsers from the publisher web sites and PDF files [details](https://docs.microsoft.com/en-us/academic-services/project-academic-knowledge/introduction)). This approach is different from the one utilized by Web of Science and Scopus that receive a large part of information for indexation directly from the publishers. 
+
+In recent years MAG has become a source of information for many novel solutions like [Lens](https://www.lens.org/), [Semantic Scholar](https://www.semanticscholar.org/), [Open Academic Graph](https://www.microsoft.com/en-us/research/project/open-academic-graph/), [Unsub](https://unsub.org/).
+
+Even though the last news about MAG  [shocked us too](https://www.microsoft.com/en-us/research/project/academic/articles/microsoft-academic-to-expand-horizons-with-community-driven-approach/), we decided to include the MAG Organization IDs into RORI. Few international companies committed to launching a new tool that may substitute MAG: 
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">ANNOUNCING: We’re building a replacement for Microsoft Academic Graph. <a href="https://t.co/GXelkpt6Zc">https://t.co/GXelkpt6Zc</a></p>&mdash; Our Research (@our_research) <a href="https://twitter.com/our_research/status/1391144816549892097?ref_src=twsrc%5Etfw">May 8, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Thanks to <a href="https://twitter.com/MSFTResearch?ref_src=twsrc%5Etfw">@MSFTResearch</a> for providing the Microsoft Academic Graph (MAG). We’ve been working with MSR and MAG since 2018, and we’ve been collaborating on this transition for some time. 1/3<a href="https://t.co/7aHTLio8uK">https://t.co/7aHTLio8uK</a></p>&mdash; Semantic Scholar (@SemanticScholar) <a href="https://twitter.com/SemanticScholar/status/1392265402302963712?ref_src=twsrc%5Etfw">May 11, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
+
+Table 7 lists just the MAG organization IDs and names agains the RORI codes.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE}
+t7 <- riro_files[7] %>% read_csv(col_types = cols(.default = col_character())) 
+
+hierarchy %>% inner_join(t7, by = "code") %>% 
+  arrange(parent_code) %>% select(-parent_code, - relation) %>% 
+  datatable(rownames = FALSE, filter = "none", escape = FALSE, class = "row-border", 
+            options = list(autoWidth = FALSE,
+              columnDefs = list(
+                list(className = 'dt-center', targets = c(0:1)),
+                list(width = '450px', targets = c(2)))))
+```
+
+### Table 8 - InCites
+
+InCites is an analytical solution build over Web of Science Core Collection. It allows to export the records, so the matched names can be used for further analysis.
+
+The table 8 lists the official organization names in InCite and Web of Science Core Collection against the RORI codes.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE}
+t8 <- riro_files[8] %>% read_csv(col_types = cols(.default = col_character())) 
+
+hierarchy %>% inner_join(t8, by = "code") %>% 
+  arrange(parent_code) %>% select(-parent_code, - relation) %>% 
+  datatable(rownames = FALSE, filter = "none", escape = FALSE, class = "row-border", 
+            options = list(autoWidth = FALSE,
+              columnDefs = list(
+                list(className = 'dt-center', targets = c(0,3)),
+                list(width = '500px', targets = c(1:2)))))
+```
+
+### Table 9 - SciVal
+
+SciVal is an analytical tool build over Scopus. Some Russian organizations have an access to SciVal API and could use the IDs matched against the RORI codes in the table 9.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE}
+t9 <- riro_files[9] %>% read_csv(col_types = cols(.default = col_character()))
+
+hierarchy %>% inner_join(t9, by = "code") %>% 
+  arrange(parent_code) %>% select(-parent_code, - relation) %>% 
+  datatable(rownames = FALSE, filter = "none", escape = FALSE, class = "row-border", 
+            options = list(autoWidth = FALSE,
+              columnDefs = list(
+                list(className = 'dt-center', targets = c(0:1)),
+                list(width = '450px', targets = c(2)))))
+```
+
+### Table 10 - Russian Universities Assessment System
+
+This system governed by the Russian Ministry of Science & Higher Education, collects the various statistical reports from all Russian higher education institutions (excluding some schools under the Ministry of Defence and alike). Such reports contain a lot of useful information - from financial to enrollment data.
+
+Table 10 lists the IDs that corresponds to the university's web page on the portal, matched to the RORI codes. 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE}
+t10 <- riro_files[10] %>% read_csv(col_types = cols(.default = col_character()))  
+
+hierarchy %>% inner_join(t10, by = "code") %>% 
+  arrange(parent_code) %>% select(-parent_code, - relation) %>% 
+  datatable(rownames = FALSE, filter = "none", escape = FALSE, class = "row-border", 
+            options = list(autoWidth = FALSE,
+              columnDefs = list(list(className = 'dt-center', 
+                                     targets = c(0:1)))))
+```
+
+### Table 11 - Web of Science
+
+Web of Science is by far the world's oldest and most prominent citation index. At this moment Web of Science does not provide the organization IDs that could be used for search or data retrieval, but the search results have the orgaization names. The table 11 lists almost 4000 such names matched to the organizations in RIRO. This is not a complete list of known affiliation names for the Russian research organizations, but we hope to adjust this table in future releases of RIRO.     
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE}
+t11 <- riro_files[11] %>% read_csv(col_types = cols(.default = col_character())) 
+
+hierarchy %>% inner_join(t11, by = "code") %>% 
+  arrange(parent_code) %>% select(-parent_code, - relation) %>% 
+  datatable(rownames = FALSE, filter = "none", 
+            escape = FALSE, class = "row-border", 
+            options = list(autoWidth = FALSE,
+              columnDefs = list(
+                list(className = 'dt-center', targets = c(0)),
+                list(width = '500px', targets = c(1,3)))))
+```
+
+### All IDs for 3 organizations
+
+Now, as we have glanced at the identifiers found in each table for 3 selected organizations, we are ready for a wider picture. 
+
+An illustration below shows the identifiers (ROR, GRID, Scopus Affiliation ID, InCites ID, MAG, Wikidata, 1-Monitoring) matched to parent organizations, branches and predecessors - each organization in a separate section. The identifiers are placed along X-axis (by organization). The entities (RORI records) are placed along Y-axis -- the existing organizations are shown as squares (the parent organizations are marked with a special sign), the predecessors as circles. 
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, eval = TRUE, include=FALSE}
+
+chart_filename <- paste0(img_dir, "RIRO_identifiers_for_3_orgs.png")
+
+if(!file.exists(chart_filename)){
+
+  example_data <- t1 %>% select(code, name_short, level, status) %>% 
+    arrange(status, level=="Head") %>% 
+    left_join(t2[,c("code", "lat", "lon")]) %>%
+    left_join(t4[,c("code", "ror_id", "grid")]) %>% 
+    left_join(t5[,c("code", "wikidata")]) %>% 
+    left_join(t6[,c("code", "scopus_id")]) %>% 
+    left_join(t7[,c("code", "mag_id")]) %>% 
+    left_join(t8[,c("code", "incites_orgname")]) %>%  
+    left_join(t9[,c("code", "scival_id")]) %>%
+    left_join(t10[,c("code", "monitoring_id")]) %>% 
+    pivot_longer(cols = -c("code", "name_short", "level", "status", "lat", "lon"), 
+                 names_to = "id_type", values_to = "id_value") %>% 
+    distinct() %>%
+    mutate(id_value = ifelse(nchar(id_value)>1,id_value,NA)) %>% 
+    group_by(code, name_short, status, level, lat, lon, id_type) %>% 
+    summarize(id_value = paste0(unique(na.omit(id_value)), collapse = "|")) %>% 
+    ungroup() %>% 
+    mutate(id_value = ifelse(nchar(id_value)>1,id_value,NA)) 
+  
+  ogrn <- c("1021100511332", "1037739552740", "1027000861568")
+  org_code <- t1$code[t1$ogrn %in% ogrn & t1$level=="Head"]
+  org_codes_all <- c(org_code, t3$child_code[t3$code %in% org_code])
+  
+  primer <- bind_rows(
+    t1 %>% filter(code %in% org_code) %>% mutate(child_code = code, st = "Гол.орг.") %>% distinct(),
+    t3 %>% filter(code %in% org_code) %>% mutate(st = relation)
+    ) %>% select(code, child_code, st) %>% rename(parent_code = 1, code = 2) 
+    
+  id_types <- c("monitoring_id", "grid", "ror_id", "wikidata", "mag_id", 
+                "scopus_id", "scival_id", "incites_orgname")
+  
+  id_type_colours <- c("monitoring_id" = "#007bff", "grid" = "#dc3545", 
+                       "ror_id" = "#53BAA1", "wikidata" = "#006699", 
+                       "mag_id" = "grey50", "scopus_id" = "#ff6c00", 
+                       "scival_id" = "gold", "incites_orgname" = "#5e33bf")
+  
+  id_type_labels <- c("monitoring_id" = "MoS", "grid" = "GRID", 
+                      "ror_id" = "ROR", "wikidata" = "Wikidata", 
+                      "mag_id" = "MAG", "scopus_id" = "Scopus", 
+                      "scival_id" = "SciVal", "incites_orgname" = "InCites")
+  
+  chart <- example_data %>% 
+    filter(code %in% org_codes_all) %>%
+    left_join(primer, .)  %>% 
+    filter(!is.na(id_type)) %>% filter(!is.na(id_value)) %>% 
+    mutate(st_x = case_when(
+      grepl("^Г",st) ~ paste0("c", code),
+      grepl("^Ф",st) ~ paste0("b", code),
+      grepl("^П",st) ~ paste0("a", code)
+      ),
+      st_lab = ifelse(grepl("^Г",st), "\U2609", NA),
+      st_shape = ifelse(grepl("Правопре",st, ignore.case = TRUE), 21, 22),
+      st_alpha = ifelse(grepl("Правопре",st, ignore.case = TRUE), 0.4, 1)) %>% 
+    ggplot(aes(x = id_type, y = st_x)) + 
+    geom_point(aes(fill = id_type, alpha = st_alpha, shape = st_shape), color = "grey50", size = 8)+
+    geom_text(aes(label = st_lab), color = "white", size = 3, nudge_y = 0.05, fontface = "bold")+
+    facet_wrap(~parent_code, scales = "free") + 
+    labs(title = "RIRO Identifiers for 3 Organizations",
+         subtitle = "(existing legal entities are shown as squares, predecessors - as circles, parent orgs are marked with \U2609)",
+         y = "Organization Identifiers,\nincl. branches & predecessors", 
+         x = NULL, 
+         caption = paste0("Date: ", format(Sys.time(), '%m/%d/%Y'),"\nSource: RIRO"))+
+    scale_x_discrete(limits = id_types, labels = NULL)+
+    scale_y_discrete(labels = NULL)+
+    scale_alpha_identity()+
+    scale_shape_identity()+
+    scale_fill_manual(values = id_type_colours, limits = id_types,
+                      name = NULL, labels = id_type_labels, drop = FALSE)+
+    guides(fill = guide_legend(nrow = 1, override.aes = list(size = 4, shape = 22)))+
+    theme_classic()+
+      theme(text=element_text(family="PT Sans", color = "#53565A", size = 12),
+            panel.grid.major = element_line(size=0.1, linetype = 2, color="grey80"),
+            panel.grid.minor = element_blank(),
+            axis.line.y = element_line(size = 0.3, linetype = 1, color = "grey10"),
+            axis.ticks.y = element_line(size=0.3, linetype = 1, color="grey10"),
+            axis.line.x = element_blank(),
+            axis.ticks.x =  element_blank(),
+            axis.text = element_text(size = rel(0.9)),
+            axis.title = element_text(size = rel(1.1), family="PT Sans Narrow"),
+            legend.title = element_text(size=rel(1), color="grey10"),
+            legend.text = element_text(size=rel(0.9), color="grey10"),
+            legend.position = "bottom",
+            legend.background = element_rect(size = 0.1, color = "grey90", fill = "#fff7fb"),
+            legend.box.margin = margin(10,0,10,0),
+            legend.box.spacing = unit(0,"cm"),
+            plot.caption.position = "plot",
+            plot.caption = element_text(size = rel(0.9), hjust=1, color = "#969696"),
+            plot.subtitle = element_text(hjust=0, size = rel(1), family="PT Sans Narrow"),
+            plot.title.position = "plot",
+            plot.title = element_text(size=rel(1.2), family="PT Sans", face="bold", color = "#253494"),
+            plot.margin = margin(5, 5, 5, 5),
+            strip.background = element_rect(fill = "white", colour = "white",  size = 0),
+            strip.text = element_text(size = rel(1), colour = "#52422F", family = "PT Sans Narrow", 
+                                      face = "bold", margin = margin(3,0,3,0), 
+                                      hjust = 0.01, vjust = 1))
+  
+    chart + ggsave(chart_filename, width = 18, height = 10, dpi = 400, units = "cm")
+}
+
+```
+
+```{r, layout="l-body-outset", fig.width=10, fig.height=5.5}
+knitr::include_graphics(chart_filename)
+```
+
+This picture is not an example of clarity, I admit, so let me explain it more thoroughly. The identifiers for each organization are present in a separacte section (from left to right). Each section has its own number of horizontal rows corresponding to the parent organization, branches and predecessors (from top to bottom). Marked as squares are the existing organizations - either a parent one (also marked with a sign, on top) or the branches (under the parent). Marked as circles (with less saturated colours) are the identifiers corresponding to the predecessors (liquidated organizations).
+
+Or in a more plain language - every circle is an organization identifier that corresponds to a predecessor, not to existing legal entity.
+
+### RIRO's scope?
+
+An UpSet diagram below shows the sets of organizations listen in RIRO (v.1.0) and matched to the various identifiers. Only the head and active (existing) organizations are counted here, so the identifiers referring to the branches or to the predecessors (liquidated via acquisition), are not counted.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, eval = TRUE, include=FALSE}
+
+chart_filename2 <- paste0(img_dir, "RIRO_identifiers_upset.png")
+
+if(!file.exists(chart_filename2)){
+  require(ComplexUpset)
+  upsdata <- example_data %>%
+    filter(grepl("Действующ", status)) %>% 
+    filter(level=="Head") %>% 
+    select(code, id_type, id_value) %>% 
+    pivot_wider(id_cols = code, names_from = id_type, values_from = id_value) %>% 
+    select(RIRO = code, Scopus = scopus_id, ROR = ror_id, 
+           Wikidata = wikidata, InCites = incites_orgname) %>%  
+     mutate_all(~ifelse(is.na(.x), FALSE, TRUE)) 
+  
+  ## I build a function for Upset chart to be able to change Russian/English labels  
+  upset_chart <- function(data, elements, matrix_title, sets_title, 
+                          intersection_title, plot_title, plot_caption){
+    upset(data, elements, min_size=20, encode_sets=TRUE, wrap = TRUE, name = matrix_title,
+                  themes=upset_default_themes(
+                    text=element_text(color='grey20', family = "PT Sans Narrow", size = 12)
+                  ),
+                  matrix=(
+                    intersection_matrix(
+                      geom=geom_point(shape='circle', size=2),
+                      segment=geom_segment(color='black', size = 0.3)
+                    )+
+                      scale_y_discrete(position='left')
+                  ),
+                  set_sizes=(
+                    upset_set_size() + ylab(sets_title) + 
+                    theme(axis.line.x = element_line(size = 0.2, color = "grey20"), 
+                          axis.ticks.x = element_line(size = 0.2, color = "grey20"))  
+                  ),
+                  base_annotations = list(
+                    'Intersection size'=(
+                      intersection_size() +
+                      scale_y_continuous(expand = expansion(mult = c(0,0.15)))+
+                        theme(plot.background=element_rect(size = 0.1, color = "grey90", 
+                                                           fill = "#fff7fb"),
+                              axis.line.y = element_line(size = 0.2, color = "grey20"), 
+                              axis.ticks.y = element_line(size = 0.2, color = "grey20"))+
+                              ylab(intersection_title)
+                    )
+                  ),
+                  queries=list(
+                    upset_query(set='InCites', fill='#5e33bf'),
+                    upset_query(set='Wikidata', fill='#006699'),
+                    upset_query(set='ROR', fill='#53BAA1'),
+                    upset_query(set='Scopus', fill='#ff6c00')
+                  )
+  ) + 
+    theme(axis.text.y = element_text(size = rel(1.4), color = "grey20", family = "PT Sans Narrow")) + 
+    ggtitle(plot_title)+
+    labs(caption = plot_caption)+
+    theme_classic()+
+      theme(text=element_text(family="PT Sans", color = "#53565A", size = 12),
+            legend.box.margin = margin(0, 0, 0, 0),
+            legend.box.spacing = unit(0,"cm"),
+            panel.grid.major = element_line(size=0.1, linetype = 2, color="grey80"),
+            panel.grid.minor = element_blank(),
+            axis.line = element_line(size = 0.3, linetype = 1, color = "grey10"),
+            axis.ticks = element_line(size=0.3, linetype = 1, color="grey10"),
+            axis.text = element_text(size = rel(0.9)),
+            axis.title = element_text(size = rel(1.1), family="PT Sans Narrow"),
+            legend.title = element_text(size=rel(1), color="grey10"),
+            legend.text = element_text(size=rel(0.9), color="grey10"),
+            plot.title.position = "plot",
+            plot.caption.position = "plot",
+            plot.caption = element_text(size = rel(0.9), hjust=1, color = "#969696"),
+            plot.subtitle = element_text(hjust=0, size = rel(1), family="PT Sans Narrow"),
+            plot.title = element_text(size=rel(1.2), family="PT Sans", face="bold", color = "#253494"),
+            plot.margin = margin(5, 5, 5, 5),
+            strip.background = element_rect(fill = "white", colour = "white",  size = 0),
+            strip.text = element_text(size = rel(1), colour = "#52422F", family = "PT Sans Narrow", 
+                                      face = "bold", margin = margin(3,0,3,0), 
+                                      hjust = 0.01, vjust = 1))
+  }
+  
+  chart2 <- upset_chart(data = upsdata,  elements = c("RIRO", "InCites", "ROR", "Scopus", "Wikidata"),
+    matrix_title = "Sets of Organizations with the Identifiers",
+    sets_title = 'No of Records with Identifiers',
+    intersection_title = 'Set Size',
+    plot_title = 'Organizations in RIRO and Other Identifiers (head organizations only)',
+    plot_caption = paste0("Date: ", format(Sys.time(), '%m/%d/%Y'),"\nSource: RIRO"))
+
+  chart2 + ggsave(chart_filename2, height = 10, width = 18, dpi = 400, units = "cm")
+}
+
+```
+
+```{r, layout="l-body-outset", fig.width=10, fig.height=5.5}
+knitr::include_graphics(chart_filename2)
+```
+
+RIRO v.1.0 lists `r n_distinct(t1$ogrn[t1$level=="Head"&grepl("Действу",t1$status)])` existing parent organizations. Many of those have no external identifiers, but (as previous picture proved) may have a lot of identifiers corresponding to the branches or predecessors.         
+
+### Additional Notes
+
+- RIRO does not copy **all the attributes** linked to the records in the sources. We selected only the most useful (to our opinion) fields. In future RIRO releases we may add more fields.     
+
+- The data in the tables 4-11 is the same as in the original sources - we have not changed the original records.
+
+- Some tables share the common fields. For example, ROR (table 4) has a column Wikidata, and Wikidata (table 5) has a column ROR. We did not chang or check those links, they are kept as they are present in the original sources, but renamed to avoid confusion (added a prefix referring to the source - ror_wikidata, wd_ror, etc. 
+
+- Matching the identifiers to the organizations was made based on available information (name, location) - we have not checked if the data asssociated with the identifiers (in the source databases) is correctly assigned to the organizations.
+
+### Feedback
+
+So far RIRO is developed by only 2 persons - me and Ivan Sterligov [orcid](https://orcid.org/0000-0001-9736-4713) - so we decided to start with a [google form (in Russian)](https://docs.google.com/forms/d/e/1FAIpQLScK-USC1BdyaJFudLHHy1Qo2T6ZFnVDLoknRixCfiasJwMbrw/viewform) with 5 pre-defined scenarios of change requests:
+
+- update the official organization data
+- add new organization absent in RIRO
+- change a link between the identifier & organization in tables 4-11 (ROR, GRID, Wikidata, etc)
+- add new links, missing in the tables 4-11
+- suggest a new data source & identifiers). 
+
+The future RORI releases will include a log of made changes.
+
+### Acknowledgments {.appendix}
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+pkgs <- c('dplyr', 'readr', 'tidyr', 'purrr', 'ggplot2', 'stringr',
+          'scales', 'extrafont', 'ComplexUpset', 
+          'DT', 'knitr', 'rmarkdown', 'zen4R')
+
+do.call('c',lapply(pkgs, citation)) %>% sort()
+```
+
+Allaire J, Xie Y, McPherson J, Luraschi J, Ushey K, Atkins A, Wickham H, Cheng J, Chang W,
+Iannone R (2021). _rmarkdown: Dynamic Documents for R_. R package version 2.7, <URL:
+https://github.com/rstudio/rmarkdown>.
+
+Blondel E (2021). _zen4R: Interface to 'Zenodo' REST API_. R package version 0.4-3, <URL:
+https://github.com/eblondel/zen4R>.
+
+Chang, W (2014). _extrafont: Tools for using fonts_. R package version 0.17, <URL:
+https://CRAN.R-project.org/package=extrafont>.
+
+Henry L, Wickham H (2020). _purrr: Functional Programming Tools_. R package version 0.3.4,
+<URL: https://CRAN.R-project.org/package=purrr>.
+
+Krassowski M (2020). “ComplexUpset.” doi: 10.5281/zenodo.3700590 (URL:
+https://doi.org/10.5281/zenodo.3700590), <URL: https://doi.org/10.5281/zenodo.3700590>.
+
+Lex A, Gehlenborg N, Strobelt H, Vuillemot R, Pfister H (2014). “UpSet: Visualization of
+Intersecting Sets,.” _IEEE Transactions on Visualization and Computer Graphics_, *20*(12),
+1983–1992. doi: 10.1109/TVCG.2014.2346248 (URL:
+https://doi.org/10.1109/TVCG.2014.2346248), <URL:
+https://doi.org/10.1109/TVCG.2014.2346248>.
+
+Wickham H (2020). _tidyr: Tidy Messy Data_. R package version 1.1.2, <URL:
+https://CRAN.R-project.org/package=tidyr>.
+
+Wickham H (2016). _ggplot2: Elegant Graphics for Data Analysis_. Springer-Verlag New York.
+ISBN 978-3-319-24277-4, <URL: https://ggplot2.tidyverse.org>.
+
+Wickham H (2019). _stringr: Simple, Consistent Wrappers for Common String Operations_. R
+package version 1.4.0, <URL: https://CRAN.R-project.org/package=stringr>.
+
+Wickham H, Francois R, Henry L, Muller K (2021). _dplyr: A Grammar of Data Manipulation_.
+R package version 1.0.3, <URL: https://CRAN.R-project.org/package=dplyr>.
+
+Wickham H, Hester J (2020). _readr: Read Rectangular Text Data_. R package version 1.4.0,
+<URL: https://CRAN.R-project.org/package=readr>.
+
+Wickham H, Seidel D (2020). _scales: Scale Functions for Visualization_. R package version
+1.1.1, <URL: https://CRAN.R-project.org/package=scales>.
+
+Xie Y (2020). _knitr: A General-Purpose Package for Dynamic Report Generation in R_. R
+package version 1.30, <URL: https://yihui.org/knitr/>.
+
+Xie Y (2015). _Dynamic Documents with R and knitr_, 2nd edition. Chapman and Hall/CRC,
+Boca Raton, Florida. ISBN 978-1498716963, <URL: https://yihui.org/knitr/>.
+
+Xie Y (2014). “knitr: A Comprehensive Tool for Reproducible Research in R.” In Stodden V,
+Leisch F, Peng RD (eds.), _Implementing Reproducible Computational Research_. Chapman and
+Hall/CRC. ISBN 978-1466561595, <URL: http://www.crcpress.com/product/isbn/9781466561595>.
+
+Xie Y, Allaire J, Grolemund G (2018). _R Markdown: The Definitive Guide_. Chapman and
+Hall/CRC, Boca Raton, Florida. ISBN 9781138359338, <URL:
+https://bookdown.org/yihui/rmarkdown>.
+
+Xie Y, Cheng J, Tan X (2021). _DT: A Wrapper of the JavaScript Library 'DataTables'_. R
+package version 0.17, <URL: https://CRAN.R-project.org/package=DT>.
+
+Xie Y, Dervieux C, Riederer E (2020). _R Markdown Cookbook_. Chapman and Hall/CRC, Boca
+Raton, Florida. ISBN 9780367563837, <URL: https://bookdown.org/yihui/rmarkdown-cookbook>.
