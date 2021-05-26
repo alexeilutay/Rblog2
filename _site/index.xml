@@ -7,7 +7,22 @@
     <description>Using R to solve the practical tasks in the library information science and other fields.  
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Mon, 24 May 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 26 May 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>National Academic Journals in Wikidata and Wikipedia</title>
+      <dc:creator>Aleksei Lutai</dc:creator>
+      <link>https://dwayzer.netlify.app/posts/2021-05-27-academic-journals-through-the-lens-of-wikidata</link>
+      <description>In this post I am using SPARQL for searching the Russian academic journals in Wikidata and Wikipedia services, and trying to assess their standing.</description>
+      <category>russian data</category>
+      <category>journal identifier</category>
+      <category>r</category>
+      <category>wikidata</category>
+      <category>wikipedia</category>
+      <category>sparql</category>
+      <guid>https://dwayzer.netlify.app/posts/2021-05-27-academic-journals-through-the-lens-of-wikidata</guid>
+      <pubDate>Wed, 26 May 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://dwayzer.netlify.app/posts/2021-05-27-academic-journals-through-the-lens-of-wikidata/images/5_year_output.png" medium="image" type="image/png" width="2834" height="1889"/>
+    </item>
     <item>
       <title>RIRO - Russian Index of the Research Organizations</title>
       <dc:creator>Aleksei Lutai</dc:creator>
@@ -24,7 +39,7 @@
       <category>riro</category>
       <category>microsoft academic</category>
       <guid>https://dwayzer.netlify.app/posts/2021-05-24-riro</guid>
-      <pubDate>Mon, 24 May 2021 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 25 May 2021 00:00:00 +0000</pubDate>
       <media:content url="https://dwayzer.netlify.app/posts/2021-05-24-riro/images/RIRO_identifiers_for_3_orgs.png" medium="image" type="image/png" width="2834" height="1574"/>
     </item>
     <item>

@@ -2152,11 +2152,12 @@ d-appendix {
 @import url('https://fonts.googleapis.com/css2?family=Lora');
 @import url('https://fonts.googleapis.com/css2?family=Play');
 @import url('https://fonts.googleapis.com/css2?family=PT+Sans');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed');
 @import url('https://fonts.googleapis.com/css2?family=Nunito');
 
 html {
   /*-- Main font sizes --*/
-  --title-size:      36px;
+  --title-size:      32px;
   --body-size:       1.06rem;
   --code-size:       14px;
   --aside-size:      13px;
@@ -2231,7 +2232,8 @@ html, body, p {
   font-family: 'Nunito', sans-serif;
   font-weight: 200;
   line-height: 1.4; 
-  font-size: 1em;
+  font-size: 0.95em;
+  letter-spacing: 0.2px;
   color: #383838;
   font-style: normal;
 }
@@ -2310,7 +2312,7 @@ d-article a {
   padding-bottom: 0.2em;
   padding-left: 0.3em;
   border-radius: 5px;
-  font-size: 70%;
+  font-size: 85%;
   text-transform: lowercase;
   background-color: #e6e9f0;
   font-weight: 300;
@@ -2319,6 +2321,39 @@ d-article a {
 element, d-article details{
 	font-size: 14px;
 	color: #e05915;
+}
+
+td {  /* Table  */
+  font-size: 14px;
+  font-family: "Roboto Condensed", "Nunito", sans-serif;
+}
+
+th {  /* Table Header */
+  font-size: 14px;
+  font-weight: bold;
+  font-family: "Roboto Condensed", "Nunito", sans-serif;
+}
+
+div.datatables {
+ height: auto !important;
+}
+
+table.dataTable tbody th, 
+table.dataTable tbody td { 
+  padding-top: 2px;
+	padding-bottom: 2px;
+	padding-left: 5px;
+	font-size: 14px; 
+	line-height: 1.3em;
+}
+
+.dataTables_wrapper .dataTables_length, 
+.dataTables_wrapper .dataTables_filter, 
+.dataTables_wrapper .dataTables_info, 
+.dataTables_wrapper .dataTables_processing, 
+.dataTables_wrapper .dataTables_paginate {
+	color: #333;
+	font-size: 14px;
 }</style>
 <style type="text/css">
 /* base style */

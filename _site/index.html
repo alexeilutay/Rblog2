@@ -2122,11 +2122,12 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   @import url('https://fonts.googleapis.com/css2?family=Lora');
   @import url('https://fonts.googleapis.com/css2?family=Play');
   @import url('https://fonts.googleapis.com/css2?family=PT+Sans');
+  @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed');
   @import url('https://fonts.googleapis.com/css2?family=Nunito');
   
   html {
     /*-- Main font sizes --*/
-    --title-size:      36px;
+    --title-size:      32px;
     --body-size:       1.06rem;
     --code-size:       14px;
     --aside-size:      13px;
@@ -2201,7 +2202,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     font-family: 'Nunito', sans-serif;
     font-weight: 200;
     line-height: 1.4; 
-    font-size: 1em;
+    font-size: 0.95em;
+    letter-spacing: 0.2px;
     color: #383838;
     font-style: normal;
   }
@@ -2280,7 +2282,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     padding-bottom: 0.2em;
     padding-left: 0.3em;
     border-radius: 5px;
-    font-size: 70%;
+    font-size: 85%;
     text-transform: lowercase;
     background-color: #e6e9f0;
     font-weight: 300;
@@ -2289,6 +2291,39 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   element, d-article details{
   	font-size: 14px;
   	color: #e05915;
+  }
+  
+  td {  /* Table  */
+    font-size: 14px;
+    font-family: "Roboto Condensed", "Nunito", sans-serif;
+  }
+  
+  th {  /* Table Header */
+    font-size: 14px;
+    font-weight: bold;
+    font-family: "Roboto Condensed", "Nunito", sans-serif;
+  }
+  
+  div.datatables {
+   height: auto !important;
+  }
+  
+  table.dataTable tbody th, 
+  table.dataTable tbody td { 
+    padding-top: 2px;
+  	padding-bottom: 2px;
+  	padding-left: 5px;
+  	font-size: 14px; 
+  	line-height: 1.3em;
+  }
+  
+  .dataTables_wrapper .dataTables_length, 
+  .dataTables_wrapper .dataTables_filter, 
+  .dataTables_wrapper .dataTables_info, 
+  .dataTables_wrapper .dataTables_processing, 
+  .dataTables_wrapper .dataTables_paginate {
+  	color: #333;
+  	font-size: 14px;
   }</style>
   <style type="text/css">
   /* base style */
@@ -2633,10 +2668,31 @@ function init_posts_list() {
 <div class="posts-container posts-with-sidebar posts-apply-limit l-screen-inset">
 <div class="posts-list">
 <h1 class="posts-list-caption" data-caption="dwayzeR">dwayzeR</h1>
+<a href="posts/2021-05-27-academic-journals-through-the-lens-of-wikidata/" class="post-preview">
+<script class="post-metadata" type="text/json">{"categories":["russian data","journal identifier","r","wikidata","wikipedia","sparql"]}</script>
+<div class="metadata">
+<div class="publishedDate">May 26, 2021</div>
+</div>
+<div class="thumbnail">
+<img src="posts/2021-05-27-academic-journals-through-the-lens-of-wikidata/images/5_year_output.png"/>
+</div>
+<div class="description">
+<h2>National Academic Journals in Wikidata and Wikipedia</h2>
+<div class="dt-tags">
+<div class="dt-tag">russian data</div>
+<div class="dt-tag">journal identifier</div>
+<div class="dt-tag">r</div>
+<div class="dt-tag">wikidata</div>
+<div class="dt-tag">wikipedia</div>
+<div class="dt-tag">sparql</div>
+</div>
+<p>In this post I am using SPARQL for searching the Russian academic journals in Wikidata and Wikipedia services, and trying to assess their standing.</p>
+</div>
+</a>
 <a href="posts/2021-05-24-riro/" class="post-preview">
 <script class="post-metadata" type="text/json">{"categories":["russian data","organization identifier","scopus","r","wikidata","web of science","ror","riro","microsoft academic"]}</script>
 <div class="metadata">
-<div class="publishedDate">May 24, 2021</div>
+<div class="publishedDate">May 25, 2021</div>
 </div>
 <div class="thumbnail">
 <img src="posts/2021-05-24-riro/images/RIRO_identifiers_for_3_orgs.png"/>
@@ -2702,7 +2758,7 @@ function init_posts_list() {
 <ul>
 <li>
 <a href="#category:articles">articles</a>
-<span class="category-count">(3)</span>
+<span class="category-count">(4)</span>
 </li>
 <li>
 <a href="#category:crossref">crossref</a>
@@ -2717,6 +2773,10 @@ function init_posts_list() {
 <span class="category-count">(1)</span>
 </li>
 <li>
+<a href="#category:journal_identifier">journal identifier</a>
+<span class="category-count">(1)</span>
+</li>
+<li>
 <a href="#category:microsoft_academic">microsoft academic</a>
 <span class="category-count">(1)</span>
 </li>
@@ -2726,7 +2786,7 @@ function init_posts_list() {
 </li>
 <li>
 <a href="#category:r">r</a>
-<span class="category-count">(3)</span>
+<span class="category-count">(4)</span>
 </li>
 <li>
 <a href="#category:riro">riro</a>
@@ -2738,10 +2798,14 @@ function init_posts_list() {
 </li>
 <li>
 <a href="#category:russian_data">russian data</a>
-<span class="category-count">(3)</span>
+<span class="category-count">(4)</span>
 </li>
 <li>
 <a href="#category:scopus">scopus</a>
+<span class="category-count">(1)</span>
+</li>
+<li>
+<a href="#category:sparql">sparql</a>
 <span class="category-count">(1)</span>
 </li>
 <li>
@@ -2750,6 +2814,10 @@ function init_posts_list() {
 </li>
 <li>
 <a href="#category:wikidata">wikidata</a>
+<span class="category-count">(2)</span>
+</li>
+<li>
+<a href="#category:wikipedia">wikipedia</a>
 <span class="category-count">(1)</span>
 </li>
 </ul>
@@ -2759,7 +2827,7 @@ function init_posts_list() {
 <a href="#">More articles &raquo;</a>
 </div>
 </div>
-<!--/radix_placeholder_article_listing-->
+<!--/radix_placeholder_article_listing-->
 
 <div class="d-title">
 <h1>dwayzeR</h1>

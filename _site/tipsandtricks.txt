@@ -1,3 +1,23 @@
+#============================================================
+distill::create_post("My second blog post...this one will be really good :-)")
+    a new partly pre-filled RMarkdown document will open itself in RStudio
+    fill it with some text and code as you usually do with RMarkdown documents
+    hit “Knit”. NOTE: you’ll need to always “Knit” all changed or created blog-posts individually. It is the only way to update them. “Build Website” would not re-render them for you, because it’s computationally expensive and prone to problems. However, the Distill-Website (we are doing Distill-Blog now) would. You can learn more about the difference between them here.
+
+This new post exists only on your local computer, still not online, thus…
+
+    go to the “Git” tab in RStudio and check all the boxes
+    press “Commit”, a new window will pop up
+    add description of your commit
+    again press “Commit”
+    wait until you see the “Close” button and close “Git commit” pop up window
+    press “Push”. Pushing will transfer changes in your blog from your local computer to a remote place, namely your Github repository. And since your Github repository is connected to Netlify, this changes will be online after successful push.
+    wait until you see the “Close” button and close “Git push” pop up window
+    close or ignore the other pop up window
+    get back to your blog “better-name.netlify.app” and refresh (it may take a few seconds, so, don’t panic if the first refresh don’t work). You should see a new blog-post.
+
+
+
 
 ```{r, layout="l-body-outset", fig.width=6, fig.height=1.5}
 
@@ -64,20 +84,3 @@ to acknowledge and cite software that makes your work possible.
 We strongly encourage you to include an author contributions statement briefly 
 describing what each author did.
 
-#============================================================
-distill::create_post("My second blog post...this one will be really good :-)")
-    a new partly pre-filled RMarkdown document will open itself in RStudio
-    fill it with some text and code as you usually do with RMarkdown documents
-    hit “Knit”. NOTE: you’ll need to always “Knit” all changed or created blog-posts individually. It is the only way to update them. “Build Website” would not re-render them for you, because it’s computationally expensive and prone to problems. However, the Distill-Website (we are doing Distill-Blog now) would. You can learn more about the difference between them here.
-
-This new post exists only on your local computer, still not online, thus…
-
-    go to the “Git” tab in RStudio and check all the boxes
-    press “Commit”, a new window will pop up
-    add description of your commit
-    again press “Commit”
-    wait until you see the “Close” button and close “Git commit” pop up window
-    press “Push”. Pushing will transfer changes in your blog from your local computer to a remote place, namely your Github repository. And since your Github repository is connected to Netlify, this changes will be online after successful push.
-    wait until you see the “Close” button and close “Git push” pop up window
-    close or ignore the other pop up window
-    get back to your blog “better-name.netlify.app” and refresh (it may take a few seconds, so, don’t panic if the first refresh don’t work). You should see a new blog-post.

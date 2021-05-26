@@ -1,0 +1,2102 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+  <meta name="generator" content="distill" />
+
+  <style type="text/css">
+  /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
+  body {
+    visibility: hidden;
+  }
+  </style>
+
+ <!--radix_placeholder_import_source-->
+ <!--/radix_placeholder_import_source-->
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+  <!--radix_placeholder_meta_tags-->
+  <title>National Academic Journals in Wikidata and Wikipedia</title>
+  
+  <meta property="description" itemprop="description" content="In this post I am using SPARQL for searching the Russian academic journals in Wikidata and Wikipedia services, and trying to assess their standing."/>
+  
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/"/>
+  
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2021-05-26"/>
+  <meta property="article:created" itemprop="dateCreated" content="2021-05-26"/>
+  <meta name="article:author" content="Aleksei Lutai"/>
+  
+  <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
+  <meta property="og:title" content="National Academic Journals in Wikidata and Wikipedia"/>
+  <meta property="og:type" content="article"/>
+  <meta property="og:description" content="In this post I am using SPARQL for searching the Russian academic journals in Wikidata and Wikipedia services, and trying to assess their standing."/>
+  <meta property="og:locale" content="en_US"/>
+  
+  <!--  https://dev.twitter.com/cards/types/summary -->
+  <meta property="twitter:card" content="summary"/>
+  <meta property="twitter:title" content="National Academic Journals in Wikidata and Wikipedia"/>
+  <meta property="twitter:description" content="In this post I am using SPARQL for searching the Russian academic journals in Wikidata and Wikipedia services, and trying to assess their standing."/>
+  
+  <!--/radix_placeholder_meta_tags-->
+  <!--radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-rmarkdown-metadata">
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","categories","creative_commons","preview","output"]}},"value":[{"type":"character","attributes":{},"value":["National Academic Journals in Wikidata and Wikipedia"]},{"type":"character","attributes":{},"value":["In this post I am using SPARQL for searching the Russian academic journals in Wikidata and Wikipedia services, and trying to assess their standing.   \n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["first_name","last_name","url","orcid_id"]}},"value":[{"type":"character","attributes":{},"value":["Aleksei"]},{"type":"character","attributes":{},"value":["Lutai"]},{"type":"character","attributes":{},"value":["https://www.linkedin.com/in/lutaya/"]},{"type":"character","attributes":{},"value":["0000-0003-1341-781X"]}]}]},{"type":"character","attributes":{},"value":["05-26-2021"]},{"type":"character","attributes":{},"value":["russian data","journal identifier","r","wikidata","wikipedia","sparql"]},{"type":"character","attributes":{},"value":["CC BY"]},{"type":"character","attributes":{},"value":["images/5_year_output.png"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","code_folding","highlight","highlight_downlit","toc","toc_depth","toc_float"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["kate"]},{"type":"logical","attributes":{},"value":[true]},{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[3]},{"type":"logical","attributes":{},"value":[true]}]}]}]}
+  </script>
+  <!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["academic-journals-through-the-lens-of-wikidata_files/anchor-4.2.2/anchor.min.js","academic-journals-through-the-lens-of-wikidata_files/bowser-1.9.3/bowser.min.js","academic-journals-through-the-lens-of-wikidata_files/crosstalk-1.1.0.1/css/crosstalk.css","academic-journals-through-the-lens-of-wikidata_files/crosstalk-1.1.0.1/js/crosstalk.js","academic-journals-through-the-lens-of-wikidata_files/crosstalk-1.1.0.1/js/crosstalk.js.map","academic-journals-through-the-lens-of-wikidata_files/crosstalk-1.1.0.1/js/crosstalk.min.js","academic-journals-through-the-lens-of-wikidata_files/crosstalk-1.1.0.1/js/crosstalk.min.js.map","academic-journals-through-the-lens-of-wikidata_files/datatables-binding-0.17/datatables.js","academic-journals-through-the-lens-of-wikidata_files/datatables-css-0.0.0/datatables-crosstalk.css","academic-journals-through-the-lens-of-wikidata_files/distill-2.2.21/template.v2.js","academic-journals-through-the-lens-of-wikidata_files/dt-core-1.10.20/css/jquery.dataTables.extra.css","academic-journals-through-the-lens-of-wikidata_files/dt-core-1.10.20/css/jquery.dataTables.min.css","academic-journals-through-the-lens-of-wikidata_files/dt-core-1.10.20/js/jquery.dataTables.min.js","academic-journals-through-the-lens-of-wikidata_files/figure-html5/unnamed-chunk-9-1.png","academic-journals-through-the-lens-of-wikidata_files/htmlwidgets-1.5.3/htmlwidgets.js","academic-journals-through-the-lens-of-wikidata_files/jquery-1.12.4/jquery.min.js","academic-journals-through-the-lens-of-wikidata_files/jquery-1.12.4/LICENSE.txt","academic-journals-through-the-lens-of-wikidata_files/popper-2.6.0/popper.min.js","academic-journals-through-the-lens-of-wikidata_files/tippy-6.2.7/tippy-bundle.umd.min.js","academic-journals-through-the-lens-of-wikidata_files/tippy-6.2.7/tippy-light-border.css","academic-journals-through-the-lens-of-wikidata_files/tippy-6.2.7/tippy.css","academic-journals-through-the-lens-of-wikidata_files/tippy-6.2.7/tippy.umd.min.js","academic-journals-through-the-lens-of-wikidata_files/webcomponents-2.0.0/webcomponents.js","images/5_year_output.png","images/wiki_query.png"]}
+  </script>
+  <!--radix_placeholder_navigation_in_header-->
+  <!--/radix_placeholder_navigation_in_header-->
+  <!--radix_placeholder_distill-->
+  
+  <style type="text/css">
+  
+  body {
+    background-color: white;
+  }
+  
+  .pandoc-table {
+    width: 100%;
+  }
+  
+  .pandoc-table>caption {
+    margin-bottom: 10px;
+  }
+  
+  .pandoc-table th:not([align]) {
+    text-align: left;
+  }
+  
+  .pagedtable-footer {
+    font-size: 15px;
+  }
+  
+  d-byline .byline {
+    grid-template-columns: 2fr 2fr;
+  }
+  
+  d-byline .byline h3 {
+    margin-block-start: 1.5em;
+  }
+  
+  d-byline .byline .authors-affiliations h3 {
+    margin-block-start: 0.5em;
+  }
+  
+  .authors-affiliations .orcid-id {
+    width: 16px;
+    height:16px;
+    margin-left: 4px;
+    margin-right: 4px;
+    vertical-align: middle;
+    padding-bottom: 2px;
+  }
+  
+  d-title .dt-tags {
+    margin-top: 1em;
+    grid-column: text;
+  }
+  
+  .dt-tags .dt-tag {
+    text-decoration: none;
+    display: inline-block;
+    color: rgba(0,0,0,0.6);
+    padding: 0em 0.4em;
+    margin-right: 0.5em;
+    margin-bottom: 0.4em;
+    font-size: 70%;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  
+  d-article table.gt_table td,
+  d-article table.gt_table th {
+    border-bottom: none;
+  }
+  
+  .html-widget {
+    margin-bottom: 2.0em;
+  }
+  
+  .l-screen-inset {
+    padding-right: 16px;
+  }
+  
+  .l-screen .caption {
+    margin-left: 10px;
+  }
+  
+  .shaded {
+    background: rgb(247, 247, 247);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .shaded .html-widget {
+    margin-bottom: 0;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .shaded .shaded-content {
+    background: white;
+  }
+  
+  .text-output {
+    margin-top: 0;
+    line-height: 1.5em;
+  }
+  
+  .hidden {
+    display: none !important;
+  }
+  
+  d-article {
+    padding-top: 2.5rem;
+    padding-bottom: 30px;
+  }
+  
+  d-appendix {
+    padding-top: 30px;
+  }
+  
+  d-article>p>img {
+    width: 100%;
+  }
+  
+  d-article h2 {
+    margin: 1rem 0 1.5rem 0;
+  }
+  
+  d-article h3 {
+    margin-top: 1.5rem;
+  }
+  
+  d-article iframe {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 2.0em;
+    width: 100%;
+  }
+  
+  /* Tweak code blocks */
+  
+  d-article div.sourceCode code,
+  d-article pre code {
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  }
+  
+  d-article pre,
+  d-article div.sourceCode,
+  d-article div.sourceCode pre {
+    overflow: auto;
+  }
+  
+  d-article div.sourceCode {
+    background-color: white;
+  }
+  
+  d-article div.sourceCode pre {
+    padding-left: 10px;
+    font-size: 12px;
+    border-left: 2px solid rgba(0,0,0,0.1);
+  }
+  
+  d-article pre {
+    font-size: 12px;
+    color: black;
+    background: none;
+    margin-top: 0;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+  
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+  
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+  
+  d-article pre a {
+    border-bottom: none;
+  }
+  
+  d-article pre a:hover {
+    border-bottom: none;
+    text-decoration: underline;
+  }
+  
+  d-article details {
+    grid-column: text;
+    margin-bottom: 0.8em;
+  }
+  
+  @media(min-width: 768px) {
+  
+  d-article pre,
+  d-article div.sourceCode,
+  d-article div.sourceCode pre {
+    overflow: visible !important;
+  }
+  
+  d-article div.sourceCode pre {
+    padding-left: 18px;
+    font-size: 14px;
+  }
+  
+  d-article pre {
+    font-size: 14px;
+  }
+  
+  }
+  
+  figure img.external {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    box-sizing: border-box;
+  }
+  
+  /* CSS for d-contents */
+  
+  .d-contents {
+    grid-column: text;
+    color: rgba(0,0,0,0.8);
+    font-size: 0.9em;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    padding-bottom: 0.5em;
+    margin-bottom: 1em;
+    padding-left: 0.25em;
+    justify-self: start;
+  }
+  
+  @media(min-width: 1000px) {
+    .d-contents.d-contents-float {
+      height: 0;
+      grid-column-start: 1;
+      grid-column-end: 4;
+      justify-self: center;
+      padding-right: 3em;
+      padding-left: 2em;
+    }
+  }
+  
+  .d-contents nav h3 {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 1em;
+  }
+  
+  .d-contents li {
+    list-style-type: none
+  }
+  
+  .d-contents nav > ul {
+    padding-left: 0;
+  }
+  
+  .d-contents ul {
+    padding-left: 1em
+  }
+  
+  .d-contents nav ul li {
+    margin-top: 0.6em;
+    margin-bottom: 0.2em;
+  }
+  
+  .d-contents nav a {
+    font-size: 13px;
+    border-bottom: none;
+    text-decoration: none
+    color: rgba(0, 0, 0, 0.8);
+  }
+  
+  .d-contents nav a:hover {
+    text-decoration: underline solid rgba(0, 0, 0, 0.6)
+  }
+  
+  .d-contents nav > ul > li > a {
+    font-weight: 600;
+  }
+  
+  .d-contents nav > ul > li > ul {
+    font-weight: inherit;
+  }
+  
+  .d-contents nav > ul > li > ul > li {
+    margin-top: 0.2em;
+  }
+  
+  
+  .d-contents nav ul {
+    margin-top: 0;
+    margin-bottom: 0.25em;
+  }
+  
+  .d-article-with-toc h2:nth-child(2) {
+    margin-top: 0;
+  }
+  
+  
+  /* Figure */
+  
+  .figure {
+    position: relative;
+    margin-bottom: 2.5em;
+    margin-top: 1.5em;
+  }
+  
+  .figure img {
+    width: 100%;
+  }
+  
+  .figure .caption {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 12px;
+    line-height: 1.5em;
+  }
+  
+  .figure img.external {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    box-sizing: border-box;
+  }
+  
+  .figure .caption a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  .figure .caption b,
+  .figure .caption strong, {
+    font-weight: 600;
+    color: rgba(0, 0, 0, 1.0);
+  }
+  
+  /* Citations */
+  
+  d-article .citation {
+    color: inherit;
+    cursor: inherit;
+  }
+  
+  div.hanging-indent{
+    margin-left: 1em; text-indent: -1em;
+  }
+  
+  /* Citation hover box */
+  
+  .tippy-box[data-theme~=light-border] {
+    background-color: rgba(250, 250, 250, 0.95);
+  }
+  
+  .tippy-content > p {
+    margin-bottom: 0;
+    padding: 2px;
+  }
+  
+  
+  /* Tweak 1000px media break to show more text */
+  
+  @media(min-width: 1000px) {
+    .base-grid,
+    distill-header,
+    d-title,
+    d-abstract,
+    d-article,
+    d-appendix,
+    distill-appendix,
+    d-byline,
+    d-footnote-list,
+    d-citation-list,
+    distill-footer {
+      grid-template-columns: [screen-start] 1fr [page-start kicker-start] 80px [middle-start] 50px [text-start kicker-end] 65px 65px 65px 65px 65px 65px 65px 65px [text-end gutter-start] 65px [middle-end] 65px [page-end gutter-end] 1fr [screen-end];
+      grid-column-gap: 16px;
+    }
+  
+    .grid {
+      grid-column-gap: 16px;
+    }
+  
+    d-article {
+      font-size: 1.06rem;
+      line-height: 1.7em;
+    }
+    figure .caption, .figure .caption, figure figcaption {
+      font-size: 13px;
+    }
+  }
+  
+  @media(min-width: 1180px) {
+    .base-grid,
+    distill-header,
+    d-title,
+    d-abstract,
+    d-article,
+    d-appendix,
+    distill-appendix,
+    d-byline,
+    d-footnote-list,
+    d-citation-list,
+    distill-footer {
+      grid-template-columns: [screen-start] 1fr [page-start kicker-start] 60px [middle-start] 60px [text-start kicker-end] 60px 60px 60px 60px 60px 60px 60px 60px [text-end gutter-start] 60px [middle-end] 60px [page-end gutter-end] 1fr [screen-end];
+      grid-column-gap: 32px;
+    }
+  
+    .grid {
+      grid-column-gap: 32px;
+    }
+  }
+  
+  
+  /* Get the citation styles for the appendix (not auto-injected on render since
+     we do our own rendering of the citation appendix) */
+  
+  d-appendix .citation-appendix,
+  .d-appendix .citation-appendix {
+    font-size: 11px;
+    line-height: 15px;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    padding-left: 18px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.02);
+    padding: 10px 18px;
+    border-radius: 3px;
+    color: rgba(150, 150, 150, 1);
+    overflow: hidden;
+    margin-top: -12px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  
+  /* Include appendix styles here so they can be overridden */
+  
+  d-appendix {
+    contain: layout style;
+    font-size: 0.8em;
+    line-height: 1.7em;
+    margin-top: 60px;
+    margin-bottom: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    color: rgba(0,0,0,0.5);
+    padding-top: 60px;
+    padding-bottom: 48px;
+  }
+  
+  d-appendix h3 {
+    grid-column: page-start / text-start;
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: 1em;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.65);
+  }
+  
+  d-appendix h3 + * {
+    margin-top: 1em;
+  }
+  
+  d-appendix ol {
+    padding: 0 0 0 15px;
+  }
+  
+  @media (min-width: 768px) {
+    d-appendix ol {
+      padding: 0 0 0 30px;
+      margin-left: -30px;
+    }
+  }
+  
+  d-appendix li {
+    margin-bottom: 1em;
+  }
+  
+  d-appendix a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  d-appendix > * {
+    grid-column: text;
+  }
+  
+  d-appendix > d-footnote-list,
+  d-appendix > d-citation-list,
+  d-appendix > distill-appendix {
+    grid-column: screen;
+  }
+  
+  /* Include footnote styles here so they can be overridden */
+  
+  d-footnote-list {
+    contain: layout style;
+  }
+  
+  d-footnote-list > * {
+    grid-column: text;
+  }
+  
+  d-footnote-list a.footnote-backlink {
+    color: rgba(0,0,0,0.3);
+    padding-left: 0.5em;
+  }
+  
+  
+  
+  /* Anchor.js */
+  
+  .anchorjs-link {
+    /*transition: all .25s linear; */
+    text-decoration: none;
+    border-bottom: none;
+  }
+  *:hover > .anchorjs-link {
+    margin-left: -1.125em !important;
+    text-decoration: none;
+    border-bottom: none;
+  }
+  
+  /* Social footer */
+  
+  .social_footer {
+    margin-top: 30px;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.67);
+  }
+  
+  .disqus-comments {
+    margin-right: 30px;
+  }
+  
+  .disqus-comment-count {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+  }
+  
+  #disqus_thread {
+    margin-top: 30px;
+  }
+  
+  .article-sharing a {
+    border-bottom: none;
+    margin-right: 8px;
+  }
+  
+  .article-sharing a:hover {
+    border-bottom: none;
+  }
+  
+  .sidebar-section.subscribe {
+    font-size: 12px;
+    line-height: 1.6em;
+  }
+  
+  .subscribe p {
+    margin-bottom: 0.5em;
+  }
+  
+  
+  .article-footer .subscribe {
+    font-size: 15px;
+    margin-top: 45px;
+  }
+  
+  
+  .sidebar-section.custom {
+    font-size: 12px;
+    line-height: 1.6em;
+  }
+  
+  .custom p {
+    margin-bottom: 0.5em;
+  }
+  
+  /* Styles for listing layout (hide title) */
+  .layout-listing d-title, .layout-listing .d-title {
+    display: none;
+  }
+  
+  /* Styles for posts lists (not auto-injected) */
+  
+  
+  .posts-with-sidebar {
+    padding-left: 45px;
+    padding-right: 45px;
+  }
+  
+  .posts-list .description h2,
+  .posts-list .description p {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  .posts-list .description h2 {
+    font-weight: 700;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  
+  .posts-list h2.post-tag {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding-bottom: 12px;
+  }
+  .posts-list {
+    margin-top: 60px;
+    margin-bottom: 24px;
+  }
+  
+  .posts-list .post-preview {
+    text-decoration: none;
+    overflow: hidden;
+    display: block;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 24px 0;
+  }
+  
+  .post-preview-last {
+    border-bottom: none !important;
+  }
+  
+  .posts-list .posts-list-caption {
+    grid-column: screen;
+    font-weight: 400;
+  }
+  
+  .posts-list .post-preview h2 {
+    margin: 0 0 6px 0;
+    line-height: 1.2em;
+    font-style: normal;
+    font-size: 24px;
+  }
+  
+  .posts-list .post-preview p {
+    margin: 0 0 12px 0;
+    line-height: 1.4em;
+    font-size: 16px;
+  }
+  
+  .posts-list .post-preview .thumbnail {
+    box-sizing: border-box;
+    margin-bottom: 24px;
+    position: relative;
+    max-width: 500px;
+  }
+  .posts-list .post-preview img {
+    width: 100%;
+    display: block;
+  }
+  
+  .posts-list .metadata {
+    font-size: 12px;
+    line-height: 1.4em;
+    margin-bottom: 18px;
+  }
+  
+  .posts-list .metadata > * {
+    display: inline-block;
+  }
+  
+  .posts-list .metadata .publishedDate {
+    margin-right: 2em;
+  }
+  
+  .posts-list .metadata .dt-authors {
+    display: block;
+    margin-top: 0.3em;
+    margin-right: 2em;
+  }
+  
+  .posts-list .dt-tags {
+    display: block;
+    line-height: 1em;
+  }
+  
+  .posts-list .dt-tags .dt-tag {
+    display: inline-block;
+    color: rgba(0,0,0,0.6);
+    padding: 0.3em 0.4em;
+    margin-right: 0.2em;
+    margin-bottom: 0.4em;
+    font-size: 60%;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  
+  .posts-list img {
+    opacity: 1;
+  }
+  
+  .posts-list img[data-src] {
+    opacity: 0;
+  }
+  
+  .posts-more {
+    clear: both;
+  }
+  
+  
+  .posts-sidebar {
+    font-size: 16px;
+  }
+  
+  .posts-sidebar h3 {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+  
+  .sidebar-section {
+    margin-bottom: 30px;
+  }
+  
+  .categories ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .categories li {
+    color: rgba(0, 0, 0, 0.8);
+    margin-bottom: 0;
+  }
+  
+  .categories li>a {
+    border-bottom: none;
+  }
+  
+  .categories li>a:hover {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  }
+  
+  .categories .active {
+    font-weight: 600;
+  }
+  
+  .categories .category-count {
+    color: rgba(0, 0, 0, 0.4);
+  }
+  
+  
+  @media(min-width: 768px) {
+    .posts-list .post-preview h2 {
+      font-size: 26px;
+    }
+    .posts-list .post-preview .thumbnail {
+      float: right;
+      width: 30%;
+      margin-bottom: 0;
+    }
+    .posts-list .post-preview .description {
+      float: left;
+      width: 45%;
+    }
+    .posts-list .post-preview .metadata {
+      float: left;
+      width: 20%;
+      margin-top: 8px;
+    }
+    .posts-list .post-preview p {
+      margin: 0 0 12px 0;
+      line-height: 1.5em;
+      font-size: 16px;
+    }
+    .posts-with-sidebar .posts-list {
+      float: left;
+      width: 75%;
+    }
+    .posts-with-sidebar .posts-sidebar {
+      float: right;
+      width: 20%;
+      margin-top: 60px;
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+  }
+  
+  
+  /* Improve display for browsers without grid (IE/Edge <= 15) */
+  
+  .downlevel {
+    line-height: 1.6em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+  }
+  
+  .downlevel .d-title {
+    padding-top: 6rem;
+    padding-bottom: 1.5rem;
+  }
+  
+  .downlevel .d-title h1 {
+    font-size: 50px;
+    font-weight: 700;
+    line-height: 1.1em;
+    margin: 0 0 0.5rem;
+  }
+  
+  .downlevel .d-title p {
+    font-weight: 300;
+    font-size: 1.2rem;
+    line-height: 1.55em;
+    margin-top: 0;
+  }
+  
+  .downlevel .d-byline {
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    font-size: 0.8rem;
+    line-height: 1.8em;
+  }
+  
+  .downlevel .section-separator {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .downlevel .d-article {
+    font-size: 1.06rem;
+    line-height: 1.7em;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+  }
+  
+  
+  .downlevel .d-appendix {
+    padding-left: 0;
+    padding-right: 0;
+    max-width: none;
+    font-size: 0.8em;
+    line-height: 1.7em;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.5);
+    padding-top: 40px;
+    padding-bottom: 48px;
+  }
+  
+  .downlevel .footnotes ol {
+    padding-left: 13px;
+  }
+  
+  .downlevel .base-grid,
+  .downlevel .distill-header,
+  .downlevel .d-title,
+  .downlevel .d-abstract,
+  .downlevel .d-article,
+  .downlevel .d-appendix,
+  .downlevel .distill-appendix,
+  .downlevel .d-byline,
+  .downlevel .d-footnote-list,
+  .downlevel .d-citation-list,
+  .downlevel .distill-footer,
+  .downlevel .appendix-bottom,
+  .downlevel .posts-container {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+  
+  @media(min-width: 768px) {
+    .downlevel .base-grid,
+    .downlevel .distill-header,
+    .downlevel .d-title,
+    .downlevel .d-abstract,
+    .downlevel .d-article,
+    .downlevel .d-appendix,
+    .downlevel .distill-appendix,
+    .downlevel .d-byline,
+    .downlevel .d-footnote-list,
+    .downlevel .d-citation-list,
+    .downlevel .distill-footer,
+    .downlevel .appendix-bottom,
+    .downlevel .posts-container {
+    padding-left: 150px;
+    padding-right: 150px;
+    max-width: 900px;
+  }
+  }
+  
+  .downlevel pre code {
+    display: block;
+    border-left: 2px solid rgba(0, 0, 0, .1);
+    padding: 0 0 0 20px;
+    font-size: 14px;
+  }
+  
+  .downlevel code, .downlevel pre {
+    color: black;
+    background: none;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+  
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+  
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+  
+  .downlevel .posts-list .post-preview {
+    color: inherit;
+  }
+  
+  
+  
+  </style>
+  
+  <script type="application/javascript">
+  
+  function is_downlevel_browser() {
+    if (bowser.isUnsupportedBrowser({ msie: "12", msedge: "16"},
+                                   window.navigator.userAgent)) {
+      return true;
+    } else {
+      return window.load_distill_framework === undefined;
+    }
+  }
+  
+  // show body when load is complete
+  function on_load_complete() {
+  
+    // add anchors
+    if (window.anchors) {
+      window.anchors.options.placement = 'left';
+      window.anchors.add('d-article > h2, d-article > h3, d-article > h4, d-article > h5');
+    }
+  
+  
+    // set body to visible
+    document.body.style.visibility = 'visible';
+  
+    // force redraw for leaflet widgets
+    if (window.HTMLWidgets) {
+      var maps = window.HTMLWidgets.findAll(".leaflet");
+      $.each(maps, function(i, el) {
+        var map = this.getMap();
+        map.invalidateSize();
+        map.eachLayer(function(layer) {
+          if (layer instanceof L.TileLayer)
+            layer.redraw();
+        });
+      });
+    }
+  
+    // trigger 'shown' so htmlwidgets resize
+    $('d-article').trigger('shown');
+  }
+  
+  function init_distill() {
+  
+    init_common();
+  
+    // create front matter
+    var front_matter = $('<d-front-matter></d-front-matter>');
+    $('#distill-front-matter').wrap(front_matter);
+  
+    // create d-title
+    $('.d-title').changeElementType('d-title');
+  
+    // create d-byline
+    var byline = $('<d-byline></d-byline>');
+    $('.d-byline').replaceWith(byline);
+  
+    // create d-article
+    var article = $('<d-article></d-article>');
+    $('.d-article').wrap(article).children().unwrap();
+  
+    // move posts container into article
+    $('.posts-container').appendTo($('d-article'));
+  
+    // create d-appendix
+    $('.d-appendix').changeElementType('d-appendix');
+  
+    // flag indicating that we have appendix items
+    var appendix = $('.appendix-bottom').children('h3').length > 0;
+  
+    // replace footnotes with <d-footnote>
+    $('.footnote-ref').each(function(i, val) {
+      appendix = true;
+      var href = $(this).attr('href');
+      var id = href.replace('#', '');
+      var fn = $('#' + id);
+      var fn_p = $('#' + id + '>p');
+      fn_p.find('.footnote-back').remove();
+      var text = fn_p.html();
+      var dtfn = $('<d-footnote></d-footnote>');
+      dtfn.html(text);
+      $(this).replaceWith(dtfn);
+    });
+    // remove footnotes
+    $('.footnotes').remove();
+  
+    // move refs into #references-listing
+    $('#references-listing').replaceWith($('#refs'));
+  
+    $('h1.appendix, h2.appendix').each(function(i, val) {
+      $(this).changeElementType('h3');
+    });
+    $('h3.appendix').each(function(i, val) {
+      var id = $(this).attr('id');
+      $('.d-contents a[href="#' + id + '"]').parent().remove();
+      appendix = true;
+      $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('d-appendix'));
+    });
+  
+    // show d-appendix if we have appendix content
+    $("d-appendix").css('display', appendix ? 'grid' : 'none');
+  
+    // localize layout chunks to just output
+    $('.layout-chunk').each(function(i, val) {
+  
+      // capture layout
+      var layout = $(this).attr('data-layout');
+  
+      // apply layout to markdown level block elements
+      var elements = $(this).children().not('details, div.sourceCode, pre, script');
+      elements.each(function(i, el) {
+        var layout_div = $('<div class="' + layout + '"></div>');
+        if (layout_div.hasClass('shaded')) {
+          var shaded_content = $('<div class="shaded-content"></div>');
+          $(this).wrap(shaded_content);
+          $(this).parent().wrap(layout_div);
+        } else {
+          $(this).wrap(layout_div);
+        }
+      });
+  
+  
+      // unwrap the layout-chunk div
+      $(this).children().unwrap();
+    });
+  
+    // remove code block used to force  highlighting css
+    $('.distill-force-highlighting-css').parent().remove();
+  
+    // remove empty line numbers inserted by pandoc when using a
+    // custom syntax highlighting theme
+    $('code.sourceCode a:empty').remove();
+  
+    // load distill framework
+    load_distill_framework();
+  
+    // wait for window.distillRunlevel == 4 to do post processing
+    function distill_post_process() {
+  
+      if (!window.distillRunlevel || window.distillRunlevel < 4)
+        return;
+  
+      // hide author/affiliations entirely if we have no authors
+      var front_matter = JSON.parse($("#distill-front-matter").html());
+      var have_authors = front_matter.authors && front_matter.authors.length > 0;
+      if (!have_authors)
+        $('d-byline').addClass('hidden');
+  
+      // article with toc class
+      $('.d-contents').parent().addClass('d-article-with-toc');
+  
+      // strip links that point to #
+      $('.authors-affiliations').find('a[href="#"]').removeAttr('href');
+  
+      // add orcid ids
+      $('.authors-affiliations').find('.author').each(function(i, el) {
+        var orcid_id = front_matter.authors[i].orcidID;
+        if (orcid_id) {
+          var a = $('<a></a>');
+          a.attr('href', 'https://orcid.org/' + orcid_id);
+          var img = $('<img></img>');
+          img.addClass('orcid-id');
+          img.attr('alt', 'ORCID ID');
+          img.attr('src','data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg==');
+          a.append(img);
+          $(this).append(a);
+        }
+      });
+  
+      // hide elements of author/affiliations grid that have no value
+      function hide_byline_column(caption) {
+        $('d-byline').find('h3:contains("' + caption + '")').parent().css('visibility', 'hidden');
+      }
+  
+      // affiliations
+      var have_affiliations = false;
+      for (var i = 0; i<front_matter.authors.length; ++i) {
+        var author = front_matter.authors[i];
+        if (author.affiliation !== "&nbsp;") {
+          have_affiliations = true;
+          break;
+        }
+      }
+      if (!have_affiliations)
+        $('d-byline').find('h3:contains("Affiliations")').css('visibility', 'hidden');
+  
+      // published date
+      if (!front_matter.publishedDate)
+        hide_byline_column("Published");
+  
+      // document object identifier
+      var doi = $('d-byline').find('h3:contains("DOI")');
+      var doi_p = doi.next().empty();
+      if (!front_matter.doi) {
+        // if we have a citation and valid citationText then link to that
+        if ($('#citation').length > 0 && front_matter.citationText) {
+          doi.html('Citation');
+          $('<a href="#citation"></a>')
+            .text(front_matter.citationText)
+            .appendTo(doi_p);
+        } else {
+          hide_byline_column("DOI");
+        }
+      } else {
+        $('<a></a>')
+           .attr('href', "https://doi.org/" + front_matter.doi)
+           .html(front_matter.doi)
+           .appendTo(doi_p);
+      }
+  
+       // change plural form of authors/affiliations
+      if (front_matter.authors.length === 1) {
+        var grid = $('.authors-affiliations');
+        grid.children('h3:contains("Authors")').text('Author');
+        grid.children('h3:contains("Affiliations")').text('Affiliation');
+      }
+  
+      // remove d-appendix and d-footnote-list local styles
+      $('d-appendix > style:first-child').remove();
+      $('d-footnote-list > style:first-child').remove();
+  
+      // move appendix-bottom entries to the bottom
+      $('.appendix-bottom').appendTo('d-appendix').children().unwrap();
+      $('.appendix-bottom').remove();
+  
+      // hoverable references
+      $('span.citation[data-cites]').each(function() {
+        var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
+        window.tippy(this, {
+          allowHTML: true,
+          content: refHtml,
+          maxWidth: 500,
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start'
+        });
+      });
+  
+      // clear polling timer
+      clearInterval(tid);
+  
+      // show body now that everything is ready
+      on_load_complete();
+    }
+  
+    var tid = setInterval(distill_post_process, 50);
+    distill_post_process();
+  
+  }
+  
+  function init_downlevel() {
+  
+    init_common();
+  
+     // insert hr after d-title
+    $('.d-title').after($('<hr class="section-separator"/>'));
+  
+    // check if we have authors
+    var front_matter = JSON.parse($("#distill-front-matter").html());
+    var have_authors = front_matter.authors && front_matter.authors.length > 0;
+  
+    // manage byline/border
+    if (!have_authors)
+      $('.d-byline').remove();
+    $('.d-byline').after($('<hr class="section-separator"/>'));
+    $('.d-byline a').remove();
+  
+    // remove toc
+    $('.d-contents').remove();
+  
+    // move appendix elements
+    $('h1.appendix, h2.appendix').each(function(i, val) {
+      $(this).changeElementType('h3');
+    });
+    $('h3.appendix').each(function(i, val) {
+      $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('.d-appendix'));
+    });
+  
+  
+    // inject headers into references and footnotes
+    var refs_header = $('<h3></h3>');
+    refs_header.text('References');
+    $('#refs').prepend(refs_header);
+  
+    var footnotes_header = $('<h3></h3');
+    footnotes_header.text('Footnotes');
+    $('.footnotes').children('hr').first().replaceWith(footnotes_header);
+  
+    // move appendix-bottom entries to the bottom
+    $('.appendix-bottom').appendTo('.d-appendix').children().unwrap();
+    $('.appendix-bottom').remove();
+  
+    // remove appendix if it's empty
+    if ($('.d-appendix').children().length === 0)
+      $('.d-appendix').remove();
+  
+    // prepend separator above appendix
+    $('.d-appendix').before($('<hr class="section-separator" style="clear: both"/>'));
+  
+    // trim code
+    $('pre>code').each(function(i, val) {
+      $(this).html($.trim($(this).html()));
+    });
+  
+    // move posts-container right before article
+    $('.posts-container').insertBefore($('.d-article'));
+  
+    $('body').addClass('downlevel');
+  
+    on_load_complete();
+  }
+  
+  
+  function init_common() {
+  
+    // jquery plugin to change element types
+    (function($) {
+      $.fn.changeElementType = function(newType) {
+        var attrs = {};
+  
+        $.each(this[0].attributes, function(idx, attr) {
+          attrs[attr.nodeName] = attr.nodeValue;
+        });
+  
+        this.replaceWith(function() {
+          return $("<" + newType + "/>", attrs).append($(this).contents());
+        });
+      };
+    })(jQuery);
+  
+    // prevent underline for linked images
+    $('a > img').parent().css({'border-bottom' : 'none'});
+  
+    // mark non-body figures created by knitr chunks as 100% width
+    $('.layout-chunk').each(function(i, val) {
+      var figures = $(this).find('img, .html-widget');
+      if ($(this).attr('data-layout') !== "l-body") {
+        figures.css('width', '100%');
+      } else {
+        figures.css('max-width', '100%');
+        figures.filter("[width]").each(function(i, val) {
+          var fig = $(this);
+          fig.css('width', fig.attr('width') + 'px');
+        });
+  
+      }
+    });
+  
+    // auto-append index.html to post-preview links in file: protocol
+    // and in rstudio ide preview
+    $('.post-preview').each(function(i, val) {
+      if (window.location.protocol === "file:")
+        $(this).attr('href', $(this).attr('href') + "index.html");
+    });
+  
+    // get rid of index.html references in header
+    if (window.location.protocol !== "file:") {
+      $('.distill-site-header a[href]').each(function(i,val) {
+        $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+      });
+    }
+  
+    // add class to pandoc style tables
+    $('tr.header').parent('thead').parent('table').addClass('pandoc-table');
+    $('.kable-table').children('table').addClass('pandoc-table');
+  
+    // add figcaption style to table captions
+    $('caption').parent('table').addClass("figcaption");
+  
+    // initialize posts list
+    if (window.init_posts_list)
+      window.init_posts_list();
+  
+    // implmement disqus comment link
+    $('.disqus-comment-count').click(function() {
+      window.headroom_prevent_pin = true;
+      $('#disqus_thread').toggleClass('hidden');
+      if (!$('#disqus_thread').hasClass('hidden')) {
+        var offset = $(this).offset();
+        $(window).resize();
+        $('html, body').animate({
+          scrollTop: offset.top - 35
+        });
+      }
+    });
+  }
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    if (is_downlevel_browser())
+      init_downlevel();
+    else
+      window.addEventListener('WebComponentsReady', init_distill);
+  });
+  
+  </script>
+  
+  <!--/radix_placeholder_distill-->
+  <script src="academic-journals-through-the-lens-of-wikidata_files/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+  <script src="academic-journals-through-the-lens-of-wikidata_files/jquery-1.12.4/jquery.min.js"></script>
+  <link href="academic-journals-through-the-lens-of-wikidata_files/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+  <script src="academic-journals-through-the-lens-of-wikidata_files/datatables-binding-0.17/datatables.js"></script>
+  <link href="academic-journals-through-the-lens-of-wikidata_files/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+  <link href="academic-journals-through-the-lens-of-wikidata_files/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
+  <script src="academic-journals-through-the-lens-of-wikidata_files/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
+  <link href="academic-journals-through-the-lens-of-wikidata_files/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+  <script src="academic-journals-through-the-lens-of-wikidata_files/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+  <script src="academic-journals-through-the-lens-of-wikidata_files/popper-2.6.0/popper.min.js"></script>
+  <link href="academic-journals-through-the-lens-of-wikidata_files/tippy-6.2.7/tippy.css" rel="stylesheet" />
+  <link href="academic-journals-through-the-lens-of-wikidata_files/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
+  <script src="academic-journals-through-the-lens-of-wikidata_files/tippy-6.2.7/tippy.umd.min.js"></script>
+  <script src="academic-journals-through-the-lens-of-wikidata_files/anchor-4.2.2/anchor.min.js"></script>
+  <script src="academic-journals-through-the-lens-of-wikidata_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="academic-journals-through-the-lens-of-wikidata_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="academic-journals-through-the-lens-of-wikidata_files/distill-2.2.21/template.v2.js"></script>
+  <!--radix_placeholder_site_in_header-->
+  <!--/radix_placeholder_site_in_header-->
+
+
+</head>
+
+<body>
+
+<!--radix_placeholder_front_matter-->
+
+<script id="distill-front-matter" type="text/json">
+{"title":"National Academic Journals in Wikidata and Wikipedia","description":"In this post I am using SPARQL for searching the Russian academic journals in Wikidata and Wikipedia services, and trying to assess their standing.","authors":[{"author":"Aleksei Lutai","authorURL":"https://www.linkedin.com/in/lutaya/","affiliation":"&nbsp;","affiliationURL":"#","orcidID":"0000-0003-1341-781X"}],"publishedDate":"2021-05-26T00:00:00.000+03:00","citationText":"Lutai, 2021"}
+</script>
+
+<!--/radix_placeholder_front_matter-->
+<!--radix_placeholder_navigation_before_body-->
+<!--/radix_placeholder_navigation_before_body-->
+<!--radix_placeholder_site_before_body-->
+<!--/radix_placeholder_site_before_body-->
+
+<div class="d-title">
+<h1>National Academic Journals in Wikidata and Wikipedia</h1>
+<!--radix_placeholder_categories-->
+<div class="dt-tags">
+<div class="dt=tag">russian data</div>
+<div class="dt=tag">journal identifier</div>
+<div class="dt=tag">r</div>
+<div class="dt=tag">wikidata</div>
+<div class="dt=tag">wikipedia</div>
+<div class="dt=tag">sparql</div>
+</div>
+<!--/radix_placeholder_categories-->
+<p><p>In this post I am using SPARQL for searching the Russian academic journals in Wikidata and Wikipedia services, and trying to assess their standing.</p></p>
+</div>
+
+<div class="d-byline">
+  
+  true
+  
+<br/>05-26-2021
+</div>
+
+<div class="d-article">
+<div class="d-contents d-contents-float">
+<nav class="l-text toc figcaption" id="TOC">
+<h3>Contents</h3>
+<ul>
+<li><a href="#sparql-or-how-to-find-anything">SPARQL or how to find anything</a></li>
+<li><a href="#searching-russian-academic-journals">Searching Russian Academic Journals</a></li>
+<li><a href="#found-journals">Found Journals</a></li>
+<li><a href="#or-lost-journals">Or Lost Journals</a></li>
+<li><a href="#how-complete-is-wikidata">How complete is Wikidata?</a></li>
+<li><a href="#any-chance-for-wikidata-based-bibliometrics">Any chance for Wikidata-based bibliometrics?</a></li>
+<li><a href="#cases-for-using-wikidata">Cases for using Wikidata</a></li>
+<li><a href="#final-remarks">Final Remarks</a></li>
+<li><a href="#useful-links">Useful links</a></li>
+<li><a href="#limitations">Limitations</a></li>
+<li><a href="#acknowledgments">Acknowledgments</a></li>
+</ul>
+</nav>
+</div>
+<p>In one of the <a href="https://dwayzer.netlify.app/posts/2021-05-10-vak-titles-in-crossref/">recent posts</a> I queried <a href="https://portal.issn.org">portal.issn.org</a> to harvest the journal metadata and found out that the exported pdfs contained the references to Wikidata and Wikipedia pages. What surprized me later is that just 60% of titles have Wikidata profiles, and as little as 2% have Wikipedia articles.</p>
+<p>Like many people who have never created a page in Wikipedia, I was living peacefully with 2 myths in my mind.</p>
+<p>Myth 1: Any academic journal can create a page in Wikipedia and inform the research community about its goals &amp; successes. Well, I’ve changed my mind after reading the criteria listed at <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Academic_Journals">WikiProject_Academic_Journals</a>. Especially, those reflecting a <a href="https://en.wikipedia.org/wiki/Wikipedia:Notability_(academic_journals)">notability</a>:</p>
+<ul>
+<li>Criterion 1: The journal is considered by reliable sources to be influential in its subject area.</li>
+<li>Criterion 2: The journal is frequently cited by other reliable sources.</li>
+<li>Criterion 3: The journal is historically important in its subject area.</li>
+</ul>
+<p>This should explain why a number of Russian journals indexed in Scopus is almost 5 times higher than in Wikipedia.</p>
+<p>Myth 2: Wikidata records are composed from the bits of information present on corresponding Wikipedia page. It is not true - as we have already seen for VAK titles, too many scientific journals (and also the organizations, researchers, publications, etc) have Wikidata IDs without having a dedicated page in Wikipedia.</p>
+<p>Wikidata is indeed about the items and their relations.</p>
+<p>
+<a href="https://commons.wikimedia.org/wiki/File:SPARQL_data_representation.png#/media/File:SPARQL_data_representation.png"><img src="https://upload.wikimedia.org/wikipedia/commons/3/33/SPARQL_data_representation.png" alt="SPARQL data representation, as used by Wikidata Query Service" width="640" height="366"></a><br>By &lt;a href=“//commons.wikimedia.org/wiki/User:HenkvD” title=“User:HenkvD”&gt;HenkvD&lt;/a&gt; - &lt;span class=“int-own-work” lang=“en”&gt;Own work&lt;/span&gt;, <a href="https://creativecommons.org/licenses/by-sa/4.0" title="Creative Commons Attribution-Share Alike 4.0">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=64151747">Link</a>
+</p>
+<p>So if Wikipedia page includes the properly quoted Wikidata items (e.g. statements referring to the scientific articles, researchers, academic awards, etc.), the related Wikidata records will inherit those relations from Wikipedia article (I guess so).</p>
+<h3 id="sparql-or-how-to-find-anything">SPARQL or how to find anything</h3>
+<p>For anyone who has never met a SPARQL query (like me few weeks ago) reading the collections of demo SPARQL queries (like below) can be a fascinating experience.</p>
+<ul>
+<li><a href="https://www.wikidata.org/wiki/Wikidata:SPARQL_tutorial" class="uri">https://www.wikidata.org/wiki/Wikidata:SPARQL_tutorial</a></li>
+<li><a href="https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries" class="uri">https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries</a></li>
+<li><a href="https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples" class="uri">https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples</a></li>
+<li><a href="https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples/advanced" class="uri">https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples/advanced</a></li>
+<li><a href="https://github.com/sebotic/SPARQL" class="uri">https://github.com/sebotic/SPARQL</a></li>
+<li><a href="https://shkspr.mobi/blog/2019/11/the-greater-bear-using-wikidata-to-generate-better-artwork/" class="uri">https://shkspr.mobi/blog/2019/11/the-greater-bear-using-wikidata-to-generate-better-artwork/</a></li>
+</ul>
+<p>A blend of amusement and cognitive efforts, which me personally made recalling “I like pleasure spiked with pain…”.</p>
+<p>For those whose interests are mostly about scholarly communication and academic publishing, there is a fantastic cookbook with ready-to-go recipies. It is named <a href="https://scholia.toolforge.org/">Scholia</a>.</p>
+<p>Pick up any of the pre-set scenario (e.g. <a href="https://scholia.toolforge.org/author/Q26322">profile of Carol Greider</a>), give a web page some time to load, and you’ll see how powerful Wikidata is thought to be. Further, under any chart or table you can click a link “Edit on query.Wikidata.org” and try/adapt a SPARQL query. I hope the creators of this service feel our vibes of love every day.</p>
+<h3 id="searching-russian-academic-journals">Searching Russian Academic Journals</h3>
+<p>In most databases to check if the journal is indexed, we would have to search it using a title or ISSNs. This is how it works in Web of Science, Scopus, the Lens, and many others.</p>
+<p>With Wikidata a query must include not the trivial names (like “The Lancet”), but the identifiers of Wikidata items and properties. You can find many useful identifiers in the examples provided by Scholia, or in the list of <a href="https://www.wikidata.org/wiki/Template:Bibliographic_properties">bibliographic properties</a>, or using <a href="https://m.wikidata.org/wiki/Special:Search">Wikidata search</a>.</p>
+<p>My initial query sounded like this - to find the items that are defined (wdt:P31/wdt:P279*) as Scientific or Academic journal (wd:Q5633421 wd:Q737498) originated from (P495) a country named (17) Russian Federation (Q159).</p>
+<p>But soon I found out that some academic journals that publish in Russian, but have no a property “country” that would connect it to Russia. Thus we have to add another condition - find the items that are defined (wdt:P31/wdt:P279*) as Scientific or Academic journal (wd:Q5633421 wd:Q737498) whose language of work (P407) is Russian (Q7737).</p>
+<p>In SPARQL the combined query looks like this:</p>
+<pre><code>SELECT DISTINCT ?journal ?journalLabel WHERE {
+  {VALUES ?type {wd:Q5633421 wd:Q737498}
+          ?journal wdt:P31/wdt:P279* ?type.
+          ?journal wdt:P407 wd:Q7737.
+          MINUS { ?journal wdt:P495 [] }.
+  }
+  UNION
+  {VALUES ?type {wd:Q5633421 wd:Q737498}
+          ?country wdt:P17 wd:Q159.
+          ?journal wdt:P31/wdt:P279* ?type.
+          ?journal wdt:P495 ?country.
+  }
+  SERVICE wikibase:label {bd:serviceParam wikibase:language &quot;[AUTO_LANGUAGE], en, ru&quot;.}
+  }</code></pre>
+<p>You can see the results of this SPARQL query at Wikidata Query Service, further named as <a href="https://w.wiki/3PKJ">WDQS</a>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>Show code</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>knitr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/knitr/man/include_graphics.html'>include_graphics</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>img_dir</span>, <span class='st'>"wiki_query.png"</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</details>
+<p><img src="images/wiki_query.png" width="672" /></p>
+</div>
+<p>The results can be saved from WDQS using the button Download (JSON, CSV). To perform a SPARQL query in R and retrieve the results I use <a href="https://cran.r-project.org/web/packages/WikidataQueryServiceR/index.html">WikidataQueryServiceR package</a>, which I found very convenient. A function named query_wikidata accepts a string with a SPARQL query and return a dataframe.</p>
+<div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>Show code</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>res_journals</span> <span class='op'>&lt;-</span> <span class='fu'>WikidataQueryServiceR</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/WikidataQueryServiceR/man/query_wikidata.html'>query_wikidata</a></span><span class='op'>(</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/character.html'>as.character</a></span><span class='op'>(</span>
+    <span class='st'>'SELECT DISTINCT ?journal ?journalLabel 
+      WHERE {
+        {VALUES ?type {wd:Q5633421 wd:Q737498}
+                ?journal wdt:P31/wdt:P279* ?type.
+                ?journal wdt:P407 wd:Q7737.
+                MINUS { ?journal wdt:P495 [] }.
+        }
+        UNION
+        {VALUES ?type {wd:Q5633421 wd:Q737498}
+                ?country wdt:P17 wd:Q159.
+                ?journal wdt:P31/wdt:P279* ?type.
+                ?journal wdt:P495 ?country.
+        }
+        SERVICE wikibase:label {
+        bd:serviceParam wikibase:language "[AUTO_LANGUAGE], en, ru".
+        }
+      }
+    LIMIT 5'</span><span class='op'>)</span>
+    <span class='op'>)</span>
+</code></pre>
+</div>
+</details>
+</div>
+<p>The &lt;/&gt;Code button at WDQS also helps to wrap the SPARQL syntax for the different languages. But for R a suggested library is <a href="https://cran.r-project.org/web/packages/SPARQL/index.html">SPARQL</a>, which I did not try (it seems like it was not updated for quite a long time).</p>
+<p>In order to retrieve more fields from Wikidata records the query must be upgraded (I am not sure if the one below is optimal, but it works).</p>
+<pre><code>SELECT DISTINCT ?journal ?journal_title ?issnL ?cref_jid 
+                ?lang ?article ?url ?url_srcLabel ?indexedLabel ?scopus
+WITH {
+  SELECT DISTINCT ?journal 
+  WHERE {
+    {VALUES ?type {wd:Q5633421 wd:Q737498}
+             ?journal wdt:P31/wdt:P279* ?type.
+             ?journal wdt:P407 wd:Q7737.
+     MINUS { ?journal wdt:P495 [] }.}
+    UNION
+    {VALUES ?type {wd:Q5633421 wd:Q737498}
+             ?country wdt:P17 wd:Q159.
+             ?journal wdt:P31/wdt:P279* ?type.
+             ?journal wdt:P495 ?country.}
+  }
+ } AS %result
+WHERE {
+  INCLUDE %result
+          optional {?journal p:P856 ?urlx.
+                       ?urlx ps:P856 ?url.
+                       ?urlx prov:wasDerivedFrom ?refnode2.
+                       ?refnode2 pr:P143 ?url_src.}
+            optional {?journal wdt:P1476 ?journal_title.}           
+            optional{?article schema:about ?journal ;               
+                              schema:inLanguage ?lang ;               
+                              schema:isPartOf [ wikibase:wikiGroup &quot;wikipedia&quot; ] .
+                    }
+            optional {?journal wdt:P7363 ?issnL.}
+            optional {?journal wdt:P8375 ?cref_jid.}
+            optional {?journal wdt:P8875 ?indexed.} 
+            optional {?journal wdt:P1156 ?scopus.}
+      SERVICE wikibase:label {
+          bd:serviceParam wikibase:language &quot;[AUTO_LANGUAGE], en, ru&quot;.
+          ?url_src rdfs:label ?url_srcLabel .
+          ?indexed rdfs:label ?indexedLabel.
+          }
+  }</code></pre>
+<p>The code snippet below shortens the enquoted SPARQL query, so most likely you will not be able to see it in the code, but you can copy it from above and make a query at <a href="https://query.wikidata.org">WDQS</a>.</p>
+<h3 id="found-journals">Found Journals</h3>
+<div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>Show code</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>wiki_journals_raw_file</span> <span class='op'>&lt;-</span>  <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>onedrive</span>,
+        <span class='st'>"/Wikidata/Wiki_Journals/blog_russian_wikidata_journals_raw.csv"</span><span class='op'>)</span>
+
+<span class='kw'>if</span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='va'>wiki_journals_raw_file</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span>
+
+<span class='va'>rus_wiki_journals</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/WikidataQueryServiceR/man/query_wikidata.html'>query_wikidata</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/character.html'>as.character</a></span><span class='op'>(</span>
+    <span class='st'>[1496 chars quoted with ''']</span><span class='op'>)</span>
+    <span class='op'>)</span>
+  
+  <span class='va'>rus_wiki_journals</span> <span class='op'>%&gt;%</span> <span class='fu'>distinct</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>write_excel_csv</span><span class='op'>(</span><span class='va'>wiki_journals_raw_file</span><span class='op'>)</span>
+  <span class='op'>}</span> <span class='kw'>else</span> <span class='op'>{</span>
+  <span class='va'>rus_wiki_journals</span> <span class='op'>&lt;-</span> <span class='fu'>read_csv</span><span class='op'>(</span><span class='va'>wiki_journals_raw_file</span>, 
+                  col_types <span class='op'>=</span> <span class='fu'>cols</span><span class='op'>(</span>.default <span class='op'>=</span> <span class='fu'>col_character</span><span class='op'>(</span><span class='op'>)</span>,
+                                  web_site <span class='op'>=</span> <span class='fu'>col_integer</span><span class='op'>(</span><span class='op'>)</span>,
+                                  n_languages <span class='op'>=</span> <span class='fu'>col_integer</span><span class='op'>(</span><span class='op'>)</span>
+                                  <span class='op'>)</span>
+                  <span class='op'>)</span>
+<span class='op'>}</span>
+
+<span class='va'>rus_wiki_journals</span> <span class='op'>%&gt;%</span> <span class='fu'>arrange</span><span class='op'>(</span><span class='va'>journal_title</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fl'>20</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='co'>## extracting Wikidata URLs into IDs</span>
+  <span class='fu'>mutate</span><span class='op'>(</span>journal <span class='op'>=</span> <span class='fu'>str_extract</span><span class='op'>(</span><span class='va'>journal</span>, <span class='st'>"Q\\d+$"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>  
+  <span class='co'>## shortening the wikipedia Article URLs as they can be too long for tables </span>
+  <span class='fu'>mutate</span><span class='op'>(</span>article <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>article</span><span class='op'>)</span>, <span class='cn'>NA</span>, 
+                          <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='fu'>str_sub</span><span class='op'>(</span><span class='va'>article</span>, <span class='fl'>1</span>,<span class='fl'>30</span><span class='op'>)</span>,<span class='st'>"..."</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='https://rdrr.io/pkg/DT/man/datatable.html'>datatable</a></span><span class='op'>(</span>rownames <span class='op'>=</span> <span class='cn'>FALSE</span>, filter <span class='op'>=</span> <span class='st'>"none"</span>, 
+            escape <span class='op'>=</span> <span class='cn'>FALSE</span>, class <span class='op'>=</span> <span class='st'>"row-border"</span>, 
+            options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>columnDefs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+              <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>width <span class='op'>=</span> <span class='st'>'70px'</span>, targets <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>,
+              <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>width <span class='op'>=</span> <span class='st'>'200px'</span>, targets <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>5</span>,<span class='fl'>8</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+              <span class='op'>)</span>
+            <span class='op'>)</span>
+</code></pre>
+</div>
+</details>
+<div id="htmlwidget-516284ae3d6b6060da8c" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-516284ae3d6b6060da8c">{"x":{"filter":"none","data":[["Q4881606","Q96324362","Q73908630","Q21385722","Q50817470","Q50817470","Q73903786","Q5479555","Q27723435","Q27723435","Q96696389","Q96696718","Q96696724","Q96325905","Q4536277","Q96734633","Q96696910","Q96703353","Q96697098","Q15756286"],["[Synapse]","Ab imperio","Academia. Arhitektura i stroitelʹstvo","Acarina","Acta biologica Sibirica","Acta Biologica Sibirica","Acta biomedica scientifica","Acta Horti Petropolitani","Acta naturae","Acta naturae","Acta naturae","Adam & Eva","Adaptivnoe kormoproizvodstvo","Âdernaâ ènergetika","Âdernaâ fizika i inžiniring","Administrativnoe i municipalʹnoe pravo","Administrativnoe pravo i process","Administrator suda","Advanced materials & technologies","Advances in Gerontology"],["0762-7475","2166-4072","2077-9038","0132-8077","2412-1908","2412-1908","2541-9420",null,"2075-8251","2075-8251","2075-8243","2307-8383","2222-5366","0204-3327","2079-5629","1999-2807","2071-1166","2072-3636","2414-4606",null],[null,"179635","310875","300777","296270","296270","310417",null,"325039","325039","290227","327390","329822","308935","206028","240635","376046","392179","298885","122605"],["en",null,null,"pl",null,null,null,"es",null,null,null,null,null,null,"ru",null,null,null,null,null],["https://en.wikipedia.org/wiki/...",null,null,"https://pl.wikipedia.org/wiki/...",null,null,null,"https://es.wikipedia.org/wiki/...",null,null,null,null,null,null,"https://ru.wikipedia.org/wiki/...",null,null,null,null,null],["http://www.bekhterev.ru/index.php?cid=536&crt=42,43",null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],["English Wikipedia",null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,"Scopus",null,"Scopus",null,null,null,null,"Science Citation Index Expanded","Scopus",null,null,null,"Scopus",null,null,null,null,null,"Scopus"],[null,"21100316466",null,"19700173205",null,null,null,null,"21100256975","21100256975",null,null,null,"21100781406",null,null,null,null,null,"52741"]],"container":"<table class=\"row-border\">\n  <thead>\n    <tr>\n      <th>journal<\/th>\n      <th>journal_title<\/th>\n      <th>issnL<\/th>\n      <th>cref_jid<\/th>\n      <th>lang<\/th>\n      <th>article<\/th>\n      <th>url<\/th>\n      <th>url_srcLabel<\/th>\n      <th>indexedLabel<\/th>\n      <th>scopus<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"dom":"Brftip","deferRender":true,"ordering":true,"autoWidth":true,"scrollX":true,"columnDefs":[{"width":"70px","targets":2},{"width":"200px","targets":[1,5,8]}],"order":[],"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+<p>As some fields (ISSN, Wikipedia page, language, etc) contain multiple values, the resulting dataframe has degenerate rows. I used the Wikidata items and ISSN-L as grouping variables to glue up the string values in the other columns, and finally get a table where each row corresponds to unique journal.</p>
+<div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>Show code</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>wiki_journals_grouped_file</span> <span class='op'>&lt;-</span>  <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>onedrive</span>,
+        <span class='st'>"/Wikidata/Wiki_Journals/blog_russian_wikidata_journals_grouped.csv"</span><span class='op'>)</span>
+
+<span class='kw'>if</span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='va'>wiki_journals_grouped_file</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span>
+
+  <span class='va'>rus_wiki_journals_grouped</span> <span class='op'>&lt;-</span> <span class='va'>rus_wiki_journals</span> <span class='op'>%&gt;%</span>  
+    <span class='fu'>mutate</span><span class='op'>(</span>wiki <span class='op'>=</span> <span class='fu'>str_extract</span><span class='op'>(</span><span class='va'>journal</span>, <span class='st'>"Q\\d+$"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'>select</span><span class='op'>(</span><span class='va'>wiki</span>, <span class='va'>journal_title</span>, <span class='va'>issnL</span>, <span class='va'>cref_jid</span>, <span class='va'>scopus</span>, <span class='va'>lang</span>, 
+           wiki_article <span class='op'>=</span> <span class='va'>article</span>, web_site <span class='op'>=</span> <span class='va'>url</span>, indexed_in <span class='op'>=</span> <span class='va'>indexedLabel</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+    <span class='fu'>group_by</span><span class='op'>(</span><span class='va'>wiki</span>, <span class='va'>issnL</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+    <span class='fu'>summarize</span><span class='op'>(</span>
+      journal_title <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/na.fail.html'>na.omit</a></span><span class='op'>(</span><span class='va'>journal_title</span><span class='op'>)</span><span class='op'>)</span>, collapse <span class='op'>=</span> <span class='st'>"|"</span><span class='op'>)</span>,
+      crossref <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/na.fail.html'>na.omit</a></span><span class='op'>(</span><span class='va'>cref_jid</span><span class='op'>)</span><span class='op'>)</span>, collapse <span class='op'>=</span> <span class='st'>"|"</span><span class='op'>)</span>,
+      scopus <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/na.fail.html'>na.omit</a></span><span class='op'>(</span><span class='va'>scopus</span><span class='op'>)</span><span class='op'>)</span>, collapse <span class='op'>=</span> <span class='st'>"|"</span><span class='op'>)</span>,
+      web_site <span class='op'>=</span> <span class='fu'>n_distinct</span><span class='op'>(</span><span class='va'>web_site</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+      languages <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/na.fail.html'>na.omit</a></span><span class='op'>(</span><span class='va'>lang</span><span class='op'>)</span><span class='op'>)</span>, collapse <span class='op'>=</span> <span class='st'>"|"</span><span class='op'>)</span>,
+      n_languages <span class='op'>=</span> <span class='fu'>n_distinct</span><span class='op'>(</span><span class='va'>lang</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+      indexed_in <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/na.fail.html'>na.omit</a></span><span class='op'>(</span><span class='va'>indexed_in</span><span class='op'>)</span><span class='op'>)</span>, collapse <span class='op'>=</span> <span class='st'>"|"</span><span class='op'>)</span>
+    <span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>ungroup</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+    <span class='fu'>mutate_all</span><span class='op'>(</span><span class='op'>~</span><span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>.x</span><span class='op'>==</span><span class='st'>""</span>,<span class='cn'>NA</span>,<span class='va'>.x</span><span class='op'>)</span><span class='op'>)</span>
+  
+  <span class='va'>rus_wiki_journals_grouped</span> <span class='op'>%&gt;%</span> <span class='fu'>write_excel_csv</span><span class='op'>(</span><span class='va'>wiki_journals_grouped_file</span><span class='op'>)</span>
+  <span class='op'>}</span> <span class='kw'>else</span> <span class='op'>{</span>
+  <span class='va'>rus_wiki_journals_grouped</span>  <span class='op'>&lt;-</span> <span class='fu'>read_csv</span><span class='op'>(</span><span class='va'>wiki_journals_grouped_file</span>,
+                  col_types <span class='op'>=</span> <span class='fu'>cols</span><span class='op'>(</span>.default <span class='op'>=</span> <span class='fu'>col_character</span><span class='op'>(</span><span class='op'>)</span>,
+                                  web_site <span class='op'>=</span> <span class='fu'>col_integer</span><span class='op'>(</span><span class='op'>)</span>,
+                                  n_languages <span class='op'>=</span> <span class='fu'>col_integer</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>}</span>
+
+<span class='va'>rus_wiki_journals_grouped</span> <span class='op'>%&gt;%</span> <span class='fu'>arrange</span><span class='op'>(</span><span class='va'>journal_title</span><span class='op'>)</span> <span class='op'>%&gt;%</span>  <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fl'>20</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+    <span class='fu'><a href='https://rdrr.io/pkg/DT/man/datatable.html'>datatable</a></span><span class='op'>(</span>rownames <span class='op'>=</span> <span class='cn'>FALSE</span>, filter <span class='op'>=</span> <span class='st'>"none"</span>, 
+              escape <span class='op'>=</span> <span class='cn'>FALSE</span>, class <span class='op'>=</span> <span class='st'>"row-border"</span>, 
+            options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>columnDefs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+              <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>width <span class='op'>=</span> <span class='st'>'350px'</span>, targets <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</details>
+<div id="htmlwidget-85e1f3119f608c575301" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-85e1f3119f608c575301">{"x":{"filter":"none","data":[["Q4881606","Q96324362","Q73908630","Q21385722","Q50817470","Q73903786","Q27723435","Q96696389","Q96696718","Q96696724","Q96325905","Q96734633","Q96696910","Q96703353","Q96697098","Q15756286","Q96697572","Q96697595","Q50817490","Q15750523"],["0762-7475","2166-4072","2077-9038","0132-8077","2412-1908","2541-9420","2075-8251","2075-8243","2307-8383","2222-5366","0204-3327","1999-2807","2071-1166","2072-3636","2414-4606",null,"2409-5087","2309-2661","2413-0982","0233-528X"],["[Synapse]|Bekhterev Review of Psychiatry and Medical Psychology","Ab imperio","Academia. Arhitektura i stroitelʹstvo","Acarina","Acta Biologica Sibirica|Acta biologica Sibirica","Acta biomedica scientifica","Acta naturae","Acta naturae","Adam & Eva","Adaptivnoe kormoproizvodstvo","Âdernaâ ènergetika","Administrativnoe i municipalʹnoe pravo","Administrativnoe pravo i process","Administrator suda","Advanced materials & technologies","Advances in Gerontology","Advances in law studies","Advances in management & marketing","Aèrokosmičeskij naučnyj žurnal","Aerospace and environmental medicine|Aviakosmičeskaâ i èkologičeskaâ medicina"],[null,"179635","310875","300777","296270","310417","325039","290227","327390","329822","308935","240635","376046","392179","298885","122605","283781","234711","297725","300633"],[null,"21100316466",null,"19700173205",null,null,"21100256975",null,null,null,"21100781406",null,null,null,null,"52741|21100228738",null,null,null,"28071"],[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],["en",null,null,"pl",null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[null,"Scopus",null,"Scopus",null,null,"Science Citation Index Expanded|Scopus",null,null,null,"Scopus",null,null,null,null,"Scopus|Emerging Sources Citation Index",null,null,null,"Scopus"]],"container":"<table class=\"row-border\">\n  <thead>\n    <tr>\n      <th>wiki<\/th>\n      <th>issnL<\/th>\n      <th>journal_title<\/th>\n      <th>crossref<\/th>\n      <th>scopus<\/th>\n      <th>web_site<\/th>\n      <th>languages<\/th>\n      <th>n_languages<\/th>\n      <th>indexed_in<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"dom":"Brftip","deferRender":true,"ordering":true,"autoWidth":true,"scrollX":true,"columnDefs":[{"width":"350px","targets":2},{"className":"dt-right","targets":[5,7]}],"order":[],"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+<h3 id="or-lost-journals">Or Lost Journals</h3>
+<p>Wikidata returned a list of 2828 Russian journals, in which:</p>
+<ul>
+<li><p>97.3% have ISSN-L,</p></li>
+<li><p>90.0% have CrossRef Journal ID,</p></li>
+<li><p>3.0% have official web site URL,</p></li>
+<li><p>4.9% have Wikipedia articles in at least one language, 2.2% have Wikipedia articles in more than 1 language.</p></li>
+<li><p>20.9% according to Wikidata are <a href="https://www.wikidata.org/wiki/Property:P8875">indexed in</a> in bibliographic review(s) and/or database(s).</p></li>
+</ul>
+<p>Let’s check if being indexed is associated with a higher chances of having a Wikipedia article.</p>
+<div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>Show code</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>rus_wiki_journals_grouped</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span>languages <span class='op'>=</span> <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>languages</span><span class='op'>)</span>, indexed_in <span class='op'>=</span> <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>indexed_in</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>count</span><span class='op'>(</span><span class='va'>indexed_in</span>, <span class='va'>languages</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span>share <span class='op'>=</span> <span class='fu'><a href='https://scales.r-lib.org/reference/label_percent.html'>percent</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>/</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>rus_wiki_journals_grouped</span><span class='op'>)</span>,<span class='fl'>0.1</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+   <span class='fu'><a href='https://rdrr.io/pkg/DT/man/datatable.html'>datatable</a></span><span class='op'>(</span>rownames <span class='op'>=</span> <span class='cn'>FALSE</span>, filter <span class='op'>=</span> <span class='st'>"none"</span>, 
+             escape <span class='op'>=</span> <span class='cn'>FALSE</span>, class <span class='op'>=</span> <span class='st'>"row-border"</span>, 
+             options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>autoWidth <span class='op'>=</span> <span class='cn'>FALSE</span>, 
+                         columnDefs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+                          <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>className <span class='op'>=</span> <span class='st'>'dt-center'</span>, targets <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</details>
+<div id="htmlwidget-e5ed23774249404c4760" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e5ed23774249404c4760">{"x":{"filter":"none","data":[[false,false,true,true],[false,true,false,true],[2162,74,528,64],["76.4%","2.6%","18.7%","2.3%"]],"container":"<table class=\"row-border\">\n  <thead>\n    <tr>\n      <th>indexed_in<\/th>\n      <th>languages<\/th>\n      <th>n<\/th>\n      <th>share<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"dom":"Brftip","deferRender":true,"ordering":true,"autoWidth":false,"scrollX":true,"columnDefs":[{"className":"dt-center","targets":[0,1,2,3]}],"order":[],"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+<p>The indexed titles more often have Wikipedia articles, but more than a half of those having the article(s) in Wikipedia are not indexed (according to Wikidata) in any prominent bibliographic databases.</p>
+<h3 id="how-complete-is-wikidata">How complete is Wikidata?</h3>
+<p>One may suggest that if Wikidata import (in some way or other) the data from CrossRef, then why to bother about it, as CrossRef provides fantastic API-services and gets the metadata directly from the publishers.</p>
+<p>Let’s first check whether Wikidata contains complete data deposited in CrossRef.</p>
+<p>I select as an example a German journal named <a href="https://www.wikidata.org/wiki/Q757509">Atmospheric Chemistry and Physics</a>, published since 2001. Its <a href="https://scholia.toolforge.org/venue/Q757509">Scholia profile</a> looks quite impressive.</p>
+<p>And yet…</p>
+<ul>
+<li>Wikidata contains approx 5.5k articles - <a href="https://query.wikidata.org/#SELECT%20%28count%28DISTINCT%28%3Fitem%29%29%20as%20%3Fcount%29%20%0AWHERE%20%7B%3Fitem%20wdt%3AP1433%20wd%3AQ757509.%7D%20">check</a></li>
+<li>CrossRef contains more than 11.7k publications - <a href="https://api.crossref.org/works?filter=issn:1680-7316,issn:1680-7324">check</a></li>
+</ul>
+<p>For 2019 publications the difference is still substantial:</p>
+<ul>
+<li><p>Wikidata contains 55 articles - <a href="https://query.wikidata.org/#SELECT%20%28count%28DISTINCT%28%3Fitem%29%29%20as%20%3Fcount%29%0AWHERE%20%7B%3Fitem%20wdt%3AP1433%20wd%3AQ757509.%0A%20%20%20OPTIONAL%7B%3Fitem%20wdt%3AP577%20%3Fpubdate.%7D%0A%20%20%20FILTER%28%28%3Fpubdate%20%3E%3D%20%222019-01-01T00%3A00%3A00Z%22%5E%5Exsd%3AdateTime%29%20%26%26%20%28%3Fpubdate%20%3C%3D%20%222019-12-31T00%3A00%3A00Z%22%5E%5Exsd%3AdateTime%29%29%0A%20%20%20SERVICE%20wikibase%3Alabel%20%7Bbd%3AserviceParam%20wikibase%3Alanguage%20%22%5BAUTO_LANGUAGE%5D%2C%20en%2C%20ru%22.%7D%0A%7D">check</a></p></li>
+<li><p>CrossRef contains 820+ publications - <a href="https://api.crossref.org/works?filter=issn:1680-7316,issn:1680-7324,from-pub-date:2019-01,until-pub-date:2019-12">check</a></p></li>
+</ul>
+<p>And I also counted a number of authors with ORCID in 2019 articles:</p>
+<ul>
+<li><p>Wikidata returs a list of 163 researchers - <a href="https://query.wikidata.org/#SELECT%20%3Fauthor%20%3FauthorLabel%20%3Forcid%0A%20%20WHERE%20%7B%3Fwork%20wdt%3AP50%20%3Fauthor%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20wdt%3AP1433%20wd%3AQ757509%20.%0A%20%20%20OPTIONAL%7B%3Fwork%20wdt%3AP577%20%3Fpubdate.%7D%0A%20%20%20FILTER%28%28%3Fpubdate%20%3E%3D%20%222019-01-01T00%3A00%3A00Z%22%5E%5Exsd%3AdateTime%29%20%26%26%20%28%3Fpubdate%20%3C%3D%20%222019-12-31T00%3A00%3A00Z%22%5E%5Exsd%3AdateTime%29%29%20%20%20%0A%20%20%20OPTIONAL%20%7B%20%3Fauthor%20wdt%3AP496%20%3Forcid%20.%20%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22%5BAUTO_LANGUAGE%5D%2Cen%22%20.%20%7D%20%0A%7D%20%20%20%0A">check</a></p></li>
+<li><p>CrossRef does not return the researchers, but we can obtain a list of publications where at least one of the authors has ORCID. There were 749 such articles - <a href="https://api.crossref.org/works?filter=issn:1680-7316,issn:1680-7324,from-pub-date:2019-01,until-pub-date:2019-12,has-orcid:true&amp;rows=1000&amp;select=author">check</a>. I looked into the search results and identified 1808 researchers with unique ORCIDs.</p></li>
+</ul>
+<h3 id="any-chance-for-wikidata-based-bibliometrics">Any chance for Wikidata-based bibliometrics?</h3>
+<p>As Wikidata does not contain all publications from CrossRef, it should not be viewed as an alternative to CrossRef or other databases indexing the academic journals cover-to-cover.</p>
+<p>Let’s try to extract all publications in the previously found 2828 Russian journals, satisfying next 3 condistions:</p>
+<ul>
+<li><ol type="1">
+<li>published in 2016-2020</li>
+</ol></li>
+<li><ol start="2" type="1">
+<li>present in Wikidata (i.e. owning the Wikidata ID)</li>
+</ol></li>
+<li><ol start="3" type="1">
+<li>authored by the researchers who also present in Wikidata.</li>
+</ol></li>
+</ul>
+<p>For speed we will retrieve just journal IDs, publication IDs, and author IDs.</p>
+<pre><code>SELECT ?journal ?work ?author ?country
+WITH {
+  SELECT DISTINCT ?journal 
+  WHERE {
+    {VALUES ?type {wd:Q5633421 wd:Q737498}
+             ?journal wdt:P31/wdt:P279* ?type.
+             ?journal wdt:P407 wd:Q7737.
+     MINUS { ?journal wdt:P495 [] }.}
+    UNION
+    {VALUES ?type {wd:Q5633421 wd:Q737498}
+             ?country wdt:P17 wd:Q159.
+             ?journal wdt:P31/wdt:P279* ?type.
+             ?journal wdt:P495 ?country.}
+  }
+ } AS %result
+WHERE {
+  INCLUDE %result
+              ?work wdt:P1433 ?journal.
+              ?work wdt:P577 ?pubdate.
+              ?work wdt:P50 ?author.
+              ?author wdt:P27 wd:Q159.              
+  FILTER((?pubdate &gt;= &quot;2016-01-01T00:00:00Z&quot;^^xsd:dateTime) &amp;&amp; 
+          (?pubdate &lt;= &quot;2020-12-31T00:00:00Z&quot;^^xsd:dateTime))
+  }
+</code></pre>
+<p>This SPARQL query is very strict, as it filters the items at every condition. Clearly some journals may have the articles that are present in Wikidata, but have no “publication date” property or its authors have no Wikidata ID. Such articles will not be retrieved by this query.</p>
+<div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>Show code</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>wiki_journals_2016_2020_file</span> <span class='op'>&lt;-</span>  <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>onedrive</span>,
+        <span class='st'>"/Wikidata/Wiki_Journals/blog_russian_wikidata_journals_2016_2020.csv"</span><span class='op'>)</span>
+
+<span class='kw'>if</span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='va'>wiki_journals_2016_2020_file</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span>
+
+<span class='va'>wiki_journals_2016_2020</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/WikidataQueryServiceR/man/query_wikidata.html'>query_wikidata</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/character.html'>as.character</a></span><span class='op'>(</span>
+  <span class='st'>'SELECT ?journal ?work ?author ?country
+WITH {
+  SELECT DISTINCT ?journal 
+  WHERE {
+    {VALUES ?type {wd:Q5633421 wd:Q737498}
+             ?journal wdt:P31/wdt:P279* ?type.
+             ?journal wdt:P407 wd:Q7737.
+     MINUS { ?journal wdt:P495 [] }.}
+    UNION
+    {VALUES ?type {wd:Q5633421 wd:Q737498}
+             ?country wdt:P17 wd:Q159.
+             ?journal wdt:P31/wdt:P279* ?type.
+             ?journal wdt:P495 ?country.}
+  }
+ } AS %result
+WHERE {
+  INCLUDE %result
+              ?work wdt:P1433 ?journal.
+              ?work wdt:P577 ?pubdate.
+              ?work wdt:P50 ?author.
+              ?author wdt:P27 wd:Q159.              
+  FILTER((?pubdate &gt;= "2016-01-01T00:00:00Z"^^xsd:dateTime) &amp;&amp; 
+        (?pubdate &lt;= "2020-12-31T00:00:00Z"^^xsd:dateTime))
+  }
+'</span><span class='op'>)</span>
+  <span class='op'>)</span>
+  
+  <span class='va'>wiki_journals_2016_2020</span> <span class='op'>%&gt;%</span> <span class='fu'>distinct</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>write_excel_csv</span><span class='op'>(</span><span class='va'>wiki_journals_2016_2020_file</span><span class='op'>)</span>
+  <span class='op'>}</span> <span class='kw'>else</span> <span class='op'>{</span>
+  <span class='va'>wiki_journals_2016_2020</span> <span class='op'>&lt;-</span> <span class='fu'>read_csv</span><span class='op'>(</span><span class='va'>wiki_journals_2016_2020_file</span>, 
+                  col_types <span class='op'>=</span> <span class='fu'>cols</span><span class='op'>(</span>.default <span class='op'>=</span> <span class='fu'>col_character</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>}</span>
+</code></pre>
+</div>
+</details>
+</div>
+<p>What have we got?</p>
+<ul>
+<li><p>70 unique journals (which is 2.5%)</p></li>
+<li><p>312 unique publications</p></li>
+<li><p>115 unique authors</p></li>
+</ul>
+<p>Tempted to see a pretty picture?</p>
+<div class="layout-chunk" data-layout="l-body-outset">
+<details>
+<summary>Show code</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>chart_filename</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>img_dir</span>, <span class='st'>"5_year_output.png"</span><span class='op'>)</span>
+
+<span class='kw'>if</span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='va'>chart_filename</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span>
+  
+  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://igraph.org'>igraph</a></span><span class='op'>)</span>
+  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://ggraph.data-imaginist.com'>ggraph</a></span><span class='op'>)</span>
+  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidygraph.data-imaginist.com'>tidygraph</a></span><span class='op'>)</span>
+  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/wch/extrafont'>extrafont</a></span><span class='op'>)</span>
+  
+  <span class='va'>sizes</span> <span class='op'>&lt;-</span> <span class='fu'>bind_rows</span><span class='op'>(</span>
+    <span class='va'>wiki_journals_2016_2020</span> <span class='op'>%&gt;%</span> 
+      <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>journal</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+      <span class='fu'>summarize</span><span class='op'>(</span>n_pubs <span class='op'>=</span> <span class='fu'>n_distinct</span><span class='op'>(</span><span class='va'>work</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+      <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>ungroup</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/rename.html'>rename</a></span><span class='op'>(</span>name <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>,
+    <span class='va'>wiki_journals_2016_2020</span> <span class='op'>%&gt;%</span> 
+      <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>author</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+      <span class='fu'>summarize</span><span class='op'>(</span>n_pubs <span class='op'>=</span> <span class='fu'>n_distinct</span><span class='op'>(</span><span class='va'>work</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+      <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>ungroup</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/rename.html'>rename</a></span><span class='op'>(</span>name <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+  <span class='op'>)</span>
+  
+  <span class='va'>g</span> <span class='op'>&lt;-</span> <span class='va'>wiki_journals_2016_2020</span> <span class='op'>%&gt;%</span> 
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='va'>author</span>, to <span class='op'>=</span> <span class='va'>journal</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+    <span class='fu'><a href='https://rdrr.io/pkg/igraph/man/graph_from_data_frame.html'>graph_from_data_frame</a></span><span class='op'>(</span>directed <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+    <span class='fu'><a href='https://tidygraph.data-imaginist.com/reference/tbl_graph.html'>as_tbl_graph</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate-joins.html'>left_join</a></span><span class='op'>(</span><span class='va'>sizes</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>name</span> <span class='op'>%in%</span> <span class='va'>wiki_journals_2016_2020</span><span class='op'>$</span><span class='va'>journal</span>, 
+                         <span class='st'>"journal"</span>, <span class='st'>"author"</span><span class='op'>)</span><span class='op'>)</span>
+  
+<span class='fu'><a href='https://ggraph.data-imaginist.com/reference/ggraph.html'>ggraph</a></span><span class='op'>(</span><span class='va'>g</span>, layout <span class='op'>=</span> <span class='st'>"nicely"</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://ggraph.data-imaginist.com/reference/geom_edge_link.html'>geom_edge_link0</a></span><span class='op'>(</span>color <span class='op'>=</span> <span class='st'>"grey60"</span>, edge_width <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span><span class='op'>+</span>
+  <span class='fu'><a href='https://ggraph.data-imaginist.com/reference/geom_node_point.html'>geom_node_point</a></span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, y <span class='op'>=</span> <span class='va'>y</span>, fill <span class='op'>=</span> <span class='va'>type</span>, size <span class='op'>=</span> <span class='va'>n_pubs</span><span class='op'>)</span>,
+                  shape <span class='op'>=</span> <span class='fl'>21</span>, stroke <span class='op'>=</span> <span class='fl'>0.3</span>, color <span class='op'>=</span> <span class='st'>"grey20"</span><span class='op'>)</span><span class='op'>+</span>
+  <span class='fu'>scale_fill_manual</span><span class='op'>(</span>values <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"journal"</span> <span class='op'>=</span> <span class='st'>"#53565A"</span>, <span class='st'>"author"</span> <span class='op'>=</span> <span class='st'>"coral"</span><span class='op'>)</span>, 
+                    name <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span><span class='op'>+</span>
+  <span class='fu'>labs</span><span class='op'>(</span>title <span class='op'>=</span> 
+  <span class='st'>"5-Year Output of 2828 Russian Academic Journals Through the Lens of Wikidata"</span>,
+      subtitle <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"("</span>,<span class='fu'>n_distinct</span><span class='op'>(</span><span class='va'>wiki_journals_2016_2020</span><span class='op'>$</span><span class='va'>work</span><span class='op'>)</span>,
+                          <span class='st'>" publications and "</span>, 
+                          <span class='fu'>n_distinct</span><span class='op'>(</span><span class='va'>wiki_journals_2016_2020</span><span class='op'>$</span><span class='va'>author</span><span class='op'>)</span>, 
+                          <span class='st'>" Russian authors visible in "</span>,
+                          <span class='fu'>n_distinct</span><span class='op'>(</span><span class='va'>wiki_journals_2016_2020</span><span class='op'>$</span><span class='va'>journal</span><span class='op'>)</span>, 
+                          <span class='st'>" journals)"</span><span class='op'>)</span>,
+        caption <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Date: "</span>, <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.time</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>'%d/%m/%Y'</span><span class='op'>)</span>,
+                         <span class='st'>"\nData: wikidata.org"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span>
+  <span class='fu'>scale_size_continuous</span><span class='op'>(</span>range <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.5</span>,<span class='fl'>6</span><span class='op'>)</span>, breaks <span class='op'>=</span> <span class='fu'><a href='https://scales.r-lib.org/reference/breaks_pretty.html'>pretty_breaks</a></span><span class='op'>(</span><span class='fl'>6</span><span class='op'>)</span>,
+                        name <span class='op'>=</span> <span class='st'>"Number of\npublications"</span><span class='op'>)</span><span class='op'>+</span>
+  <span class='fu'>guides</span><span class='op'>(</span>fill <span class='op'>=</span> <span class='fu'>guide_legend</span><span class='op'>(</span>override.aes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span>
+  <span class='fu'><a href='https://ggraph.data-imaginist.com/reference/theme_graph.html'>theme_graph</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>theme</span><span class='op'>(</span>text<span class='op'>=</span><span class='fu'>element_text</span><span class='op'>(</span>family<span class='op'>=</span><span class='st'>"PT Sans"</span>, color <span class='op'>=</span> <span class='st'>"#53565A"</span>, size <span class='op'>=</span> <span class='fl'>12</span><span class='op'>)</span>,
+        legend.title <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>size<span class='op'>=</span><span class='fu'>rel</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>, color<span class='op'>=</span><span class='st'>"grey10"</span><span class='op'>)</span>,
+        legend.text <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>size<span class='op'>=</span><span class='fu'>rel</span><span class='op'>(</span><span class='fl'>0.9</span><span class='op'>)</span>, color<span class='op'>=</span><span class='st'>"grey10"</span><span class='op'>)</span>,
+        legend.position <span class='op'>=</span> <span class='st'>"right"</span>,
+        legend.box.background <span class='op'>=</span> <span class='fu'>element_rect</span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>0.2</span>, 
+                color <span class='op'>=</span> <span class='st'>"grey90"</span>, fill <span class='op'>=</span> <span class='st'>"white"</span><span class='op'>)</span>,
+        legend.box.margin <span class='op'>=</span> <span class='fu'>margin</span><span class='op'>(</span><span class='fl'>10</span>,<span class='fl'>0</span>,<span class='fl'>10</span>,<span class='fl'>0</span><span class='op'>)</span>,
+        legend.box.spacing <span class='op'>=</span> <span class='fu'>unit</span><span class='op'>(</span><span class='fl'>0</span>,<span class='st'>"cm"</span><span class='op'>)</span>,
+        plot.caption.position <span class='op'>=</span> <span class='st'>"plot"</span>,
+        plot.caption <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>size <span class='op'>=</span> <span class='fu'>rel</span><span class='op'>(</span><span class='fl'>0.9</span><span class='op'>)</span>, hjust<span class='op'>=</span><span class='fl'>1</span>, 
+                          family <span class='op'>=</span> <span class='st'>"PT Sans"</span>, color <span class='op'>=</span> <span class='st'>"#969696"</span>, face <span class='op'>=</span> <span class='st'>"plain"</span><span class='op'>)</span>,
+        plot.subtitle <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>hjust<span class='op'>=</span><span class='fl'>0</span>, size <span class='op'>=</span> <span class='fu'>rel</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>, 
+                          family<span class='op'>=</span><span class='st'>"PT Sans Narrow"</span><span class='op'>)</span>,
+        plot.title.position <span class='op'>=</span> <span class='st'>"plot"</span>,
+        plot.title <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>size<span class='op'>=</span><span class='fu'>rel</span><span class='op'>(</span><span class='fl'>1.2</span><span class='op'>)</span>, family<span class='op'>=</span><span class='st'>"PT Sans"</span>, 
+                                  face<span class='op'>=</span><span class='st'>"bold"</span>, color <span class='op'>=</span> <span class='st'>"#253494"</span><span class='op'>)</span>,
+        plot.margin <span class='op'>=</span> <span class='fu'>margin</span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'>ggsave</span><span class='op'>(</span><span class='va'>chart_filename</span>, width <span class='op'>=</span> <span class='fl'>18</span>, height <span class='op'>=</span> <span class='fl'>12</span>, dpi <span class='op'>=</span> <span class='fl'>400</span>, units <span class='op'>=</span> <span class='st'>"cm"</span><span class='op'>)</span>
+<span class='op'>}</span>
+<span class='fu'>knitr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/knitr/man/include_graphics.html'>include_graphics</a></span><span class='op'>(</span><span class='va'>chart_filename</span><span class='op'>)</span>
+</code></pre>
+</div>
+</details>
+<p><img src="images/5_year_output.png" width="1417" /></p>
+</div>
+<h3 id="cases-for-using-wikidata">Cases for using Wikidata</h3>
+<p>There are still some cases that can be much easier solved with Wikidata. As a knowledge graph connecting the entities of different nature, Wikidata allows to build complex queries combining the items properties or statements that may not exist together in any other single database.</p>
+<p>Just imagine a query that retrieves the journal authors having the international awards (<a href="https://scholia.toolforge.org/venue/Q757509#author-awards-header">see examples in Scholia</a>).</p>
+<p>Well, one may argue that the qualified editor remember by heart all the star authors. Hope so.</p>
+<p>Let’s take a more complex scenario. Assume that the publisher decided to dedicate a special issue to women in Molecular biology and the editor now has to find the female researchers who won the international awards and ask them kindly to write a short article. The editor may think that those who cited the journal articles would be more impressed and likely to agree.</p>
+<p>Can Wikidata help to this? Yes, it can!</p>
+<p>A SPARQL query below will retrieve a list of women, researchers, who won the international awards and cited the Russian journal <a href="https://www.wikidata.org/wiki/Q4300349">Molecular Biology</a>.</p>
+<pre><code>SELECT 
+  ?authorLabel ?orcid ?awards
+WITH {
+  SELECT ?authorLabel ?author (GROUP_CONCAT(DISTINCT(?award); separator=&quot; | &quot;) AS ?awards)
+  WHERE {
+  ?work wdt:P1433 wd:Q4300349.
+  ?reference_pub wdt:P2860 ?work.
+  ?reference_pub wdt:P50 ?author .
+  ?author p:P166 ?award_statement.
+  ?award_statement ps:P166 ?award_.
+  ?author wdt:P21 wd:Q6581072 .
+    SERVICE wikibase:label {
+      bd:serviceParam wikibase:language &quot;[AUTO_LANGUAGE],en&quot; . 
+      ?award_ rdfs:label ?award.
+      ?author rdfs:label ?authorLabel
+    } 
+  }
+GROUP BY ?author ?authorLabel 
+} AS %result
+WHERE {
+  INCLUDE %result 
+   optional{?author wdt:P496 ?orcid .}
+    SERVICE wikibase:label { bd:serviceParam wikibase:language &quot;[AUTO_LANGUAGE],en&quot; . }
+}</code></pre>
+<div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>Show code</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>winners</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/WikidataQueryServiceR/man/query_wikidata.html'>query_wikidata</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/character.html'>as.character</a></span><span class='op'>(</span>
+<span class='st'>'SELECT 
+      ?author ?orcid ?awards
+ WITH {
+    SELECT ?authorLabel ?author 
+            (GROUP_CONCAT(DISTINCT(?award); separator=" | ") AS ?awards)
+    WHERE {
+      ?work wdt:P1433 wd:Q4300349.
+      ?reference_pub wdt:P2860 ?work.
+      ?reference_pub wdt:P50 ?author .
+      ?author p:P166 ?award_statement.
+      ?award_statement ps:P166 ?award_.
+      ?author wdt:P21 wd:Q6581072 .
+      SERVICE wikibase:label {
+          bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en" . 
+          ?award_ rdfs:label ?award.
+          ?author rdfs:label ?authorLabel
+      } 
+    }
+    GROUP BY ?author ?authorLabel 
+    } AS %result
+  WHERE { INCLUDE %result 
+      optional{?author wdt:P496 ?orcid .}
+      SERVICE wikibase:label {
+      bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en" . 
+      }
+    }'</span><span class='op'>)</span>
+    <span class='op'>)</span>
+
+<span class='va'>winners</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>author <span class='op'>=</span> <span class='fu'>str_extract</span><span class='op'>(</span><span class='va'>author</span>, <span class='st'>"Q\\d+$"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/DT/man/datatable.html'>datatable</a></span><span class='op'>(</span>rownames <span class='op'>=</span> <span class='cn'>FALSE</span>, filter <span class='op'>=</span> <span class='st'>"none"</span>, 
+            escape <span class='op'>=</span> <span class='cn'>FALSE</span>, class <span class='op'>=</span> <span class='st'>"row-border"</span>, 
+            options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+              columnDefs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+                <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>width <span class='op'>=</span> <span class='st'>'130px'</span>, targets <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>,
+                <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>width <span class='op'>=</span> <span class='st'>'800px'</span>, targets <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</details>
+<div id="htmlwidget-8cf9a943a0aed90e4704" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8cf9a943a0aed90e4704">{"x":{"filter":"none","data":[["Q520992","Q807471","Q1105367","Q3433234","Q4502509","Q7088836","Q11248853","Q11958220","Q13135289","Q16224732","Q17517031","Q17517048","Q18166645","Q20084124","Q21254211","Q21264368","Q21264475","Q23823628","Q24546292","Q27925354","Q28112832","Q28122472","Q28355928","Q28364210","Q37384241","Q39754599","Q42313286","Q59304597","Q59697407"],[null,null,"0000-0001-9883-1600","0000-0001-5432-1502","0000-0003-2987-3334",null,"0000-0003-2983-9769",null,null,"0000-0001-5911-1459","0000-0002-1878-2587","0000-0002-7850-591X","0000-0002-6484-2763","0000-0002-9539-0130","0000-0002-3047-654X","0000-0003-0105-3879","0000-0003-4029-0973",null,"0000-0002-8519-243X","0000-0002-9119-9136","0000-0003-0670-0887",null,"0000-0001-9782-1101","0000-0002-2062-4633","0000-0002-6793-2262","0000-0003-1146-5519",null,"0000-0002-5214-4941","0000-0002-2750-9451"],["Rosenstiel Award | Keith R. Porter Lecture | Albany Medical Center Prize | FASEB Excellence in Science Award | William Procter Prize for Scientific Achievement | AAAS Fellow | E. B. Wilson Medal | Otto Warburg Medal | Foreign Member of the Royal Society | Howard Taylor Ricketts Award | Genetics Society of America Medal | Dickson Prize in Medicine | WICB Senior Award | Mendel medal | Vanderbilt Prize in Biomedical Science | National Medal of Science | Harvard Centennial Medal | Max Delbrück Medal | honorary doctor of Harvard University","Austrian Decoration for Science and Art | EMBO Membership | Foreign Member of the Royal Society","Weizmann Women & Science Award | Garvan–Olin Medal | NAS Award in Chemical Sciences | ACS Award in Pure Chemistry | F. A. Cotton Medal | Priestley Medal | Linus Pauling Award | William H. Nichols Medal Award | Willard Gibbs Award | Eli Lilly Award in Biological Chemistry | MacArthur Fellows Program | Alan T. Waterman Award | Leo Hendrik Baekeland Award | Paul Karrer Gold Medal | American Institute of Chemists Gold Medal | Agnes Fay Morgan Research Award | National Medal of Science | AAAS Fellow | Fellow of the American Chemical Society | Tolman Award","Fellow of Bangladesh Academy of Sciences | Vannevar Bush Award | Stockholm Water Prize | National Medal of Science | National Women's Hall of Fame | Maryland Women's Hall of Fame | Helmholtz Medal | International Prize for Biology | Fellow of the Royal Society of Canada | William Procter Prize for Scientific Achievement | AAAS Fellow","Merited Scientist of the Russian Federation | Q56062992","MacArthur Fellows Program | Mendel medal | Four Freedoms Award - Freedom from Want | honorary doctor of the Princeton University","MacArthur Fellows Program | International Prize for Biology","University of Oslo Research Prize | the Norwegian Research Council Award for Outstanding Research | King Olav V's Prize for Cancer Research | Nordic Medical Prize | Fridtjof Nansen Award of Excellence, Mathematics-Natural sciences class","Akademiehoogleraren Prize | Spinoza Prize","The Smith College Medal","Fellow of the Australian Academy of Science | Fellow of the Australian Academy of Health and Medical Sciences","Companion of the Order of Australia | Prime Minister’s Prize for Science | Fellow of the Australian Academy of Technological Sciences and Engineering | Farrer Memorial Trust Medal | Fellow of the Australian Academy of Science | Centenary Medal","Fellow of the International Society for Magnetic Resonance in Medicine | Officer of the Order of Australia | Fellow of the Biophysical Society | Fellow of the Australian Academy of Science | Victorian Honour Roll of Women","Fellow of the Academy of Medical Sciences","EMBO Membership","Otto Warburg Medal | Gottfried Wilhelm Leibniz Prize | EMBO Membership","Emmy Noether Distinction for Women in Physics | Spinoza Prize","ISCB Fellow","Scientific Prize of The Republic of Estonia","Prix Recherche de l'Inserm | Gregori Aminoff Prize","Fellow of the Royal Society of Edinburgh | Fellow of the Royal College of Physicians and Surgeons of Glasgow | Fellow of the Academy of Medical Sciences | Joan Mott Prize Lecture","AAAS Fellow","Merited Scientist of the Russian Federation | M. Shemyakin Prize","Narcís Monturiol Medal","Commander of the Order of the British Empire","Fellow of the Royal Society of Biology","Fellow of the Institute of Mathematical Statistics | Fellow of the American Statistical Association | AAAS Fellow","Fellow of the Royal College of Physicians of London","Silver Cross of Merit"]],"container":"<table class=\"row-border\">\n  <thead>\n    <tr>\n      <th>author<\/th>\n      <th>orcid<\/th>\n      <th>awards<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"dom":"Brftip","deferRender":true,"ordering":true,"autoWidth":true,"scrollX":true,"columnDefs":[{"width":"130px","targets":1},{"width":"800px","targets":2}],"order":[],"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+<p>Coincidentally, today I saw a tweet of Scholia creator who also shared a SPARQL query crafted to find a female speaker on a certain topic. This is another possible application, even closer to reality than mine.</p>
+<blockquote class="twitter-tweet">
+<p lang="en" dir="ltr">
+looking for a female speaker? Try <a href="https://twitter.com/wikidata?ref_src=twsrc%5Etfw"><span class="citation" data-cites="wikidata">@wikidata</span></a>: <a href="https://t.co/vW21zqQGGO">https://t.co/vW21zqQGGO</a> Tune the subjects in line 3 to fit your needs. Here, I used metabolomics, data analysis, chemometrics, lipidomics<br><br>The topics are ‘main subject’ of publications on which the scholar is author <a href="https://t.co/FIwBjxPDSI">pic.twitter.com/FIwBjxPDSI</a>
+</p>
+— Egon Willighⓐgen (<span class="citation" data-cites="egonwillighagen">@egonwillighagen</span>) <a href="https://twitter.com/egonwillighagen/status/1396773417609801730?ref_src=twsrc%5Etfw">May 24, 2021</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<h3 id="final-remarks">Final Remarks</h3>
+<ul>
+<li><p>Wikidata is a fantastic open tool that can be very useful for the academic journals. Its only limit is an amount of information that is growing and can be edited.</p></li>
+<li><p>Russian academic journals have a very poor representation both in Wikipedia (4.9% of 2828 academic/scientific journals) and in Wikidata (few connections to the publications and the researchers).</p></li>
+<li><p>Russian publishers &amp; editors may need more consulting support to meet the technical requirements &amp; notability criteria erected by <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Academic_Journals">WikiProject_Academic_Journals</a>. With dozens of workshops every year on “how to get to Scopus”, I can not recall any good events devoted to Wikipedia or Wikidata for academic journals. The program of the 9th International Scientific and Practical Conference “World-Class Scientific Publication – 2021: Global Trends and National Priorities”, held in Moscow from 24 to 27 May, neglects this topic as well.</p></li>
+</ul>
+<h3 id="useful-links">Useful links</h3>
+<p>Here are some useful sources in addition to those mentioned above:</p>
+<ul>
+<li><a href="https://dashboard.wikiedu.org/training">Wikipedia and Wikidata courses</a></li>
+<li><a href="https://www.wikidata.org/wiki/Wikidata:Tours">Wikidata Tours</a> explain how Wikidata works</li>
+<li><a href="https://www.wikidata.org/wiki/Special:Search">Search Item in Wikidata</a></li>
+<li><a href="https://www.wikidata.org/wiki/Special:NewItem">Create Wikidata Item</a></li>
+<li>Tutorial on <a href="https://laurendupuis.github.io/Scholia_tutorial/">how to annotate the scientific publications</a></li>
+<li><a href="https://www.wikidata.org/wiki/Wikidata:Tools">Wikidata Tools</a> - a directory of tools created for editing Wikidata items.</li>
+<li>A very detailed scientific article <a href="http://www2.imm.dtu.dk/pubdb/views/edoc_download.php/7010/pdf/imm7010.pdf">Scholia, Scientometrics and Wikidata</a> from Wikidata’s creators</li>
+<li>Wikidata <a href="https://www.wikidata.org/wiki/Wikidata:Status_updates">Weekly Status Updates</a> - very useful newsletters with a lot of links, tutorials, examples.</li>
+<li>Scholia <a href="https://scholia.toolforge.org/text-to-topics">Text to Topics</a> a text processing web application. Accepts the text, returns the topics with Wikidata IDs.</li>
+</ul>
+<h3 id="limitations">Limitations</h3>
+<p>The findings above should be taken with a pinch of salt, as I started to dig into Wikidata just few weeks ago. Some of my statements can be not perfectly correct or even wrong. The main purpose of this post was to share my finding and show what is possible to do with Wikidata.</p>
+<h3 id="acknowledgments" class="appendix">Acknowledgments</h3>
+<p>Allaire J, Xie Y, McPherson J, Luraschi J, Ushey K, Atkins A, Wickham H, Cheng J, Chang W, Iannone R (2021). <em>rmarkdown: Dynamic Documents for R</em>. R package version 2.7, &lt;URL: <a href="https://github.com/rstudio/rmarkdown" class="uri">https://github.com/rstudio/rmarkdown</a>&gt;.</p>
+<p>Chang, W (2014). <em>extrafont: Tools for using fonts</em>. R package version 0.17, &lt;URL: <a href="https://CRAN.R-project.org/package=extrafont" class="uri">https://CRAN.R-project.org/package=extrafont</a>&gt;.</p>
+<p>Csardi G, Nepusz T (2006). “The igraph software package for complex network research.” <em>InterJournal</em>, <em>Complex Systems</em>, 1695. &lt;URL: <a href="https://igraph.org" class="uri">https://igraph.org</a>&gt;.</p>
+<p>Henry L, Wickham H (2020). <em>purrr: Functional Programming Tools</em>. R package version 0.3.4, &lt;URL: <a href="https://CRAN.R-project.org/package=purrr" class="uri">https://CRAN.R-project.org/package=purrr</a>&gt;.</p>
+<p>Pedersen T (2021). <em>ggraph: An Implementation of Grammar of Graphics for Graphs and Networks</em>. R package version 2.0.5, &lt;URL: <a href="https://CRAN.R-project.org/package=ggraph" class="uri">https://CRAN.R-project.org/package=ggraph</a>&gt;.</p>
+<p>Pedersen T (2020). <em>tidygraph: A Tidy API for Graph Manipulation</em>. R package version 1.2.0, &lt;URL: <a href="https://CRAN.R-project.org/package=tidygraph" class="uri">https://CRAN.R-project.org/package=tidygraph</a>&gt;.</p>
+<p>Popov M (2020). <em>WikidataQueryServiceR: API Client Library for ‘Wikidata Query Service’</em>. R package version 1.0.0, &lt;URL: <a href="https://CRAN.R-project.org/package=WikidataQueryServiceR" class="uri">https://CRAN.R-project.org/package=WikidataQueryServiceR</a>&gt;.</p>
+<p>Wickham H (2020). <em>tidyr: Tidy Messy Data</em>. R package version 1.1.2, &lt;URL: <a href="https://CRAN.R-project.org/package=tidyr" class="uri">https://CRAN.R-project.org/package=tidyr</a>&gt;.</p>
+<p>Wickham H (2016). <em>ggplot2: Elegant Graphics for Data Analysis</em>. Springer-Verlag New York. ISBN 978-3-319-24277-4, &lt;URL: <a href="https://ggplot2.tidyverse.org" class="uri">https://ggplot2.tidyverse.org</a>&gt;.</p>
+<p>Wickham H (2019). <em>stringr: Simple, Consistent Wrappers for Common String Operations</em>. R package version 1.4.0, &lt;URL: <a href="https://CRAN.R-project.org/package=stringr" class="uri">https://CRAN.R-project.org/package=stringr</a>&gt;.</p>
+<p>Wickham H, Francois R, Henry L, Muller K (2021). <em>dplyr: A Grammar of Data Manipulation</em>. R package version 1.0.3, &lt;URL: <a href="https://CRAN.R-project.org/package=dplyr" class="uri">https://CRAN.R-project.org/package=dplyr</a>&gt;.</p>
+<p>Wickham H, Hester J (2020). <em>readr: Read Rectangular Text Data</em>. R package version 1.4.0, &lt;URL: <a href="https://CRAN.R-project.org/package=readr" class="uri">https://CRAN.R-project.org/package=readr</a>&gt;.</p>
+<p>Wickham H, Seidel D (2020). <em>scales: Scale Functions for Visualization</em>. R package version 1.1.1, &lt;URL: <a href="https://CRAN.R-project.org/package=scales" class="uri">https://CRAN.R-project.org/package=scales</a>&gt;.</p>
+<p>Xie Y (2020). <em>knitr: A General-Purpose Package for Dynamic Report Generation in R</em>. R package version 1.30, &lt;URL: <a href="https://yihui.org/knitr/" class="uri">https://yihui.org/knitr/</a>&gt;.</p>
+<p>Xie Y (2015). <em>Dynamic Documents with R and knitr</em>, 2nd edition. Chapman and Hall/CRC, Boca Raton, Florida. ISBN 978-1498716963, &lt;URL: <a href="https://yihui.org/knitr/" class="uri">https://yihui.org/knitr/</a>&gt;.</p>
+<p>Xie Y (2014). “knitr: A Comprehensive Tool for Reproducible Research in R.” In Stodden V, Leisch F, Peng RD (eds.), <em>Implementing Reproducible Computational Research</em>. Chapman and Hall/CRC. ISBN 978-1466561595, &lt;URL: <a href="http://www.crcpress.com/product/isbn/9781466561595" class="uri">http://www.crcpress.com/product/isbn/9781466561595</a>&gt;.</p>
+<p>Xie Y, Allaire J, Grolemund G (2018). <em>R Markdown: The Definitive Guide</em>. Chapman and Hall/CRC, Boca Raton, Florida. ISBN 9781138359338, &lt;URL: <a href="https://bookdown.org/yihui/rmarkdown" class="uri">https://bookdown.org/yihui/rmarkdown</a>&gt;.</p>
+<p>Xie Y, Cheng J, Tan X (2021). <em>DT: A Wrapper of the JavaScript Library ‘DataTables’</em>. R package version 0.17, &lt;URL: <a href="https://CRAN.R-project.org/package=DT" class="uri">https://CRAN.R-project.org/package=DT</a>&gt;.</p>
+<p>Xie Y, Dervieux C, Riederer E (2020). <em>R Markdown Cookbook</em>. Chapman and Hall/CRC, Boca Raton, Florida. ISBN 9780367563837, &lt;URL: <a href="https://bookdown.org/yihui/rmarkdown-cookbook" class="uri">https://bookdown.org/yihui/rmarkdown-cookbook</a>&gt;.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<!--radix_placeholder_article_footer-->
+<!--/radix_placeholder_article_footer-->
+</div>
+
+<div class="d-appendix">
+</div>
+
+
+<!--radix_placeholder_site_after_body-->
+<!--/radix_placeholder_site_after_body-->
+<!--radix_placeholder_appendices-->
+<div class="appendix-bottom">
+<h3 id="reuse">Reuse</h3>
+<p>Text and figures are licensed under Creative Commons Attribution <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. The figures that have been reused from other sources don't fall under this license and can be recognized by a note in their caption: "Figure from ...".</p>
+</div>
+<!--/radix_placeholder_appendices-->
+<!--radix_placeholder_navigation_after_body-->
+<!--/radix_placeholder_navigation_after_body-->
+
+</body>
+
+</html>
