@@ -1,3 +1,4 @@
+git add -A
 #============================================================
 distill::create_post("My second blog post...this one will be really good :-)")
     a new partly pre-filled RMarkdown document will open itself in RStudio
