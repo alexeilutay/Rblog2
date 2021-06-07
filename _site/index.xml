@@ -7,7 +7,22 @@
     <description>Using R to solve the practical tasks in the library information science and other fields.  
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Wed, 26 May 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 06 Jun 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Using R to analyze the InCites (Clarivate) Citation Topics</title>
+      <dc:creator>Aleksei Lutai</dc:creator>
+      <link>https://dwayzer.netlify.app/posts/2021-06-07-incites-topics-4-benchmarking</link>
+      <description>Even the most succesful information tools can not offer all the possible analytical interfaces or visualization patterns. In this post I am using the R and few htmlwidgets to build a UI for benchmarking the universities based on their InCites citation topics (Clarivate).</description>
+      <category>russian data</category>
+      <category>citation topics</category>
+      <category>benchmarking</category>
+      <category>incites</category>
+      <category>r</category>
+      <category>htmlwidgets</category>
+      <guid>https://dwayzer.netlify.app/posts/2021-06-07-incites-topics-4-benchmarking</guid>
+      <pubDate>Sun, 06 Jun 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://dwayzer.netlify.app/posts/2021-06-07-incites-topics-4-benchmarking/images/sunburst_screenshot.png" medium="image" type="image/png" width="853" height="381"/>
+    </item>
     <item>
       <title>National Academic Journals in Wikidata and Wikipedia</title>
       <dc:creator>Aleksei Lutai</dc:creator>
@@ -53,7 +68,7 @@
       <category>r</category>
       <category>gov data</category>
       <guid>https://dwayzer.netlify.app/posts/2021-05-10-vak-titles-in-crossref</guid>
-      <pubDate>Tue, 11 May 2021 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 12 May 2021 00:00:00 +0000</pubDate>
       <media:content url="https://dwayzer.netlify.app/posts/2021-05-10-vak-titles-in-crossref/images/vak_titles_in_crossref.png" medium="image" type="image/png" width="1500" height="750"/>
     </item>
     <item>
