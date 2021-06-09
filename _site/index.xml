@@ -7,7 +7,25 @@
     <description>Using R to solve the practical tasks in the library information science and other fields.  
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Sun, 06 Jun 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 08 Jun 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Russian Journals indexed by Scopus, RSCI, and WoS</title>
+      <dc:creator>Aleksei Lutai</dc:creator>
+      <link>https://dwayzer.netlify.app/posts/2021-06-09-russian-journals-indexed-by-scopus-rsci-and-wos</link>
+      <description>How difficult it can be to build an aggregated list of the scientific journal titles indexed in A&amp;I databases and citation indices? Extremely difficult, if those venues are the Russian academic journals. In this post I am reviewing the key obstacles and trying to build such a list of the Russian journals indexed in Web of Science Core Collection, Scopus, and RSCI (Russian Citation Index by Web of Science).</description>
+      <category>russian data</category>
+      <category>citation indices</category>
+      <category>scopus</category>
+      <category>web of science</category>
+      <category>r</category>
+      <category>rsci</category>
+      <category>issn.org</category>
+      <category>crossref</category>
+      <category>lens.org</category>
+      <guid>https://dwayzer.netlify.app/posts/2021-06-09-russian-journals-indexed-by-scopus-rsci-and-wos</guid>
+      <pubDate>Tue, 08 Jun 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://dwayzer.netlify.app/posts/2021-06-09-russian-journals-indexed-by-scopus-rsci-and-wos/images/rus_jpournals_joint_list.png" medium="image" type="image/png" width="884" height="543"/>
+    </item>
     <item>
       <title>Using R to analyze the InCites (Clarivate) Citation Topics</title>
       <dc:creator>Aleksei Lutai</dc:creator>
@@ -20,7 +38,7 @@
       <category>r</category>
       <category>htmlwidgets</category>
       <guid>https://dwayzer.netlify.app/posts/2021-06-07-incites-topics-4-benchmarking</guid>
-      <pubDate>Sun, 06 Jun 2021 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 07 Jun 2021 00:00:00 +0000</pubDate>
       <media:content url="https://dwayzer.netlify.app/posts/2021-06-07-incites-topics-4-benchmarking/images/sunburst_screenshot.png" medium="image" type="image/png" width="853" height="381"/>
     </item>
     <item>

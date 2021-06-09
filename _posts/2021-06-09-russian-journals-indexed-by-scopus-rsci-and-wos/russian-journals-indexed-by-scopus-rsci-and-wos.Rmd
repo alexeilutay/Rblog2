@@ -1,0 +1,329 @@
+---
+title: "Russian Journals indexed by Scopus, RSCI, and WoS"
+description: |
+  How difficult it can be to build an aggregated list of the scientific journal titles indexed in A&I databases and citation indices? Extremely difficult, if those venues are the Russian academic journals. In this post I am reviewing the key obstacles and trying to build such a list of the Russian journals indexed in Web of Science Core Collection, Scopus, and RSCI (Russian Citation Index by Web of Science).
+author:
+  - first_name: "Aleksei"
+    last_name: "Lutai" 
+    url: https://www.linkedin.com/in/lutaya/
+    orcid_id: 0000-0003-1341-781X
+date: 06-09-2021
+categories:
+  - russian data
+  - citation indices
+  - scopus
+  - web of science
+  - r
+  - rsci
+  - issn.org
+  - crossref
+  - lens.org
+creative_commons: CC BY
+preview: images/rus_jpournals_joint_list.png
+output:
+  distill::distill_article:
+    self_contained: false
+    code_folding: true
+    highlight: kate
+    highlight_downlit: true
+    toc: true
+    toc_depth: 3
+    toc_float: true
+---
+
+```{r eval=TRUE, message=FALSE, warning=FALSE, include=FALSE, echo=TRUE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+
+Sys.setlocale("LC_CTYPE","russian")
+Sys.setlocale("LC_COLLATE","russian")
+Sys.setlocale("LC_TIME", "russian")
+
+library(tidyverse)
+library(scales)
+library(DT)
+library(extrafont)
+
+onedrive <- list.dirs("C:/Users", recursive = FALSE) %>% 
+  .[grepl("alexe|WD|lutay",.)] %>% list.dirs(., recursive = FALSE) %>% 
+  .[grepl("onedrive",., ignore.case = TRUE)]
+
+options(DT.options = list(pageLength = 5, dom = "Brftip",  
+  deferRender = TRUE, ordering = TRUE, autoWidth = TRUE, scrollX = TRUE))
+
+dir <- paste0(onedrive, "/Journals/may2021")
+
+```
+
+### Obstacles 
+
+1. Legacy
+
+The well-known problem of the academic titles is that they can change a title, publisher, and the credentials (ISSN, DOI prefix, etc). This can be a difficulty, if you have no access to the commercial services provided by ISSN Agency. But still it is a typical, not "Russian" problem.     
+
+2. Translated Titles
+
+A story started in 1954, when AIP got additonal funding from NSF for translation of the foreign journals. At that time USSR did not pay respect to things like copyright, so the commercial relations were quite difficult and involved the intermediaries, who launched the English versions of the Soviet titles (eventually privatized). In 1973 USSR signed the Universal Copyright Convention which spurred a M$-royalty-driven cooperation. After the Soviet Union ceased to exist, many publishers visited Moscow, and few managed to purchase the licenses for the translated versions (I have not seen the documents myself, but assume that the licenses are lifelong and irrevokable). That's why nowadays there are dozens of journals existing in 2 language versions (Rus/Eng), registered by different publishers and in different countries, with up to 4 ISSN numbers (2 times p+e), but... also having one editorial board and practically the same set of articles.
+
+Most A&I databases index the English versions, which de jure are not Russian, but de facto originate from the Russian editions. Shall we count those indexed titles as Russian or not?
+
+3. Combined titles
+
+A quality of Soviet journals was not equally superb for all the titles, and some publishers decided to pack the best articles from few journals and sell it under a new cover. Such journals still exist. Assume that a combo title, traslating 50% of 2 Russian journals, is indexed in SCI - shall we count those Russian titles as "indexed"? There are some circulating "white lists" that regard such sources as "indexed" (though with special notes). 
+
+4. Country of origin
+
+This is the most controversary aspect. What makes a journal Russian or say Turkish? Is it a language? Or citizenship of the editors? Or a country stated in the ISSN journal profile? A location of the publisher? Or maybe of the founders? What if there are few international founders?
+
+I hope this explains why the question "How many Russian academic titles are indexed in Scopus or Web of Science?" is doomed. 
+
+### Scopus
+
+Russian office of Elsevier publish their own, manually-curated list of [the Russian titles indexed by Scopus](https://elsevierscience.ru/products/scopus/). I will use the version dated as of Feb 2021 and removed the discontinued titles. I take it as it is, leaving Elsevier responsible for possible errors.
+
+```{r Scopus, echo=TRUE, message=FALSE, warning=FALSE}
+scopus <- readxl::read_xlsx(paste0(dir, "/sources/russian_titles_in_scopus_02.2021.xlsx"), 
+                    sheet = "Title List", skip = 6) %>% 
+  select(code = 1, srctitle = 3, pissn = 4, eissn = 5, Status) %>% 
+  filter(Status=="Active", grepl("J", code)) %>% 
+  pivot_longer(cols = c("pissn", "eissn"), names_to = "type", values_to = "issn") %>% 
+  filter(!is.na(issn)) %>% 
+  mutate(db = "scopus") %>% 
+  select(db, srctitle, type, issn)
+
+glimpse(scopus) 
+```
+
+### RSCI (WoS/Russian Science Citation Index) 
+
+Russian Science Citation Index is a joined project of Clarivate and [the National Electronic Library aka eLIBRARY.RU](https://elibrary.ru/project_rsci.asp?). It has an ambiguous name, as eLIBRARY.RU has its own citation index (РИНЦ/RINC), which is also translated as Russian Science Citation Index. Sometimes, they are confused, e.g. [RSCI Wikipedia page](https://en.wikipedia.org/wiki/Russian_Science_Citation_Index) relates to the RINC, but also contains the external links relating to the Clarivate. As a result this page is referenced here and there in different sense - e.g. [Wikipedia page for Web of Science ](https://en.wikipedia.org/wiki/Web_of_Science) refers to RSCI Wiki page as to its regional database). The project is supervised by the Russian Academy of Sciences (RAS) whose role is thought to ensure a proper selection process to fill in RSCI with the best Russian titles. 
+
+In May 2021 RAS issued a new list of RSCI titles. You know, as a table in PDF file (RAS-style). 
+
+I will not copy here a code I used to parse that PDF into a CSV, it is the same as I used for parsing the other PDF table in one of [previous posts](https://dwayzer.netlify.app/posts/2021-05-09-vak-list-pdfs/). So now I just read CSV (and you can download it as Excel file in the end of the post).
+
+```{r RSCI, echo=TRUE, message=FALSE, warning=FALSE}
+rsci <- read_csv(paste0(dir, "/sources/2021_rsci_list_parsed.csv")) %>% 
+  select(srctitle = title, issn1, issn2) %>% 
+  mutate(db = "rsci") %>% 
+  pivot_longer(cols = c("issn1", "issn2"), 
+               names_to = "type", values_to = "issn") %>% 
+  filter(!is.na(issn)) %>% 
+  select(db, srctitle, type, issn) %>% 
+  filter(!is.na(issn))
+
+glimpse(rsci)
+```
+
+### Web of Science Core Collection
+
+Clarivate do not craft a "special list" of the Russian journal titles, so my approach is first to select from [Master Journal List](https://mjl.clarivate.com/collection-list-downloads) all the titles where the country of origin is RUSSIA. This leaves a lot of "meta-Russian" journals apart, so I also took from Web of Science Masterl lists the titles present in Scopus and RSCI. This adds, to the previously selected titles, translated titles and some other of mixed origin. I used the versions dated as of May 18, 2021.
+
+```{r WoSCC, echo=TRUE, message=FALSE, warning=FALSE}
+wos_merged <- paste0(dir, "/sources/") %>% list.files(full.names = TRUE) %>% 
+  .[grepl("wos-core",.) & grepl("csv",.)] %>% 
+  map_df(read_csv) %>% 
+  pivot_longer(cols = c("ISSN", "eISSN"), 
+               names_to = "issn.type", values_to = "issn") %>% 
+  filter(!is.na(issn)) %>% 
+  select(srctitle = 1, address = 3, type = issn.type, issn = issn)
+
+wos <- bind_rows(
+  wos_merged %>% filter(grepl("russia",address, ignore.case = TRUE)),
+  wos_merged %>% filter(issn %in% rsci$issn),
+  wos_merged %>% filter(issn %in% scopus$issn)
+  ) %>% 
+  mutate(db = "wos") %>% 
+  select(db, srctitle, type, issn) %>% 
+  distinct() 
+
+remove(wos_merged)
+glimpse(wos)
+```
+
+### Aggregation
+
+The next steps involved:
+
+(1) cleaning and few manual corrections (removing "--" or Cyrillix X from ISSNs).
+
+(2) adding ISSN-L to each individual ISSN (I use ISSN-L/ISSN mapping files, provided by ISSN.org) and ISSN registration info for each ISSN-L (the code is similar to that in [previous post about VAK titles](https://dwayzer.netlify.app/posts/2021-05-10-vak-titles-in-crossref/))
+
+(3) checking if ISSNs registered in CrossRef and if any 2020 publications are deposited (the code is also available in [the post about VAK titles](https://dwayzer.netlify.app/posts/2021-05-10-vak-titles-in-crossref/))
+
+(4) combining the harvested information into a wide table with ISSN-L as a key
+
+### Final Table
+
+As the joint table is the main purpose of this post, some columns are adjusted with URLs:
+
+- ISSN-L will bring you to portal.issn.org and opens the journal infopage
+
+- titles shows the journal titles present in the lists of providers 
+
+- issn shows the journal serial identificators from ISSN.org  
+
+- wos, rsci, scopus have "yes" value if the journal is indexed (June 2021)
+
+- in_Lens directs to [Lens.org](https://www.lens.org/) and will open all the documents found for the journals ISSNs 
+
+- cr_2020 shows a number of 2020 documents registered in [CrossRef](https://www.crossref.org/) and will open a result of corresponding API-request (you may check). The journals with zero publications either ignore registering the DOIs, or register them in other places (DataCite, Zenodo, Mendeley,...)
+
+- cr_publisher will open the publisher's information in CrossRef ([more about CrossRef API](https://github.com/CrossRef/rest-api-doc))
+
+- issn_country - as present in ISSN.org 
+
+- issn_titles - as present in ISSN.org
+
+You can use the interactive version below or download the table in Excel or CSV format. 
+
+```{r, layout="l-page", echo=TRUE, message=FALSE, warning=FALSE}
+db_pivot <- read_csv(paste0(dir, "/russian_titles_in_WSR_pivot_wc_wp.csv"))  %>% 
+  select(issn_L, titles, wos, rsci, scopus,
+         issn, issn_country = country_issn, 
+         issn_title = src_title_issn, 
+         cr_member = member,
+         cr_publisher = publisher,
+         cr_location = location,
+         cr_2020_number = starts_with("cr_20")) 
+
+db_pivot %>% arrange(desc(cr_2020_number)) %>% 
+  mutate(issn_L = paste0('<a href=\'', 
+                         paste0("https://portal.issn.org/resource/ISSN/", issn_L), 
+                         '\'\\s target = \"_blank\")>', issn_L, '</a>')) %>%
+  mutate(in_Lens = sapply(str_split(issn, "\\|"), 
+                       function(x) paste0(paste0("source.issn:", x), collapse = "%20OR%20"))) %>%
+  mutate(in_Lens = paste0("https://www.lens.org/lens/search/scholar/list?q=", 
+                       gsub("-","",in_Lens), 
+                       "&p=0&n=100")) %>%
+  mutate(in_Lens = paste0('<a href=\'', in_Lens, 
+                       '\'\\s target = \"_blank\")>', "search", '</a>')) %>%
+  mutate(cr_2020 = sapply(str_split(issn, "\\|"), 
+                       function(x) paste0(paste0("issn:", x), collapse = ","))) %>%
+  mutate(cr_2020 = paste0("https://http://api.crossref.org/works?filter=", 
+                        cr_2020, 
+                       ",from-pub-date:2020-01,until-pub-date:2020-12")) %>%
+  mutate(cr_2020 = paste0('<a href=\'', cr_2020, 
+                       '\'\\s target = \"_blank\")>', 
+                       ifelse(is.na(cr_2020_number),0,cr_2020_number), 
+                       '</a>')) %>%
+  rowwise() %>% 
+  mutate(cr_member = ifelse(is.na(cr_member), NA_character_, 
+         paste0("https://api.crossref.org/members/", cr_member))) %>% 
+  mutate(cr_location = ifelse(is.na(cr_location), NA_character_, 
+                              paste0("(location: ", cr_location,")"))) %>% 
+  mutate(cr_publisher = ifelse(is.na(cr_member), NA_character_,
+           paste0('<a href=\'', cr_member,  '\'\\s target = \"_blank\")>', 
+                  cr_publisher, '</a>'))) %>%
+  unite(c("cr_publisher", "cr_location"), col = "cr_publisher", 
+        sep = "</br>", na.rm=TRUE) %>% 
+  mutate_at(c("wos", "rsci", "scopus"), ~as.factor(.x)) %>% 
+  mutate_at(c("issn", "titles"), ~gsub("\\|",";</br>",.x)) %>% 
+  select(issn_L, titles, issn, wos, rsci, scopus, 
+        in_Lens, cr_2020, cr_publisher, issn_country, issn_title) %>% 
+  DT::datatable(rownames = FALSE, escape = FALSE, filter = 'top', 
+               caption = htmltools::tags$caption(style = 'caption-side: bottom; text-align: left; font-size: 80%; color: #969696; font-family: Roboto Condensed;',
+               'Data: portal.issn.org | crossref.org | elibrary.ru/project_rsci.asp | mjl.clarivate.com | elsevierscience.ru/products/scopus/ (see in the text).'),
+               class = 'compact striped', extensions = 'Buttons', 
+               options = list(searchHighlight = TRUE,
+                 columnDefs = list(
+                  list(width = '350px', targets = c(1)),
+                  list(width = '300px', targets = c(8)),
+                  list(width = '250px', targets = c(10)),
+                  list(width = '80px', targets = c(0,2)),
+                  list(width = '40px', targets = c(3:5)),
+                  list(className = 'dt-center', targets = c(2:7))
+                 ),
+                buttons = c('csv', "excel"))) %>% 
+     formatStyle('scopus',  backgroundColor = styleEqual('yes', '#ff6c00'), fontWeight = 'bold') %>% 
+    formatStyle('wos',  backgroundColor = styleEqual('yes', '#5e33bf'), fontWeight = 'bold') %>% 
+    formatStyle('rsci',  backgroundColor = styleEqual('yes', '#5EF085'), fontWeight = 'bold')
+```
+
+### Limitations
+
+1. The table includes few journal titles that are hardly Russian, but RAS approved them to be a part of RSCI (it is their headache now).
+
+2. The list may miss the last changes. No doubt that Scopus selected (or discontinued) for indexation some titles since Feb 2021.
+
+3. There can be some translated titles, indexed by Web of Science with other than Russian country of origin, which could be considered as "meta-Russian" in our exercise. 
+
+4. The ISSN values and other details are used as it is.
+
+5. Some journals are present in the table with both translated and original versions. Like Physical Mesomechanics - WoS and Scopus index its English version (issn-L: 1029-9599), RSCI index its Russian version (issn-L: 1683-805X). Those two versions are not linked according to the data in ISSN.org or CrossRef.org.
+
+6. Some journals are shown to have no publications in CrossRef,.click on the link  
+
+### Why Lens?
+
+Lens.org ([about](https://about.lens.org/)) imports the data from multiple sources (to name a few: CrossRef, MEDLINE, Microsoft Academic, Core, Patent Agencies), develops incredibly [fast](https://about.lens.org/category/release-notes/) and provides a lot of flexibility for further analysis like [Reports](https://www.lens.org/lens/report/view/Regenerative-Agriculture-Open-evidence-for-its-role-in-solving-climate-change/1098/page/1111), [Patent Analysis tools](https://www.lens.org/lens/search/patent/structured), [Author Profiles](https://www.lens.org/lens/profile/14615404/scholar), etc. 
+
+And it is OPEN! 
+
+If you never tried the Lens, you can give it a try.
+
+<iframe src="https://www.lens.org/lens/embed/scholar-search?theme=dark" height="100px" width="100%" frameborder=0></iframe>
+
+### Acknowledgments {.appendix}
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+pkgs <- c('dplyr', 'readr', 'tidyr', 'purrr', 'ggplot2', 'stringr', 'distill',
+          'scales', 'DT', 'knitr', 'rmarkdown')
+
+do.call('c',lapply(pkgs, citation)) %>% sort()
+```
+
+Allaire J, Iannone R, Presmanes Hill A, Xie Y (2021). _distill: 'R Markdown' Format for
+Scientific and Technical Writing_. R package version 1.2, <URL:
+https://CRAN.R-project.org/package=distill>.
+
+Allaire J, Xie Y, McPherson J, Luraschi J, Ushey K, Atkins A, Wickham H, Cheng J, Chang
+W, Iannone R (2021). _rmarkdown: Dynamic Documents for R_. R package version 2.7, <URL:
+https://github.com/rstudio/rmarkdown>.
+
+Henry L, Wickham H (2020). _purrr: Functional Programming Tools_. R package version
+0.3.4, <URL: https://CRAN.R-project.org/package=purrr>.
+
+Wickham H (2020). _tidyr: Tidy Messy Data_. R package version 1.1.2, <URL:
+https://CRAN.R-project.org/package=tidyr>.
+
+Wickham H (2016). _ggplot2: Elegant Graphics for Data Analysis_. Springer-Verlag New
+York. ISBN 978-3-319-24277-4, <URL: https://ggplot2.tidyverse.org>.
+
+Wickham H (2019). _stringr: Simple, Consistent Wrappers for Common String Operations_.
+R package version 1.4.0, <URL: https://CRAN.R-project.org/package=stringr>.
+
+Wickham H, Francois R, Henry L, Muller K (2021). _dplyr: A Grammar of Data
+Manipulation_. R package version 1.0.3, <URL:
+https://CRAN.R-project.org/package=dplyr>.
+
+Wickham H, Hester J (2020). _readr: Read Rectangular Text Data_. R package version
+1.4.0, <URL: https://CRAN.R-project.org/package=readr>.
+
+Wickham H, Seidel D (2020). _scales: Scale Functions for Visualization_. R package
+version 1.1.1, <URL: https://CRAN.R-project.org/package=scales>.
+
+Xie Y (2020). _knitr: A General-Purpose Package for Dynamic Report Generation in R_. R
+package version 1.30, <URL: https://yihui.org/knitr/>.
+
+Xie Y (2015). _Dynamic Documents with R and knitr_, 2nd edition. Chapman and Hall/CRC,
+Boca Raton, Florida. ISBN 978-1498716963, <URL: https://yihui.org/knitr/>.
+
+Xie Y (2014). “knitr: A Comprehensive Tool for Reproducible Research in R.” In Stodden
+V, Leisch F, Peng RD (eds.), _Implementing Reproducible Computational Research_.
+Chapman and Hall/CRC. ISBN 978-1466561595, <URL:
+http://www.crcpress.com/product/isbn/9781466561595>.
+
+Xie Y, Allaire J, Grolemund G (2018). _R Markdown: The Definitive Guide_. Chapman and
+Hall/CRC, Boca Raton, Florida. ISBN 9781138359338, <URL:
+https://bookdown.org/yihui/rmarkdown>.
+
+Xie Y, Cheng J, Tan X (2021). _DT: A Wrapper of the JavaScript Library 'DataTables'_. R
+package version 0.17, <URL: https://CRAN.R-project.org/package=DT>.
+
+Xie Y, Dervieux C, Riederer E (2020). _R Markdown Cookbook_. Chapman and Hall/CRC, Boca
+Raton, Florida. ISBN 9780367563837, <URL:
+https://bookdown.org/yihui/rmarkdown-cookbook>.
