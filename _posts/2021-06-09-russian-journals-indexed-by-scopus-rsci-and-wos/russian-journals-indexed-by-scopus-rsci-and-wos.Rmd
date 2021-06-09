@@ -1,7 +1,7 @@
 ---
 title: "Russian Journals indexed by Scopus, RSCI, and WoS"
 description: |
-  How difficult it can be to build an aggregated list of the scientific journal titles indexed in A&I databases and citation indices? Extremely difficult, if those venues are the Russian academic journals. In this post I am reviewing the key obstacles and trying to build such a list of the Russian journals indexed in Web of Science Core Collection, Scopus, and RSCI (Russian Citation Index by Web of Science).
+  How difficult it can be to build an aggregated list of the scientific journal titles indexed in A&I databases and citation indices? Extremely difficult, if those venues are the Russian academic journals. In this post I am reviewing the key obstacles and trying to build such a list of the Russian journals indexed in Web of Science Core Collection, Scopus, and RSCI (Russian Citation Index by Web of Science). This is a version updated on June 9, 2021.
 author:
   - first_name: "Aleksei"
     last_name: "Lutai" 
@@ -82,10 +82,10 @@ I hope this explains why the question "How many Russian academic titles are inde
 
 ### Scopus
 
-Russian office of Elsevier publish their own, manually-curated list of [the Russian titles indexed by Scopus](https://elsevierscience.ru/products/scopus/). I will use the version dated as of Feb 2021 and removed the discontinued titles. I take it as it is, leaving Elsevier responsible for possible errors.
+Russian office of Elsevier publish their own, manually-curated list of [the Russian titles indexed by Scopus](https://elsevierscience.ru/products/scopus/). I will use the version released today (!) and remove the discontinued titles. I take it as it is, leaving Elsevier responsible for possible errors.
 
 ```{r Scopus, echo=TRUE, message=FALSE, warning=FALSE}
-scopus <- readxl::read_xlsx(paste0(dir, "/sources/russian_titles_in_scopus_02.2021.xlsx"), 
+scopus <- readxl::read_xlsx(paste0(dir, "/sources/russian_titles_in_scopus_06.2021.xlsx"), 
                     sheet = "Title List", skip = 6) %>% 
   select(code = 1, srctitle = 3, pissn = 4, eissn = 5, Status) %>% 
   filter(Status=="Active", grepl("J", code)) %>% 
@@ -247,15 +247,13 @@ db_pivot %>% arrange(desc(cr_2020_number)) %>%
 
 1. The table includes few journal titles that are hardly Russian, but RAS approved them to be a part of RSCI (it is their headache now).
 
-2. The list may miss the last changes. No doubt that Scopus selected (or discontinued) for indexation some titles since Feb 2021.
+2. There can be some translated titles, indexed by Web of Science with other than Russian country of origin, which could be considered as "meta-Russian" in our exercise. 
 
-3. There can be some translated titles, indexed by Web of Science with other than Russian country of origin, which could be considered as "meta-Russian" in our exercise. 
+3. The ISSN values and other details are used as it is.
 
-4. The ISSN values and other details are used as it is.
+4. Some journals are present in the table with both translated and original versions. Like Physical Mesomechanics - WoS and Scopus index its English version (issn-L: 1029-9599), RSCI index its Russian version (issn-L: 1683-805X). Those two versions are not linked according to the data in ISSN.org or CrossRef.org.
 
-5. Some journals are present in the table with both translated and original versions. Like Physical Mesomechanics - WoS and Scopus index its English version (issn-L: 1029-9599), RSCI index its Russian version (issn-L: 1683-805X). Those two versions are not linked according to the data in ISSN.org or CrossRef.org.
-
-6. Some journals are shown to have no publications in CrossRef,.click on the link  
+5. Some journals are shown to have no publications in CrossRef,.click on the link  
 
 ### Why Lens?
 
