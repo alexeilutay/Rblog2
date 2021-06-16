@@ -1,0 +1,576 @@
+---
+title: "Tagging the Scientific Abstracts with Wikidata Items"
+description: |
+  Here I am trying to build a script that process the short scientific texts (abstracts) and finds Wikidata items corresponding to the terms. An interactive and editable table is also created to allow an editor to validate the found matches and find other related items. A bit amateurish attempt by a Wikidata newbie. 
+author:
+  - first_name: "Aleksei"
+    last_name: "Lutai" 
+    url: https://www.linkedin.com/in/lutaya/
+    orcid_id: 0000-0003-1341-781X
+date: 06-16-2021
+categories:
+  - wikidata
+  - udpipe 
+  - api
+  - text mapping
+  - sparql
+creative_commons: CC BY
+preview: images/editable_table.png
+output:
+  distill::distill_article:
+    self_contained: false
+    code_folding: true
+    highlight: kate
+    highlight_downlit: true
+    toc: true
+    toc_depth: 3
+    toc_float: true
+---
+
+```{r eval=TRUE, message=FALSE, warning=FALSE, include=FALSE, echo=TRUE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+
+Sys.setlocale("LC_CTYPE","russian")
+Sys.setlocale("LC_COLLATE","russian")
+Sys.setlocale("LC_TIME", "russian")
+
+library(tidyverse)
+library(jsonlite)
+library(DT)
+library(udpipe)
+library(WikidataQueryServiceR)
+
+onedrive <- list.dirs("C:/Users", recursive = FALSE) %>% 
+  .[grepl("alexe|WD|lutay",.)] %>% list.dirs(., recursive = FALSE) %>% 
+  .[grepl("onedrive",., ignore.case = TRUE)]
+
+dir <- paste0(onedrive, "/Wikidata/Science/")
+
+options(DT.options = list(pageLength = 5, dom = "Brftip",  
+  deferRender = TRUE, ordering = TRUE, autoWidth = TRUE, scrollX = TRUE))
+
+```
+
+With every day Wikidata occupies me more and more. Having played a bit with the [academic journals](https://dwayzer.netlify.app/posts/2021-05-27-academic-journals-through-the-lens-of-wikidata/) and the [institutions](https://dwayzer.netlify.app/posts/2021-05-24-riro/), I started thinking how to extract the relavent Wikidata items for any text and use them for tagging. 
+
+My inner voice was like: 'If Wikidata is an open database, there should be a lot of solutions, you just need to find a proper tutorial'. Aha, the tutorials, a little devil. 
+
+These were the options I found:
+
+- Wikimedia community has a lot of tools, some of which are designed for tagging. One of it, [Mix'n'match](https://mix-n-match.toolforge.org/#/) seems to be created specifically for tagging. It also provides an option to download the catalogues and dictionaries matched to Wikidata items. There could also be some other tools - [Wikipedia Weekly Network/Live Wikidata Editing](https://meta.wikimedia.org/wiki/Wikipedia_Weekly_Network/Live_Wikidata_Editing) offers an impressive collection of video episodes that can serve a tutorial function. I have watched just few so far (will go on). But at that moment I was hoping to find a "magical" API to minimize the manual routine.
+
+- [Scholia](https://scholia.toolforge.org/) - a brilliant tool, offers [Text2Topic](https://scholia.toolforge.org/text-to-topics) convertor, which also requires a manual input. Its open code is available at [Github](https://github.com/fnielsen/scholia/tree/master/scholia), but my R+/P- phenotype leaves me no chance for its adoption.
+
+- There is also an R-solution for text search in Wikidata - a new [WikidataR package](https://github.com/TS404/WikidataR) (still in development) offers a "find item" function. 
+It is a wrapper for [Wikimedia API](https://www.mediawiki.org/wiki/API:Main_page) module named [wbsearchentities](https://www.wikidata.org/w/api.php?action=help&modules=wbsearchentities) that does a very generic search. Try to do query a term ["galaxy"](https://www.wikidata.org/w/api.php?action=wbsearchentities&search=galaxy&language=en) and in addition to an astronomical structure, you will have the LA footbal club, military aircraft, US record label, etc, etc. 
+
+- And there are many examples of [SPARQL queries](https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples#Mediawiki_API) for Wikidata Query Service, where I also took some ideas from.
+
+Finally I decided to create my own "synthetic" approach to make a search more specific and automate text tagging. In other words, another nube who pleaded ignorance for a pleasure of re-creating a bycicle. That's one of the best privilieges the neophytes can enjoy, isn't it? 
+
+### Size matters(?) 
+
+When it comes to scientific articles, there are many more sophisticated (and well developed) techniques for keyword extraction and topic modelling.
+
+- the authors usually suggest the keywords (not always good ones though), which could be used for initial setting of subject area;
+
+- the indexing services (like [Medline](https://pubmed.ncbi.nlm.nih.gov/), [Semantics Scholar](https://www.semanticscholar.org/), [Scopus](https://www.scopus.com/)) also assign the terms (not equally well for all subjects though). Some of them provide free API.
+
+- the article have references and (sometimes) the citations - they can be used to find an article's position in the citation graph and to extract more contextual information from its closest neighbours. [COCI](https://opencitations.net/index/coci) seems to be the most practical option for this, while all the World is waiting for [OpenAlex](https://openalex.org/) aimed for substitution of Microsoft Academic.      
+
+- with Open Access development the full texts are getting more available for text data mining (TDM). If you have a facility to do ML on many millions of full-text documents, [CORE](https://core.ac.uk/) and [Unpaywall](https://unpaywall.org/) can provide you with the data.   
+
+So a large-scale solution is likely to be about using ML on the abovementioned datasets for topic modelling and further fuzzy matching against [Wikidata dump](https://meta.wikimedia.org/wiki/Data_dumps). 
+
+This post is very much not about such scale of solution. Let's pretend that we have just a piece of text (no references, no DOI, no keywords) and there is no budget for IT muscles (does it sound like an editorial department for many journals?).
+
+### Data 
+
+As a coverage of scientific terms in Wikidata [varies between the different subjects](https://mix-n-match.toolforge.org/#/group/science), I decided to try my solution on the abstracts from Science (AAAS, issn:1095-9203), as subject-agnostic academic journal. I utilized CrossRef API [example](https://api.crossref.org/works?filter=issn:1095-9203,from-pub-date:2020-01,has-abstract:true&sample=5&select=abstract) to obtain the abstracts of 5 random articles published after Jan 2020.
+
+You can see them in a table below.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE}
+data <- dir %>% list.files(full.names = TRUE) %>% .[grepl("crworks.json",.)] %>% 
+  fromJSON(flatten = TRUE) %>% 
+  map("items") %>% .$message %>%   
+  mutate(abstract = str_replace_all(abstract, "<.+?>","")) %>% 
+  mutate(abstract = stringi::stri_trans_general(abstract, 'nfc; latin')) %>% 
+  mutate(abstract = str_squish(abstract))
+
+data %>% 
+  #mutate(abstract - substr(abstract, 1,250)) %>% 
+  #summarize(abstracts = paste(abstract, collapse  = " ...")) %>% 
+  datatable(rownames = FALSE, options = list(dom = "tip", pageLength = 1 ))
+```
+
+Our next step would be to extract from the abstracts the words and their combinations that can be a scientific term and have an item in Wikidata. I am not a linguist, but from what I read it seemed to me that there is a consensus that most terms are nouns - as a sole word (galaxy), or in a combination (coronavirus disease), or preceded with the adjective (clinical trial).
+
+### Lemmatization and POS-analysis, udpipe
+
+The package [udpipe](https://bnosac.github.io/udpipe/en/index.html) offers a set of functions for Tokenization, Parts-of-Speech (POS) tagging, Lemmatization, Dependency Parsing, etc. 
+
+The process I am using below is described [here](https://bnosac.github.io/udpipe/docs/doc7.html) with few exceptions:
+
+- udpipe tokenizer splits the words by hyphens (no chance for SARS-CoV-2), so I tokenized the abstracts with regular expression.
+
+- in POS-analysis udpipe tags the pronouns as nouns (N) and the numericals as adjectives (A). Therefore, I removed them ("which" or "37" are unlikely to be a sensible terms) at some level. This does not affect the numbers in cov-2 or covid-19, as the hyphens are not cleaved.
+
+More details are in the code below.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE}
+# to avoid running the chunks I saved the results on hard disk 
+file_d_terms <- paste0(dir, "data_terms.RDS")
+
+if(!file.exists(file_d_terms)){
+  # for the first run, model_dir is not used
+  # the library is getting downloaded from www (default)
+  udmodel <- udpipe_download_model(
+    model_dir = paste0(onedrive, "/Wikidata/Science/"), 
+    language = "english", 
+    overwrite = FALSE
+    )
+  udmodel <- udpipe_load_model(file = udmodel$file_model)
+  
+  # udpipe breaks by hyphens, so I use str_extract_all with a regex expr.
+  datax <- data$abstract %>% 
+    map(~str_extract_all(.x,"[[:alnum:]\\-]+") %>% 
+          map_chr(~paste0(.x, collapse = "\n"))) %>% 
+    setNames(LETTERS[1:5]) %>%
+    map(~udpipe_annotate(object = udmodel, x = .x, 
+                         tokenizer = "vertical") %>%
+          as.data.frame() %>% 
+          mutate(phrase_tag = as_phrasemachine(upos, type = "upos")) %>% 
+          mutate(lemma = tolower(lemma))) 
+     
+  data_terms <- datax %>%
+    # udpipe tags pronouns (PRON) similar as nouns (N)
+    # I remove the pronons before keywords_phrases
+    map(~.x %>% filter(upos!="PRON")) %>%
+    # udpipe tags numericals (NUM) similar as adjectives (A)
+    # I remove the numericals before keywords_phrases
+    map(~.x %>% filter(upos!="NUM")) %>%
+    map(~keywords_phrases(x = .x$phrase_tag, term = .x$lemma, 
+                      pattern = "N|AN|NN", is_regex = TRUE, 
+                      ngram_max = 2, detailed = FALSE) %>% 
+          select(keyword) %>% filter(nchar(keyword)>2))
+  
+  # saving the results on disk as RDS file for further using 
+  list(
+    datax = datax,
+    data_terms = data_terms
+    ) %>% write_rds(file_d_terms)
+} else {
+  datax <- read_rds(file_d_terms) %>% .[["datax"]] 
+  data_terms <- read_rds(file_d_terms) %>% .[["data_terms"]] 
+}
+```
+
+For each abstract we produced 2 datasets (in my code packed in the lists), containing: 
+
+(1) the results of lemmatization and POS-tagging
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE}
+datax$A %>% datatable(rownames = FALSE)
+```
+
+(2) the keyword phrases (N, N+N, A+N) to be used for searching Wikidata
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE}
+data_terms$A %>% summarize(keywords = paste(keyword, collapse  = " | ")) %>% 
+  datatable(rownames = FALSE, options = list(dom = "t"))
+```
+
+The terms and phrases seems OK to me, except that I would qualify "allosteric" as an adjective.
+
+Now as we have the terms it's time to build a search function that will be retrieving the relevant Wikidata items. 
+
+### Searching a term in Wikidata
+
+In order to increase a specificity of search (i.e. to retrieve more scientific terms and less "footbal teams" or "rockstar aliases"), I decided to do queries in SPARQL via Wikidata Query Service withe special filters.   
+
+The SPARQL query has the following conditions that:
+
+(1) retrieve the search results from wikibase API 
+
+(2) retrieve a number of site links for Wikidata item
+
+(3) check against the dictionaries and thesauri (a long chain of wdt:P_ in a code. Some thesauri have direct relations to the scientific concepts (like MeSH - P486, ChEBI ID - P683, Semantic Scholar topic ID - P6611), the others are rather dictionaries and encyclopedias (like Oxford Classical Dictionary - P9106, or Enciclopaedia Britannica - P1417). You should be aware that those terms are also not completely matched to Wikidata items (see [Mix'n'Match](https://mix-n-match.toolforge.org/#/) for particular catallogues).
+
+(4) excludes disambiguation wikimedia pages (Q4167410) - there's over [1M such pages](https://query.wikidata.org/#SELECT%20%28COUNT%28%3Fitem%29%20as%20%3Fcount%29%20WHERE%20%7B%20%3Fitem%20wdt%3AP31%20wd%3AQ4167410.%7D%0A) in Wikidata.
+
+(5) filters only English terms
+
+(6) filters the terms found at least in 3 thesauri 
+
+(7) filters the items that have the same start as the query (e.g. it retrieves not only "neutron" but also a "neutron star"). The filter based on the regular expression leaves a lot of flexibility - e.g. you can also set the strict matching by enframing the terms with ^ and $.
+
+(8) scores the filtered results based on a number of sitelinks (and further by number of dictionaries the term was found in).
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
+sparql_composer <- function(term){
+  paste0('SELECT ?item (SAMPLE(?itemLabel) as ?item_label)
+          (SAMPLE(?typeLabel) as ?entity_type) ?itemDescription 
+          ?sites (COUNT(distinct(?id)) AS ?count)
+    WHERE {hint:Query hint:optimizer "None".
+      SERVICE wikibase:mwapi {
+          bd:serviceParam wikibase:endpoint "www.wikidata.org";
+           wikibase:api "EntitySearch";
+            mwapi:search "', term, '"; 
+            mwapi:language "en".
+          ?item wikibase:apiOutputItem mwapi:item.
+      }
+      FILTER BOUND (?item)     
+      optional{?item wikibase:sitelinks ?sites.}
+      ?item wdt:P1417|wdt:P486|wdt:P683|wdt:P6366|wdt:P3916|
+            wdt:P227|wdt:P6366|wdt:P244|wdt:P4732|wdt:P231|
+            wdt:P1014|wdt:P7859|wdt:P949|wdt:P2671|wdt:P6611|
+            wdt:P268|wdt:P2163|wdt:P2581|wdt:P5019|wdt:P646|
+            wdt:P2924|wdt:P9106|wdt:P4212|wdt:P3123|wdt:P2347|
+            wdt:P1692|wdt:P8814|wdt:P699|wdt:P3219 ?id.
+      ?item wdt:P31|wdt:P279 ?type. 
+      ?item rdfs:label ?itemLabel.
+      FILTER(LANGMATCHES(LANG(?itemLabel), "en")).
+      FILTER REGEX(LCASE(?itemLabel), "^', term, '"). 
+      MINUS {?item wdt:P31 wd:Q4167410}
+      SERVICE wikibase:label {
+          bd:serviceParam wikibase:language "en".
+          ?type rdfs:label ?typeLabel.
+          ?item schema:description ?itemDescription.
+          }  
+    }
+    group by ?item ?itemDescription ?sites
+    HAVING ( ?count > 2 )
+    ORDER BY DESC(?sites) DESC(?count) 
+    LIMIT 2')
+} 
+```
+
+I tried to use the development version of WikidataR ([https://github.com/TS404/WikidataR](https://github.com/TS404/WikidataR)) for SPARQL queries, but found that it contained a little bug that incorrectly processed the output results with 1 row and prevent putting the function under map_df() control. I updated the code a bit. 
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
+wd_query <- function(query, format = "simple", ...){
+  output <- WikidataQueryServiceR::query_wikidata(sparql_query = query, 
+                    format = format, ...)
+  output <- tibble(data.frame(output)) %>% 
+    mutate_all(~ifelse(grepl("Q\\d+$",.x), str_extract(.x, "Q\\d+$"), .x))
+  if (nrow(output) == 0) {output <- tibble(value = NA)}
+  return(output)
+}
+```
+
+Next I took a vector of unique terms and made a chain of queries with map_df (I could pass a full vector into the request but in that case I would not see in the results which result corrsponds to which term).  
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE}
+file_w_terms <- paste0(dir, "/terms.csv")
+if(!file.exists(file_w_terms)){
+  wiki_terms <- unlist(data_terms) %>% unique() %>% 
+    map_df(~wd_query(sparql_composer(.x), format = "simple") %>% 
+                  mutate(query = .x) %>% 
+                  mutate_all(~as.character(.x))
+                 ) %>%  
+    filter(!is.na(item)) %>% 
+    select(query, item, item_label, entity_type, 
+           itemDescription, sites, count) %>% 
+    arrange(query)
+  write_excel_csv(wiki_terms, file_w_terms)
+} else {
+  wiki_terms <- read_csv(file_w_terms)
+}
+
+data_edit <- data_terms %>% 
+  map(~.x %>% 
+        left_join(wiki_terms, by = c("keyword" = "query")) %>% 
+        filter(!is.na(item))
+  )
+```
+
+### The results
+
+The retrieved results are still far from being 100% specific and need to be validated. For this I created a prototype of checking template - an interactive DT table that:
+
+- shows the text excerpts containg the term (+/- 2 words around)
+
+- highlights the terms
+
+- provides a description of the found Wikidata item
+
+- can be edited (right here! Click on ? and change it to "yes" in valid? column)
+
+- can be downloaded to CSV or XLSX file with the introduced changes.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE}
+tables_rds <- paste0(dir, "editable_tables.rds")
+
+if(!file.exists(tables_rds)){
+  tables <- list()
+
+  for (m in 1:nrow(data)){
+    lemma_text <- tolower(paste0(unlist(datax[[m]]["lemma"]), collapse = " "))
+
+    y <- data_edit[[m]] %>%
+      mutate(seltext = gsub(" ",".{0,5}",keyword)) %>% 
+      mutate(painter = paste0("^",seltext,"|", seltext)) %>%
+      mutate(extractor = paste0('((?:\\S+\\s+){0,2}\\b',
+                            seltext,
+                      '.??\\b(\\s*|\\.)(?:\\S+\\b\\s*){0,2})')) %>% 
+      mutate(extractor = sapply(extractor, 
+                  function(x) paste0("^",extractor,
+                                     "|", extractor))) %>%  
+      mutate(text = "") 
+  
+    for (i in 1:nrow(y)){
+      y[i, "text"] <- str_extract_all(lemma_text, y$extractor[i], 
+                                      simplify = TRUE) %>% 
+        paste0("...",.,"...") %>% paste(collapse = "")
+      
+      y[i, "text"] <- str_replace_all(y$text[i], y$painter[i],
+                        paste0('<span style="background-color: #FEE1E8">',
+                               y$keyword[i],'</span>'))
+    }  
+
+  tables[[m]] <- y %>% 
+    mutate(item_label = paste0("<b>label:</b> ", toupper(item_label)), 
+           entity_type = paste0("<b>type:</b> ", entity_type),
+           itemDescription = paste0("<i>", itemDescription, "<i>")) %>%
+    unite(col = "details", c("item_label", "entity_type", 
+                             "itemDescription"), sep = "</br>") %>% 
+    mutate("valid?" = "?")
+  }
+  write_rds(tables, tables_rds)
+  } else {
+    tables <- read_rds(tables_rds)
+  }
+```
+
+So there is an editable table in an automatically generated HTML-report that anyone can revise and save.
+
+### Case 1  
+  
+```{r , layout = "l-body-outset", echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE}  
+tables[[1]] %>% 
+  select(text, item, `valid?`, details) %>% 
+  DT::datatable(rownames = FALSE, escape = FALSE, #filter = 'top', 
+            editable = TRUE, class = 'compact striped',
+             caption = htmltools::tags$caption(style = 'caption-side: bottom; text-align: left; font-size: 80%; color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org (see in the text).'),
+            extensions = 'Buttons',
+            options = list(searchHighlight = TRUE,
+                            dom = 'Bfrtip', buttons = c('csv', "excel"), 
+                           columnDefs = list(
+                  list(width = '300px', targets = c(0)),
+                  list(width = '500px', targets = c(3)),
+                  list(width = '65px', targets = c(1,2)),
+                  list(className = 'dt-center', targets = c(2)))
+                  )
+            ) %>% 
+     formatStyle('valid?',  backgroundColor = styleEqual('yes', '#90ee90'), fontWeight = 'bold') 
+
+```
+
+### Case 2  
+  
+```{r , layout = "l-body-outset", echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE}  
+tables[[2]] %>% 
+  select(text, item, `valid?`, details) %>% 
+  DT::datatable(rownames = FALSE, escape = FALSE, #filter = 'top', 
+            editable = TRUE, class = 'compact striped',
+             caption = htmltools::tags$caption(style = 'caption-side: bottom; text-align: left; font-size: 80%; color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org (see in the text).'),
+            extensions = 'Buttons',
+            options = list(searchHighlight = TRUE,
+                            dom = 'Bfrtip', buttons = c('csv', "excel"), 
+                           columnDefs = list(
+                  list(width = '300px', targets = c(0)),
+                  list(width = '500px', targets = c(3)),
+                  list(width = '65px', targets = c(1,2)),
+                  list(className = 'dt-center', targets = c(2)))
+                  )
+            ) %>% 
+     formatStyle('valid?',  backgroundColor = styleEqual('yes', '#90ee90'), fontWeight = 'bold') 
+
+```
+
+### Case 3  
+  
+```{r , layout = "l-body-outset", echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE}  
+tables[[3]] %>% 
+  select(text, item, `valid?`, details) %>% 
+  DT::datatable(rownames = FALSE, escape = FALSE, #filter = 'top', 
+            editable = TRUE, class = 'compact striped',
+             caption = htmltools::tags$caption(style = 'caption-side: bottom; text-align: left; font-size: 80%; color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org (see in the text).'),
+            extensions = 'Buttons',
+            options = list(searchHighlight = TRUE,
+                            dom = 'Bfrtip', buttons = c('csv', "excel"), 
+                           columnDefs = list(
+                  list(width = '300px', targets = c(0)),
+                  list(width = '500px', targets = c(3)),
+                  list(width = '65px', targets = c(1,2)),
+                  list(className = 'dt-center', targets = c(2)))
+                  )
+            ) %>% 
+     formatStyle('valid?',  backgroundColor = styleEqual('yes', '#90ee90'), fontWeight = 'bold') 
+
+```
+
+### Case 4  
+  
+```{r , layout = "l-body-outset", echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE}  
+tables[[4]] %>% 
+  select(text, item, `valid?`, details) %>% 
+  DT::datatable(rownames = FALSE, escape = FALSE, #filter = 'top', 
+            editable = TRUE, class = 'compact striped',
+             caption = htmltools::tags$caption(style = 'caption-side: bottom; text-align: left; font-size: 80%; color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org (see in the text).'),
+            extensions = 'Buttons',
+            options = list(searchHighlight = TRUE,
+                            dom = 'Bfrtip', buttons = c('csv', "excel"), 
+                           columnDefs = list(
+                  list(width = '300px', targets = c(0)),
+                  list(width = '500px', targets = c(3)),
+                  list(width = '65px', targets = c(1,2)),
+                  list(className = 'dt-center', targets = c(2)))
+                  )
+            ) %>% 
+     formatStyle('valid?',  backgroundColor = styleEqual('yes', '#90ee90'), fontWeight = 'bold') 
+
+```
+
+### Case 5 
+  
+```{r, layout = "l-body-outset", echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE}  
+tables[[5]] %>% 
+  select(text, item, `valid?`, details) %>% 
+  DT::datatable(rownames = FALSE, escape = FALSE, #filter = 'top', 
+            editable = TRUE, class = 'compact striped',
+             caption = htmltools::tags$caption(style = 'caption-side: bottom; text-align: left; font-size: 80%; color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org (see in the text).'),
+            extensions = 'Buttons',
+            options = list(searchHighlight = TRUE,
+                            dom = 'Bfrtip', buttons = c('csv', "excel"), 
+                           columnDefs = list(
+                  list(width = '300px', targets = c(0)),
+                  list(width = '500px', targets = c(3)),
+                  list(width = '65px', targets = c(1,2)),
+                  list(className = 'dt-center', targets = c(2)))
+                  )
+            ) %>% 
+     formatStyle('valid?',  backgroundColor = styleEqual('yes', '#90ee90'), fontWeight = 'bold') 
+
+```
+
+### Final Results
+
+After the editor have checked the results (ok, that was me) and saved CSV files with the selected matches, the files are merged into a joint table for a final demonstration. Here you are - list the pages to see which Wikidata items are found for the abstracts. 
+
+```{r, layout = "l-body-outset", message=FALSE, warning=FALSE, echo=TRUE, eval = TRUE, include=TRUE}
+final_table <- paste0(dir, "/csvs/") %>% 
+  list.files(full.names = TRUE) %>% 
+  map_df(~read_csv(.x) %>% mutate(no = .x)) %>% 
+  filter(`valid?`=="yes") %>% 
+  mutate(details = str_extract(details, 
+                               "(?<=label:).+?(?=type)")) %>% 
+  select(-text) %>% distinct() %>% 
+  mutate(no = str_extract(no, "\\d(?=.csv)")) %>%
+  mutate(url = paste0('https://www.wikidata.org/wiki/', item)) %>% 
+  mutate(txt = paste0(#'<span style="background-color: #90ee90">', 
+                       tolower(details),
+                       #'</span>',
+                        ' :  (<a href=',url, ' target="_blank">',
+                      item,'</a>)')) %>% 
+  group_by(no) %>%
+  summarize(wikidata_items = paste(txt, collapse = "</br>")) %>% 
+  ungroup() %>% 
+  cbind(data) %>% 
+  select(abstract, wikidata_items)
+
+datatable(final_table, rownames = FALSE, escape = FALSE, 
+            editable = TRUE, class = 'compact striped', 
+          options = list(pageLength = 1, dom = "tip",
+                        columnDefs = list(
+                  list(width = '550px', targets = c(0)),
+                  list(width = '300px', targets = c(1)))
+                  ))
+          
+```
+
+### Limitations
+
+(1) there could be more relevant items for the terms, but I have not found it. Sure. So far this can be viewed as an initial suggestion and a pointer. Each item in the table above directs via URL to a Wikidata page where the related items can further be found.
+
+(2) Not all dictionaries were included in SPARQL. True. I listed those that I met first while investigating some random Wikidata items. This is a customized option - a list of catalogues for searching only the biomedical terms would require less catalogues, etc. 
+
+(3) There are special properties which points at the scientific terms with high probability. This is TRUE, of course. I tried to play with [studied by, P2579](https://www.wikidata.org/wiki/Property:P2579), but the problem of using it that many terms have no such property. For example, [neutron, Q2348](https://www.wikidata.org/wiki/Q2348) has no P2579 property. But neutron is a subclass of [atomic nucleus, Q37147](https://www.wikidata.org/wiki/Q37147) which Wikidata record has P2579 statements referring to the subject area. I skipped it.
+
+Another option that I haven't tried is to check if the items retrieved by initial API request are [main subjects, P921](https://www.wikidata.org/wiki/Property:P921) present in any [scientific articles, Q13442814](https://www.wikidata.org/wiki/Q13442814) or (more generally) with the items [published, P1433](https://www.wikidata.org/wiki/Property:P1433) in the [academic journals, Q5633421](https://www.wikidata.org/wiki/Q5633421). 
+
+I really need to watch [those videos...](https://www.youtube.com/channel/UCa5oYsCabGo7XwwKGqo7Qcw)
+
+### Acknowledgments {.appendix}
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+pkgs <- c('dplyr', 'readr', 'tidyr', 'purrr', 'stringr', 'distill',
+          'DT', 'knitr', 'rmarkdown', 'udpipe', 'WikidataR', 
+          'WikidataQueryServiceR')
+
+do.call('c',lapply(pkgs, citation)) %>% sort()
+```
+
+Allaire J, Iannone R, Presmanes Hill A, Xie Y (2021). _distill: 'R Markdown' Format for
+Scientific and Technical Writing_. R package version 1.2, <URL:
+https://CRAN.R-project.org/package=distill>.
+
+Allaire J, Xie Y, McPherson J, Luraschi J, Ushey K, Atkins A, Wickham H, Cheng J, Chang W,
+Iannone R (2021). _rmarkdown: Dynamic Documents for R_. R package version 2.7, <URL:
+https://github.com/rstudio/rmarkdown>.
+
+Henry L, Wickham H (2020). _purrr: Functional Programming Tools_. R package version 0.3.4,
+<URL: https://CRAN.R-project.org/package=purrr>.
+
+Popov M (2020). _WikidataQueryServiceR: API Client Library for 'Wikidata Query Service'_. R
+package version 1.0.0, <URL: https://CRAN.R-project.org/package=WikidataQueryServiceR>.
+
+Shafee T, Keyes O, Signorelli S, Lum A, Graul C, Popov M (2021). _WikidataR: Read-Write API
+Client Library for 'Wikidata'_. R package version 2.2.0, <URL:
+https://github.com/TS404/WikidataR/issues>.
+
+Wickham H (2020). _tidyr: Tidy Messy Data_. R package version 1.1.2, <URL:
+https://CRAN.R-project.org/package=tidyr>.
+
+Wickham H (2019). _stringr: Simple, Consistent Wrappers for Common String Operations_. R
+package version 1.4.0, <URL: https://CRAN.R-project.org/package=stringr>.
+
+Wickham H, Francois R, Henry L, Muller K (2021). _dplyr: A Grammar of Data Manipulation_. R
+package version 1.0.3, <URL: https://CRAN.R-project.org/package=dplyr>.
+
+Wickham H, Hester J (2020). _readr: Read Rectangular Text Data_. R package version 1.4.0,
+<URL: https://CRAN.R-project.org/package=readr>.
+
+Wijffels J (2021). _udpipe: Tokenization, Parts of Speech Tagging, Lemmatization and
+Dependency Parsing with the 'UDPipe' 'NLP' Toolkit_. R package version 0.8.6, <URL:
+https://CRAN.R-project.org/package=udpipe>.
+
+Xie Y (2020). _knitr: A General-Purpose Package for Dynamic Report Generation in R_. R
+package version 1.30, <URL: https://yihui.org/knitr/>.
+
+Xie Y (2015). _Dynamic Documents with R and knitr_, 2nd edition. Chapman and Hall/CRC, Boca
+Raton, Florida. ISBN 978-1498716963, <URL: https://yihui.org/knitr/>.
+
+Xie Y (2014). “knitr: A Comprehensive Tool for Reproducible Research in R.” In Stodden V,
+Leisch F, Peng RD (eds.), _Implementing Reproducible Computational Research_. Chapman and
+Hall/CRC. ISBN 978-1466561595, <URL: http://www.crcpress.com/product/isbn/9781466561595>.
+
+Xie Y, Allaire J, Grolemund G (2018). _R Markdown: The Definitive Guide_. Chapman and
+Hall/CRC, Boca Raton, Florida. ISBN 9781138359338, <URL:
+https://bookdown.org/yihui/rmarkdown>.
+
+Xie Y, Cheng J, Tan X (2021). _DT: A Wrapper of the JavaScript Library 'DataTables'_. R
+package version 0.17, <URL: https://CRAN.R-project.org/package=DT>.
+
+Xie Y, Dervieux C, Riederer E (2020). _R Markdown Cookbook_. Chapman and Hall/CRC, Boca
+Raton, Florida. ISBN 9780367563837, <URL: https://bookdown.org/yihui/rmarkdown-cookbook>.

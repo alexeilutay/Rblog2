@@ -7,7 +7,21 @@
     <description>Using R to solve the practical tasks in the library information science and other fields.  
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Tue, 08 Jun 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 15 Jun 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Tagging the Scientific Abstracts with Wikidata Items</title>
+      <dc:creator>Aleksei Lutai</dc:creator>
+      <link>https://dwayzer.netlify.app/posts/2021-06-15-tagging-the-abstracts-with-wikidata-items</link>
+      <description>Here I am trying to build a script that process the short scientific texts (abstracts) and finds Wikidata items corresponding to the terms. An interactive and editable table is also created to allow an editor to validate the found matches and find other related items. A bit amateurish attempt by a Wikidata newbie.</description>
+      <category>wikidata</category>
+      <category>udpipe</category>
+      <category>api</category>
+      <category>text mapping</category>
+      <category>sparql</category>
+      <guid>https://dwayzer.netlify.app/posts/2021-06-15-tagging-the-abstracts-with-wikidata-items</guid>
+      <pubDate>Tue, 15 Jun 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://dwayzer.netlify.app/posts/2021-06-15-tagging-the-abstracts-with-wikidata-items/images/editable_table.png" medium="image" type="image/png" width="939" height="532"/>
+    </item>
     <item>
       <title>Russian Journals indexed by Scopus, RSCI, and WoS</title>
       <dc:creator>Aleksei Lutai</dc:creator>
@@ -23,7 +37,7 @@
       <category>crossref</category>
       <category>lens.org</category>
       <guid>https://dwayzer.netlify.app/posts/2021-06-09-russian-journals-indexed-by-scopus-rsci-and-wos</guid>
-      <pubDate>Tue, 08 Jun 2021 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 09 Jun 2021 00:00:00 +0000</pubDate>
       <media:content url="https://dwayzer.netlify.app/posts/2021-06-09-russian-journals-indexed-by-scopus-rsci-and-wos/images/rus_jpournals_joint_list.png" medium="image" type="image/png" width="884" height="543"/>
     </item>
     <item>
