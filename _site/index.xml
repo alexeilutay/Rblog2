@@ -7,7 +7,25 @@
     <description>Using R to solve the practical tasks in the library information science and other fields.  
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Tue, 15 Jun 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 27 Jun 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Post-Publication Collecting ORCIDs for the Authors</title>
+      <dc:creator>Aleksei Lutai</dc:creator>
+      <link>https://dwayzer.netlify.app/posts/2021-06-28-post-publication-collecting-orcids-for-the-authors</link>
+      <description>What if the journal ignored ORCID for years? Is there a simple way to collect their ORCIDs except emailing'em with gentle reminders? In this post I exploit the ways to collect ORCIDs for the authors of already published articles using the open sources (CrossRef, Microsoft Academic, ORCID). Writing it was an unusually long journey, as I had to figth inconsistencies and revise the approaches. An initial share of ORCIDs in CrossRef for the authors of selected articles was 10%. It was raised to 32% with just algorithm-based approach and further was improved to 64% after additional manual check-up of the automatically pre-selected candidates. This is another long post about the scholarly articles, metadata quality, blessed open APIs, and utility of R packages.</description>
+      <category>russian data</category>
+      <category>orcid</category>
+      <category>r</category>
+      <category>crossref</category>
+      <category>microsoft academic</category>
+      <category>igraph/tidygraph</category>
+      <category>fuzzy matching</category>
+      <category>open citations</category>
+      <category>coauthorship analysis</category>
+      <guid>https://dwayzer.netlify.app/posts/2021-06-28-post-publication-collecting-orcids-for-the-authors</guid>
+      <pubDate>Sun, 27 Jun 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://dwayzer.netlify.app/posts/2021-06-28-post-publication-collecting-orcids-for-the-authors/images/graph.png" medium="image" type="image/png" width="2834" height="2047"/>
+    </item>
     <item>
       <title>Tagging the Scientific Abstracts with Wikidata Items</title>
       <dc:creator>Aleksei Lutai</dc:creator>
@@ -19,7 +37,7 @@
       <category>text mapping</category>
       <category>sparql</category>
       <guid>https://dwayzer.netlify.app/posts/2021-06-15-tagging-the-abstracts-with-wikidata-items</guid>
-      <pubDate>Tue, 15 Jun 2021 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 16 Jun 2021 00:00:00 +0000</pubDate>
       <media:content url="https://dwayzer.netlify.app/posts/2021-06-15-tagging-the-abstracts-with-wikidata-items/images/editable_table.png" medium="image" type="image/png" width="939" height="532"/>
     </item>
     <item>
