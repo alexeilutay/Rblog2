@@ -1,0 +1,964 @@
+---
+title: "Importing Author Information from CrossRef to Wikidata via QuickStatements"
+description: |
+  The post continues my quest to improve the presence of academic journal(s) in Wikidata. I reviewed the different searching approaches to find the authors, especially those with with non-English names, in Wikidata and upload the author metadata via QuickStatements.
+author:
+  - first_name: "Aleksei"
+    last_name: "Lutai" 
+    url: https://www.linkedin.com/in/lutaya/
+    orcid_id: 0000-0003-1341-781X
+date: 07-05-2021
+categories:
+  - crossref
+  - wikidata
+  - r
+  - quickstatements
+  - sparql
+  - author metadata
+creative_commons: CC BY
+preview: images/wd_statement_sok2.PNG
+output:
+  distill::distill_article:
+    self_contained: false
+    code_folding: true
+    highlight: kate
+    highlight_downlit: true
+    toc: true
+    toc_depth: 3
+    toc_float: true
+---
+
+```{r eval=TRUE, message=FALSE, warning=FALSE, include=FALSE, echo=TRUE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+
+library(tidyverse)
+library(DT)
+library(WikidataQueryServiceR)
+library(WikidataR)
+library(jsonlite)
+
+options(DT.options = list(pageLength = 5, dom = "Brftip",  
+  deferRender = TRUE, ordering = TRUE, autoWidth = TRUE, scrollX = TRUE))
+
+onedrive <- list.dirs("C:/Users", recursive = FALSE) %>% 
+  .[grepl("alexe|WD|lutay",.)] %>% list.dirs(., recursive = FALSE) %>% 
+  .[grepl("onedrive",., ignore.case = TRUE)]
+
+dir <- paste0(onedrive, "/Wikidata/blog_example/")
+
+## create dir for images (blog)
+img_dir <- paste0(getwd(), "/images/")
+if(!dir.exists(img_dir)){dir.create(img_dir)}
+
+```
+
+In a [previous post](https://dwayzer.netlify.app/posts/2021-06-28-post-publication-collecting-orcids-for-the-authors/) I was trying to do what is called an author disambiguation using the open metadata from [CrossRef](https://www.crossref.org/), [Microsoft Academic](https://academic.microsoft.com/) and [ORCID](https://orcid.org/). I took 10 DOIs as an example and identified the ORCIDs for a number of authors. This initial idea was also to upload the author metadata info to Wikidata in the same post.
+
+While I was working on it I realized that I completely lost a sense of smell. I decided to publish the previous part and postpone exercising with Wikidata till better days. I was lucky, it was not as bad as it is said it could be - a week later my only discomfort is that I still do not know the smells.
+
+So, I am back, full of forces, and in this post I am going to prepare and uploade the author metadata to Wikidata.
+
+### Wikidata for Academic Journal
+
+You may be wondering why to bother about the journal's standing in Wikidata, when there are many citation indices and A&I databases that present the metadata. Apologies for not having a detailed and well-argumented intro for such a question. Instead, I would give you few examples that I find illustrative:
+
+(1) this is how the online service Scholia shows the journal [Atmospheric Chemistry and Physics](https://scholia.toolforge.org/venue/Q757509) and the article [The Alzheimer's disease-associated amyloid beta-protein is an antimicrobial peptide](https://scholia.toolforge.org/work/Q21090025), based on the Wikidata. If the journals and articles exists as Wikidata items and contain the metadata, the items can be cited in Wikipedia articles or be linked to other non-journal Wikidata items like author biographical facts, events, awards, organizations, topics, molecules, news, products, you name it. Altogether this forms a huge knowledge graph, absolutely incomparable with the citation/search engines we used to. This is the only way to highlight the journal impact in multiple facets, to move beyond the citation obsession.       
+
+(2) here is a [collection of Wikidata queries](https://www.wikidata.org/wiki/User:MartinPoulter/queries) prepared by Martin Poulter, demonstrating how the linked items can be investigated. There are more high-brow collections like this one with [biomedical queries](https://bitbucket.org/sulab/wikidatasparqlexamples/src/master/). You can run yourself any of those examples by clicking Try it! or Execute url links next to the SPARQL snippets.
+
+But not every journal looks this great in Wikidata to benefit from semantic blessing. In [one of my previous posts](https://dwayzer.netlify.app/posts/2021-05-27-academic-journals-through-the-lens-of-wikidata/#cases-for-using-wikidata) I described how the Russian academic journals look in Wikidata and Wikipedia. 
+
+More argumentation on Wikidata's value for the academic journals can be found in the original works [Google Scholar: Wikidata + Journal](https://scholar.google.com/scholar?as_ylo=2020&q=Wikidata+Journal&hl=en&as_sdt=0,5).
+
+### Editing Wikidata
+
+How the Wikidata contents can be added or improved? There are few ways:
+
+(A) manually. This is plain. You need to register to Wikidata, find the journal record and start copy/pasting the metadata bits.   
+
+(B) with a help of tools, but still manually. There are some great tools like [Mix\'n\'match](https://mix-n-match.toolforge.org/), [Author Disambiguator](https://author-disambiguator.toolforge.org/), [Wikidata Link Reconciler](https://wikidata.reconci.link/) and many others ([listed here](https://m.wikidata.org/wiki/Wikidata:Tools/Edit_items)). Some of it requries of one to be an [Autoconfirmed user](https://www.wikidata.org/wiki/Wikidata:Autoconfirmed_users), which is a special status you get after having edited a certain number of items (a meritocracy in action if you will).
+
+(C) automatically, with [API-based tools](https://www.wikidata.org/wiki/Wikidata:Tools/For_programmers).
+
+In this post I am going to use the most popular tool named  [QuickStatements](https://www.wikidata.org/wiki/Help:QuickStatements). This tool is fantastic, as it allows you to create/edit the Wikidata items by submitting the materials in very simple formats like CSV/TSV or a URL-encoded string. Like many other Wiki tools it was developed by [Magnus Manske](https://en.wikipedia.org/wiki/User:Magnus_Manske).
+
+You will not be able to submit the materials in batches via QuickStatements until you get the status of Autoconfirmed User. But take it as a hint - [running QuickStatements through URL](https://www.wikidata.org/wiki/Help:QuickStatements#Running_QuickStatements_through_URL) does not require the status, so you can start with it to reach the status and then switch to the batches. Or you can just deal with Wikimedia API directly. In this post I am going to describe only the batch uploading available for autoconfirmed users. 
+
+The good practice is to: 
+
+(1) test your editing approaches on [Wikidata Sandbox](https://www.wikidata.org/wiki/Q4115189),
+
+(2) always check what you have done,
+
+(3) always fix the errors you made. 
+
+This discipline can seem very annoying to some creative minds, but this is a public tool, it will be spoiled without the rules.
+
+### Data
+
+In previous post I took 10 DOIs and made few manipulations to obtain the ORCIDs for some of the authors (see below). The CRF in the column names stands for CrossRef (as a source), MAG - for Microsoft Academic. 
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+final_data_checked <- paste0(dir, "/final.data.xlsx") %>% 
+  readxl::read_xlsx(col_types = "text") %>% 
+  filter(score!="D") %>% 
+  arrange(doi, score) 
+
+final_data_checked %>% 
+  mutate(orcid = ifelse(score=="A", orcid, NA_character_)) %>% 
+  select(doi, order, orcid, `CRF family`, `CRF given`, 
+         Scopus_AuthID, ResearcherID, `MAG Author ID`) %>%  
+  DT::datatable(rownames = FALSE, escape = FALSE, class = 'compact striped',
+               caption = htmltools::tags$caption(
+               style = 'caption-side: bottom; 
+               text-align: left; font-size: 80%; 
+               color: #969696; font-family: Roboto Condensed;',
+               'Data: see in the text.'),
+    options = list(searchHighlight = TRUE, dom = 'Brtip',
+                   autoWidth = FALSE,
+                columnDefs = list(
+                  list(width = '150px', targets = c(0,2)),
+                  list(className = 'dt-center', targets = c(1)))
+                  ))
+
+```
+
+But we can not submit DOI-ORCID links to Wikidata. The process needs to be organizaed a bit different:
+
+(1) we have check if the article are present in Wikidata (searching by DOI) and what metadata are available  
+
+(2) next we should check for every author if it is present in Wikidata as an item (searching by ORCID, Scopus Author ID, Researcher ID, Microsoft Academic ID, and also by the author's name)
+
+(3) once we have collected the details about article and author, we can submit one of 2 statements connecting those details:  
+
+- wikidata item corresponding to the article (Q....) has an author (P50), which is Wikidata item (Q....), corresponding to the author.
+
+- wikidata item corresponding to the article (Q....) has an author string (P2093), which is not a Wikidata item, but a plain text.
+
+The statements above are simplified a bit, the Wikidata rules require the statements to be supported with the references and some specific qualifiers (statements for additional properties). The author information for the scholarly article needs to be backed with a source (i.e. CrossRef) and should have an ordinal. It may also have [other properties](https://www.wikidata.org/wiki/Property:P2093) like affiliation or affiliation string. 
+
+### Finding the articles in Wikidata
+
+The package [WikidataR](https://github.com/TS404/WikidataR), still in development, provides very practical options to work with Wikidata. We will use its function qid_from_identifier to find Wikidata by DOI.  
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+dois_file <- paste0(dir, "dois_wiki.csv")
+
+if(!file.exists(dois_file)){
+  dois <- final_data_checked %>% select(doi) %>% distinct()
+for (i in 1:nrow(dois)){
+  print(i)
+  res <- qid_from_identifier(property = "DOI", value = dois$doi[i]) %>% 
+    unnest(qid)
+  dois[i, "wikidata"] <- ifelse(nrow(res)==1,  as.character(res$qid[1]), "") 
+  }
+  write_excel_csv(dois, dois_file)
+} else {
+  dois <- read_csv(dois_file)
+}
+dois %>% 
+  DT::datatable(rownames = FALSE, escape = FALSE, class = 'compact striped',
+               caption = htmltools::tags$caption(
+               style = 'caption-side: bottom; 
+               text-align: left; font-size: 80%; 
+               color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org.'),
+    options = list(searchHighlight = TRUE, dom = 'Brtip',
+                   autoWidth = FALSE))
+```
+
+The publications are already present in Wikidata. 
+
+Let's check of they already have anything about the authors. We can collect the author information using another function of WikidataR named get_item.
+
+### Author Information in Wikidata
+
+The code below obtains all the claims of the Wikidata item and extracts those that we are interested in:
+
+- [P50](https://www.wikidata.org/wiki/Property:P50) (is author of) - statements linking the articles to the persons exisisting in Wikidata 
+
+- [P2093](https://www.wikidata.org/wiki/Property:P2093) (author name string) - statements assigning the autor name string to the article 
+
+- [P1545](https://www.wikidata.org/wiki/Property:P1545) (series ordinal) - a qualifier showing the author's place in the author list
+
+- [P248](https://www.wikidata.org/wiki/Property:P248) (stated in) - statements used as the references (for the statements) pointing at a source of information. I suspect that there could be other properties used as references (maybe [P3452 - "inferred from"](https://www.wikidata.org/wiki/Property:P3452)), but this does not matter in our case. If the author data is supported by strange reference, we will re-write it and refer to CrossRef as a source of metadata.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+wd_auth_info_file <- paste0(dir, "wikidata_author_existing_details.csv") 
+
+if(!file.exists(wd_auth_info_file)){
+  wd_pub_existing_data <- c()
+  
+  for (i in 1:nrow(dois)){
+    b <- get_item(dois$wikidata[i]) %>% map(pluck, "claims")
+    b <- b[[1]][c("P2093", "P50")]
+    
+    wd_pub_auth_data <- cbind(
+      #1 part. author strings or Wiki items
+      b %>% map(~{.x[["mainsnak"]]["datavalue"] %>% map_df("value") %>% 
+          select(any_of(c("author_wiki" = "id", 
+                          "author_wiki" = "datavalue")))}) %>% 
+        map_df(~.x) %>% 
+        mutate(author_wiki_type = ifelse(grepl("^Q\\d+",author_wiki), 
+                                         "P50", "P2093")),
+      #2 part. author statement IDs
+      b %>% map(~{.x[["id"]]}) %>% unlist(use.names = FALSE) %>% 
+        enframe(name = NULL, value = "Statement_ID"),
+      #3 part. author order qualifiers
+      b %>% map_df(~{.x[["qualifiers"]][["P1545"]] %>% 
+            map_df("datavalue")}) %>% 
+            select(any_of(c("order" = "value"))) %>% 
+            mutate(qualif_prop = "P1545"),
+      #4 part. references/sources
+      b %>% map_df(~{.x[["references"]] %>% 
+            map_df(pluck, "snaks", "P248") %>% 
+            map_df(list("value","id"))}) %>%
+        select(source = datavalue) %>%
+        mutate(source_prop = "P248")
+    ) %>% 
+      mutate(qid = dois$wikidata[i]) %>% 
+      relocate(qid)
+    
+    wd_pub_existing_data <- wd_pub_existing_data %>% bind_rows(wd_pub_auth_data)
+    print(i)
+  } 
+  write_excel_csv(wd_pub_existing_data, wd_auth_info_file)
+ } else {
+  wd_pub_existing_data <- read_csv(wd_auth_info_file, 
+                                   col_types = cols(.default = col_character()))
+ } 
+
+wd_pub_existing_data %>% 
+  relocate(Statement_ID, .after = source_prop) %>% 
+  DT::datatable(rownames = FALSE, escape = FALSE, class = 'compact striped',
+               caption = htmltools::tags$caption(
+               style = 'caption-side: bottom; 
+               text-align: left; font-size: 80%; 
+               color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org.'),
+     options = list(searchHighlight = TRUE, dom = 'Brtip',
+                   autoWidth = TRUE,
+                columnDefs = list(
+                  list(width = '430px', targets = c(7)),
+                   list(width = '150px', targets = c(1)),
+                  list(className = 'dt-center', targets = c(2,3,4,5,6)))
+                  ))
+```
+
+This is how the author relations look like: 
+
+- a Wikidata item corresponding to the article (Q107266290)	has a text (Kalendzhyan S.O.) as an author name string (P2093), its position amoung authors (P1545) is 1, and we should trust this info as it is stated in (P248) Scopus (Q371467). This relation is stored as a statement with number Q107266290$77458B66-...-8A7DB0DB875D.
+
+Or, in cases when the author exists as Wikidata item and linked to the Wikidata item for the article, the relation look like:
+
+- a Wikidata item corresponding to the article (Q107266359) has an author (P50), which is a Wikidata item (Q93427896), corresponding to a person, which place in the authors list (P1545) is 5, as stated in (P248) in CrossRef (Q5188229). This relation is stored as a statement with number Q107266359$1E953F5D-...-750C1A9627B6.
+
+Are we satisfied with the author names present in Wikidata as text (authorname string)? Of course, we should not be. With text strings for the authors Wikidata is just like any other A&I database. To see a magic of Wiki, we have to substitute the author name strings (defined by P2093) with the Wikidata items corresponding to the persons (defined by P50). With those authors our analytical reach will expand beyond the names, as we will be able to analyze the relations of the authors (known to Wikidata).  
+
+Let's search the Wikidata items corresponding to the authors - for this we can use the author's name and the personal identificators (PID). 
+
+### Finding Authors in Wikidata by PIDs
+
+First, we will try to find the Wikidata items by PIDs. In order to do that I will take the initital data and filter out the authors for which I [earlier found](https://dwayzer.netlify.app/posts/2021-06-28-post-publication-collecting-orcids-for-the-authors/) the ORCIDs and other PIDs.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+zz1 <- final_data_checked %>% 
+    filter(score=="A") %>% 
+    select(doi, order, orcid, Scopus_AuthID, ResearcherID, `MAG Author ID`) %>% 
+    filter(!is.na(orcid)) %>% 
+    mutate_at(c("Scopus_AuthID", "ResearcherID"), ~str_split(.x, "\\|")) %>%
+    unnest(c("Scopus_AuthID", "ResearcherID")) %>% 
+    pivot_longer(-c("doi", "order"), names_to = "src", values_to = "id") %>%
+    mutate_all(~str_squish(.x)) %>% 
+    filter(!is.na(id))
+
+zz1 %>%  DT::datatable(rownames = FALSE, escape = FALSE, class = 'compact striped',
+               caption = htmltools::tags$caption(
+               style = 'caption-side: bottom; 
+               text-align: left; font-size: 80%; 
+               color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org.'),
+    options = list(searchHighlight = TRUE, dom = 'Brtip',
+                   autoWidth = FALSE))
+  
+```
+
+Let's search them one by one in Wikidata using qid_from_identifier function from  WikidataR package with the appropriate property for each PID type.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+wd_authors_by_ids_file <- paste0(dir, "wd_authors_by_ids.csv")
+
+if(!file.exists(wd_authors_by_ids_file)){
+  for (i in 1:nrow(zz1)){
+    if(zz1$src[i]=="orcid"){
+      res <- qid_from_identifier(property = "ORCID iD", 
+                                 value = zz1$id[i]) %>% unnest(qid)
+      }
+    if(zz1$src[i]=="MAG Author ID"){
+      res <- qid_from_identifier(property = "Microsoft Academic ID", 
+                                 value = zz1$id[i]) %>% unnest(qid)
+    }
+    if(zz1$src[i]=="Scopus_AuthID"){
+      res <- qid_from_identifier(property = "Scopus author ID", 
+                                 value = zz1$id[i]) %>% unnest(qid)
+    }
+    if(zz1$src[i]=="ResearcherID"){
+      res <- qid_from_identifier(property = "ResearcherID", 
+                                 value = zz1$id[i]) %>% unnest(qid)
+    }
+    zz1[i, "wikidata"] <- ifelse(nrow(res)==1, 
+                                 as.character(res$qid[1]), "unusual_response") 
+    print(i)
+  }
+  
+  zz1 <- zz1 %>% select(doi, order, wikidata) %>% distinct() %>% na.omit()
+  
+  write_excel_csv(zz1, wd_authors_by_ids_file)
+} else { 
+  zz1 <- read_csv(wd_authors_by_ids_file, col_types = cols(.default = col_character()))
+}
+
+zz1 %>% DT::datatable(rownames = FALSE, escape = FALSE, class = 'compact striped',
+               caption = htmltools::tags$caption(
+               style = 'caption-side: bottom; 
+               text-align: left; font-size: 80%; 
+               color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org.'),
+    options = list(searchHighlight = TRUE, dom = 'Brtip',
+                   autoWidth = FALSE))
+```
+
+We found nothing. 
+
+I know that some of our authors are 100% present in Wikidata, but their items do not have the statements linking the items to PIDs like ORCID, Scopus Author ID, etc, therefore, we can not find them using PIDs. This is just our case, many researchers have Wikidata items with PIDs. 
+
+Our last chance in this situation is to search by name. 
+
+Let's prepare the names.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+zz2 <- final_data_checked %>% 
+  # anti_join is for cases when something is found by PIDs 
+  anti_join(zz1, by = c("doi", "order")) %>% 
+  select(doi, order, `CRF family`, `CRF given`, `MAG family`, `MAG given`) %>% 
+  mutate_at(3:6, ~str_to_title(str_extract(.x, "^[^\\s]+"))) %>% 
+  pivot_longer(c("CRF family", "CRF given", 
+                  "MAG family", "MAG given"), 
+                names_to = c("source", "name_type"), 
+                names_pattern = "(.+) (.+)", 
+                values_to = "name") %>% 
+  distinct() %>% 
+  pivot_wider(names_from = name_type, values_from = name) %>%
+  filter(!is.na(family)) %>% 
+  select(-source) %>% distinct()
+
+zz2 %>% DT::datatable(rownames = FALSE, escape = FALSE, class = 'compact striped',
+               caption = htmltools::tags$caption(
+               style = 'caption-side: bottom; 
+               text-align: left; font-size: 80%; 
+               color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org.'),
+    options = list(searchHighlight = TRUE, dom = 'Brtip',
+                   autoWidth = FALSE))
+```
+
+Before we start looking up these names in Wikidata, let me share with you what I learned about a text search in Wikidata.
+
+### Text Search in Wikidata
+
+Searching Wikidata items by text is tricky. If you are interested to know more about it, I can recommend you an article [Running a reconciliation service for Wikidata](http://ceur-ws.org/Vol-2773/paper-17.pdf) by [Antonin Delpeuch](https://orcid.org/0000-0002-8612-8827), where the author explains the reasons for using separately 2 search APIs:
+
+- [?action=wbsearchentities](https://www.wikidata.org/w/api.php?action=help&modules=wbsearchentities)
+
+- [?action=query&list-search](https://www.wikidata.org/w/api.php?action=help&modules=query%2Bsearch)
+
+Below is my experience with both.
+
+### Wikibase API: wbsearchentities 
+
+This API is cool and simple, but you may be surprized with a variety of results that are totally irrelevant to what you had in mind.
+
+For example, searching for a prominent Soviet physicist [Sergey Vavilov](https://en.wikipedia.org/wiki/Sergey_Ivanovich_Vavilov) via wbsearchentities ([try API query, JSON result](https://www.wikidata.org/w/api.php?action=wbsearchentities&search=sergey%20korolev&language=en&format=json) produces 2 items for the human beings and 1 for the research institute named after S.I.Vavilov.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+fromJSON("https://www.wikidata.org/w/api.php?action=wbsearchentities&search=sergey%20vavilov&language=en&format=json", flatten = TRUE) -> a  
+
+a %>% pluck("search") %>% 
+  select(title, label, description) %>% 
+  DT::datatable(rownames = FALSE, escape = FALSE, class = 'compact striped',
+               caption = htmltools::tags$caption(
+               style = 'caption-side: bottom; 
+               text-align: left; font-size: 80%; 
+               color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org.'),
+    options = list(searchHighlight = TRUE, dom = 'Brtip',
+                   autoWidth = FALSE))
+```
+
+One strategy of making this search more specific is to query the API via SPARQL and apply some filters. For instance, we can limit the results to be only the humans by filtering the items having a property Q5 (human).
+
+A SPARQL request below will return only 2 results, omitting that corresponding to the organization. 
+
+```
+SELECT ?person ?personlabel_en ?persondesc_en
+   WHERE {hint:Query hint:optimizer "None".
+      SERVICE wikibase:mwapi {
+          bd:serviceParam wikibase:endpoint "www.wikidata.org";
+             wikibase:api "EntitySearch";
+              mwapi:search "Sergey Vavilov"; 
+              mwapi:language "en".
+          ?person wikibase:apiOutputItem mwapi:item.
+      }
+      FILTER BOUND (?person)       
+        ?person wdt:P31/wdt:P279* wd:Q5.
+      optional{?person rdfs:label ?personlabel_en . FILTER(lang(?personlabel_en)='en')}
+      optional{?person schema:description ?persondesc_en . FILTER(lang(?persondesc_en)='en')}
+      SERVICE wikibase:label {bd:serviceParam wikibase:language "en".}
+}
+```
+[Check it!](https://query.wikidata.org/#SELECT%20%3Fperson%20%3Fpersonlabel_en%20%3Fpersondesc_en%0A%20%20%20WHERE%20%7Bhint%3AQuery%20hint%3Aoptimizer%20%22None%22.%0A%20%20%20%20%20%20SERVICE%20wikibase%3Amwapi%20%7B%0A%20%20%20%20%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Aendpoint%20%22www.wikidata.org%22%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20wikibase%3Aapi%20%22EntitySearch%22%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20mwapi%3Asearch%20%22Sergey%20Vavilov%22%3B%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20mwapi%3Alanguage%20%22en%22.%0A%20%20%20%20%20%20%20%20%20%20%3Fperson%20wikibase%3AapiOutputItem%20mwapi%3Aitem.%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20FILTER%20BOUND%20%28%3Fperson%29%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Fperson%20wdt%3AP31%2Fwdt%3AP279%2a%20wd%3AQ5.%0A%20%20%20%20%20%20optional%7B%3Fperson%20rdfs%3Alabel%20%3Fpersonlabel_en%20.%20FILTER%28lang%28%3Fpersonlabel_en%29%3D%27en%27%29%7D%0A%20%20%20%20%20%20optional%7B%3Fperson%20schema%3Adescription%20%3Fpersondesc_en%20.%20FILTER%28lang%28%3Fpersondesc_en%29%3D%27en%27%29%7D%0A%20%20%20%20%20%20SERVICE%20wikibase%3Alabel%20%7Bbd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%7D%0A%7D)
+
+I used this approach in [one of my recent posts about matching the scientific terms to Wikidata items](https://dwayzer.netlify.app/posts/2021-06-15-tagging-the-abstracts-with-wikidata-items/), filtering only those results that are most likely to be the scientific terms. 
+
+Querying wbsearchentities API via SPARQL with additional filters provides a lot of flexibility, but... the approach has one serious limitation - the API searches the entity labels or aliases for a perfect match. This can be a problem with the non-English names that often have ambiguous Latin spelling. The name Sergey can also be written as Sergei (or also as Sergej, Serhii, etc). People whose Wikidata item contains Sergei will not be found by a query with Sergey, unless the alternative labels are present in the Wikidata item. Searching for Sergei Vavilov will return only one person. I did not find a way to make a fuzzy search for wbsearchentities API. But the other API allows it.
+
+### Wikibase API: query&list=search 
+
+The [Help page](https://www.wikidata.org/w/api.php?action=help&modules=query%2Bsearch) for this API is minimal, the more detailed information about the available parameters, use of regular expressions, fuzzy search is available at [Cirrus Search](https://www.mediawiki.org/wiki/Help:CirrusSearch) page. Be warned, it is a brain-boiling stuff.
+
+This API allows you to do various searches:
+
+- [srsearch=Sergey Vavilov](https://www.wikidata.org/w/api.php?action=query&list=search&srsearch=sergey%20vavilov&format=json&srlimit=20) (AND) - 14 results
+
+- [srsearch="Sergey Vavilov"](https://www.wikidata.org/w/api.php?action=query&list=search&srsearch=%22sergey%20vavilov%22&format=json&srlimit=20) (quoted for strict match) - 5 results
+
+- [srsearch=Serge\? Vavilov](https://www.wikidata.org/w/api.php?action=query&list=search&srsearch=serge\?%20vavilov&format=json&srlimit=20) (for 1-letter variations in the end of the given name) - 31 results
+
+- [srsearch=Serg* Vavilov](https://www.wikidata.org/w/api.php?action=query&list=search&srsearch=serg*%20vavilov&format=json&srlimit=20) (for zero or any length variations in the end of the given name) - 35 results
+
+- [srsearch=Sergey Vavilov~](https://www.wikidata.org/w/api.php?action=query&list=search&srsearch=sergey%20vavilov~&format=json&srlimit=20) (for fuzzy search) - 34 results
+
+- [srsearch="Sergey Vavilov"~1](https://www.wikidata.org/w/api.php?action=query&list=search&srsearch=%22sergey%20vavilov%22~1&format=json&srlimit=20) (for fuzzy search with no more than 1 word between Sergey and Vavilov) - 8 results
+
+- [srsearch="Sergei Vavilov" OR "Sergey Vavilov"](https://www.wikidata.org/w/api.php?action=query&list=search&srsearch=%22Sergei%20Vavilov%22%20OR%20%22Sergey%20Vavilov%22&format=json&srlimit=20) (read the page about [Logical Operators](https://www.mediawiki.org/wiki/Help:CirrusSearch/Logical_operators)).
+
+Let's see the results of the strict match search:   
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+fromJSON("https://www.wikidata.org/w/api.php?action=query&list=search&srsearch=%22sergey%20vavilov%22&format=json&srlimit=20", flatten = TRUE) -> a  
+
+a %>% pluck("query") %>% pluck("search") %>% 
+  select(title, snippet) %>% 
+  DT::datatable(rownames = FALSE, escape = FALSE, class = 'compact striped',
+               caption = htmltools::tags$caption(
+               style = 'caption-side: bottom; 
+               text-align: left; font-size: 80%; 
+               color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org.'),
+    options = list(searchHighlight = TRUE, dom = 'Brtip',
+                   autoWidth = FALSE))
+```
+
+In addition to 2 persons and 1 organization, these results include also a ship (Q4059130) and a scholarly article (Q4059130). 
+
+We can also query this API via SPARQL and filter the results - let's to do this for more relaxed (Serge\\?) query. Mind quoting that a question mark for SPARQL need to be escaped, so in R code this requires more backslashes.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+WikidataQueryServiceR::query_wikidata(sparql_query = 'select 
+  ?person ?personlabel_en ?persondesc_en
+Where {
+  SERVICE wikibase:mwapi {
+    bd:serviceParam wikibase:api "Search";
+                    wikibase:endpoint "www.wikidata.org";
+                    mwapi:srsearch "Serge\\\\? Vavilov" .          
+    ?person wikibase:apiOutputItem mwapi:title.    
+  } 
+  FILTER BOUND (?person)       
+        ?person wdt:P31/wdt:P279* wd:Q5.
+      optional{?person rdfs:label ?personlabel_en . FILTER(lang(?personlabel_en)="en")}
+      optional{?person schema:description ?persondesc_en . FILTER(lang(?persondesc_en)="en")}
+      SERVICE wikibase:label {bd:serviceParam wikibase:language "en".}
+  }'    
+  ) %>% 
+  DT::datatable(rownames = FALSE, escape = FALSE, class = 'compact striped',
+               caption = htmltools::tags$caption(
+               style = 'caption-side: bottom; 
+               text-align: left; font-size: 80%; 
+               color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org.'),
+    options = list(searchHighlight = TRUE, dom = 'Brtip',
+                   autoWidth = FALSE))
+```
+
+This search returns 5 persons, 3 of which we haven't found 3 with wbsearchentities API. Why? Because two results (Q12562032, Q19907955) do not have labels, aliases, or description in English - but the Wikidata items have the first name (Sergey) and the last name (Vavilov) properties, which is not queried by wbsearchentities API. Another one found only by this API is spelled in Wikidata as Sergei(!) V Vavilov (Q91652500). 
+
+The main advantages of using Search API (query&list=search) instead of wbsearchentities API for searching the people are: 
+
+- 1. the former also covers the first name and last name fields of the Wikidata item 
+
+- 2. the former API allows some lexical flexibility (fuzzy search and wildcards). 
+
+Unfortunately, it is not only the endings that change when the Cyrillic names are transliterated to Latin.
+
+- Aleksei can be not not only Aleksey, but also Alexei and Alexey
+
+- Oksana can be Oxana
+
+- Fedor can be Fyodor
+
+- Julia can be Yulia or Ioulia ([see an example](https://www.wikidata.org/wiki/Q59162109))
+
+So you can hardly guess where to put the wildcard.
+
+Even being armed with wikibase:api "Search" + wildcards/fuzzy + SPARQL filters, we still have some limitations, having to decide which strategy is the best for searching the researchers in Wikidata by their names!
+
+### Search Strategies
+
+I considered few options:
+
+(1) to substitute the ending of all given names \? (without further thinking) and ignore the names like Oxana, Aleksei or Fyodor with ambiguous spelling in the middle of the given name. Dismissed this approach.  
+
+(2) to use a built-in option of fuzzy search operator (~). But there are some aspects...described at [CirrusSearch](https://www.mediawiki.org/wiki/Help:CirrusSearch).
+
+Searching "Oxana~1" covers both Oksana and Oxana (as for a word search suceeded with "~2" means 2 extra added or changed characters). Together with the family name it is processed in different way - tilda tells how many extra words to fit in. Hence, "Oksana~1 Ivanova" and "Oxana~1 Ivanova" produce different results. 
+
+Trying to UNION 2 requests (Oxana~1 and Ivanova) in SPARQL is likely to be too "expensive" for most popular names. Same as searching by the family name only and further filtering with regular expressions in SPARQL ([see some examples here](https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples)).
+
+(3) to find the Wikidata items corresponding to the given name (with fuzzy search), collect all the relevant name variants (P460: said to be the same as + P2440:transliterations), and use them to generate all possible combinations (family name + given name variant) for wbsearchentities.
+
+This strategy may look like a great trick, but dealing with the names in Wikidata is not an easy walk.
+
+First of all, a fuzzy search does not change first 2 letters ([here](https://www.mediawiki.org/wiki/Help:CirrusSearch#Insource)), so Yulia~ will never lead to Julia (and vice versa). Same with Fyodor and Fedor. Tilda will not help everyone.
+
+If we try to search a female given name Yulia by wbsearchentities, we will find few Wikidata items ([Yuliya](https://www.wikidata.org/wiki/Q59157060) of Ukrainian/Belarussian origin) and ([Yulia](https://www.wikidata.org/wiki/Q1712302) of Russian/Bulgarian origin). Their (P460:said to be the same as) forms vary from Giulietta to Uliana. So P460 could be more an extra burden than a solution.
+
+It may seem that the English transliterations (P2440), filtered by Wikimedia language code (P424), could help, but this property is not mandatory and can be missed for some names. Moreover, the property constraints can also be totally different. For [Yulia](https://www.wikidata.org/wiki/Q1712302) the transliterations are defined via the following constraints (Wikimedia language code / writing system / determination method), but for [Oksana](https://www.wikidata.org/wiki/Q2017539) there is only a determination method.  For Yulia the determination method for English transliteration is "romanization of Russian", but for Oksana this method has many more academic values - "German romanization of Ukrainian (Duden)", "BGN/PCGN romanization of Russian", "BGN/PCGN romanization of Ukrainian (1965 system)", "Ukrainian National System", "scientific transliteration of Cyrillic", "ALA-LC romanization",
+"modified Library of Congress system". So using the transliterations can be an option only after most popular "determination method" values are collected (to be used as a filter for English transliteration).    
+
+What strategy is optimal? I decided to go with this:
+
+- Step 1. search for a given name in English using wbsearchentities API (e.g. wikibase:api "EntitySearch"; mwapi:search "Oxana") and filter the items that are instances or subclasses of the given name (Q202444), retrieve all the English aliases and labels.
+
+- Step 2. Generate the unique combinations of found Given names with the Family name.
+
+- Step 3. Search all the combinations via SPARQL (one by one or like ... OR ...) and filter the human beings (Q5).
+
+- Step 4. Manual check the results.
+
+Let's do it with the code.  
+
+### Step 1. Finding Given Names in Wikidata
+
+The code below sets up a function to collect the name variants.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+get_wiki_name_variants <- function(given_name){
+  paste0('SELECT DISTINCT ?personlabel_en WHERE {
+  SERVICE wikibase:mwapi {
+      bd:serviceParam wikibase:endpoint "www.wikidata.org";
+        wikibase:api "EntitySearch";
+        mwapi:search "', given_name, '"; 
+        mwapi:language "en".
+      ?item wikibase:apiOutputItem mwapi:item.
+  }
+    ?item wdt:P31/wdt:P279* wd:Q202444. 
+  SERVICE wikibase:label {bd:serviceParam wikibase:language "en".}
+  optional {?item rdfs:label|skos:altLabel ?personlabel_en . FILTER(lang(?personlabel_en)="en")}
+}') %>% 
+    WikidataQueryServiceR::query_wikidata() %>% 
+    mutate_at(c("personlabel_en"), 
+              ~str_squish(str_replace_all(.x, "\\([^\\(^\\)]+\\)", ""))) %>% 
+  distinct()
+# example: get_wiki_name_variants("Aleksei") 
+}
+```
+
+Now we are going to collect all the variants of the given names for our 28 authors (present in 10 articles selected as an example).  
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+wiki_given_names_file <- paste0(dir,"wiki_given_names.RDS")
+
+if(!file.exists(wiki_given_names_file)){
+  wiki_given_names <- unique(zz2$given) %>%
+    map_df(~get_wiki_name_variants(.x) %>% 
+            filter(!str_detect(personlabel_en, 
+                              "[\\p{Letter}--\\p{script=latin}]+")) %>% 
+            mutate(given = .x))
+
+  write_rds(wiki_given_names, wiki_given_names_file)
+} else { 
+  wiki_given_names <- read_rds(wiki_given_names_file)
+}
+
+wiki_given_names %>% relocate(given) %>% 
+  DT::datatable(rownames = FALSE, escape = FALSE, class = 'compact striped',
+               caption = htmltools::tags$caption(
+               style = 'caption-side: bottom; 
+               text-align: left; font-size: 80%; 
+               color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org.'),
+    options = list(searchHighlight = TRUE, dom = 'Brtip',
+                   autoWidth = FALSE))
+
+```
+
+Well, a conversion of Marina to Marinette or Alexander to Sasha may be considered as an exaggeration, but for many given names (column "given") our adding the name variants from Wikidata (column "personlabel_en") seem to increase the chances to be found. 
+
+Wikidata returned many name variants with the special symbols (diacritical marks). I think that it will be no harm if we convert those names into ASCII-form to use only the English letters and unique spellings. For such transformations I use a function stri_trans_general("Latin-ASCII") from [stringi](https://stringi.gagolewski.com/) package. Even though [stringr](https://stringr.tidyverse.org/) provides a lot of str_* substitutions for original stringi functions (optimized for coding in tidyverse style), I am not aware of stringr-based way of doing such a transformation. 
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+wiki_given_names <- wiki_given_names %>% 
+  mutate(personlabel_en = stringi::stri_trans_general(personlabel_en, "Latin-ASCII")) %>% 
+  distinct()
+```
+
+This transformation decreases a total number of name variants from 104 to 93.
+
+### Step 2. Building the Name Combinations
+
+I merged the found name variants with the family names to form a new column "name variant", which I am going to use further for finding the persons in Wikidata.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+zz2 <- zz2 %>% left_join(wiki_given_names) %>% 
+  unite(name_variant, c("personlabel_en", "family"), 
+        sep = " ", na.rm=TRUE, remove = FALSE) %>% 
+  relocate(doi, order, family, given, personlabel_en)
+  
+zz2 %>%
+  DT::datatable(rownames = FALSE, escape = FALSE, class = 'compact striped',
+               caption = htmltools::tags$caption(
+               style = 'caption-side: bottom; 
+               text-align: left; font-size: 80%; 
+               color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org.'),
+    options = list(searchHighlight = TRUE, dom = 'Bfrtip',
+                   autoWidth = FALSE))
+
+```
+
+### Step 3. Finding authors in Wikidata (by name)
+
+To find the persons in Wikidata and get the most interesting details we will be using the following function based on a SPARQL request. As R seems to truncate the arguments of 1000+ chars in length, I also made a [separate URL to WDS](https://query.wikidata.org/#SELECT%20%3Fperson%20%3Fpersonlabel_ru%20%3Fpersonlabel_en%0A%20%20%20%20%20%20%20%20%20%20%3Fpersondesc_en%20%3Foccupations%20%3Femployers%20%20%0A%20%20%20%20%20%20%20%20%3Fviaf%20%3Fmagid%20%3Fisni%20%3Flc%20%3Felibrary%20%3Fscopus_id%20%3Freseacher_id%20%3Forcid%20%3Fpublons%0AWITH%20%7B%0A%20%20SELECT%20%3Fperson%20%20%0A%20%20%20%20%20%20%20%20(GROUP_CONCAT(DISTINCT%20%3Foccupation%3B%20SEPARATOR%3D%22%20%7C%20%22)%20AS%20%3Foccupations)%0A%20%20%20%20%20%20%20%20(GROUP_CONCAT(DISTINCT%20%3Femployer%3B%20SEPARATOR%3D%22%20%7C%20%22)%20AS%20%3Femployers)%0A%20%20%20WHERE%20%7B%0A%20%20%20%20hint%3AQuery%20hint%3Aoptimizer%20%22None%22.%0A%20%20%20%20%20%20SERVICE%20wikibase%3Amwapi%20%7B%0A%20%20%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Aapi%20%22Search%22%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20wikibase%3Aendpoint%20%22www.wikidata.org%22%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20mwapi%3Asrsearch%20%22%5C%22Valentin%20Parmon%5C%22%20OR%20%5C%22Valentin%20Vlasov%5C%22%22.%0A%20%20%20%20%3Fperson%20wikibase%3AapiOutputItem%20mwapi%3Atitle.%20%20%20%20%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20FILTER%20BOUND%20(%3Fperson)%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Fperson%20wdt%3AP31%20wd%3AQ5.%20%20%0A%20%20%20%20%20%20optional%7B%3Fperson%20wdt%3AP106%20%3Foccup.%7D%0A%20%20%20%20%20%20optional%7B%3Fperson%20wdt%3AP108%20%3Femployer_.%7D%20%0A%20%20%20%20%20%20SERVICE%20wikibase%3Alabel%20%7Bbd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Foccup%20rdfs%3Alabel%20%3Foccupation.%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Femployer_%20rdfs%3Alabel%20%3Femployer.%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%20%20%0A%20%20%7D%0A%20%20GROUP%20BY%20%3Fperson%0A%20%20LIMIT%2010%20%20%20%20%20%20%20%20%20%20%20%0A%7D%20AS%20%25result%0AWHERE%20%7B%0A%20%20INCLUDE%20%25result%0A%20%20%20optional%7B%3Fperson%20rdfs%3Alabel%20%3Fpersonlabel_en%20.%20FILTER(lang(%3Fpersonlabel_en)%3D%22en%22)%7D%0A%20%20%20optional%7B%3Fperson%20rdfs%3Alabel%20%3Fpersonlabel_ru%20.%20FILTER(lang(%3Fpersonlabel_ru)%3D%22ru%22)%7D%0A%20%20%20optional%7B%3Fperson%20schema%3Adescription%20%3Fpersondesc_en%20.%20FILTER(lang(%3Fpersondesc_en)%3D%22en%22)%7D%20%20%0A%20%20%20optional%7B%3Fperson%20wdt%3AP214%20%3Fviaf.%7D%20%20%0A%20%20%20optional%7B%3Fperson%20wdt%3AP244%20%3Flc.%7D%0A%20%20%20%20optional%7B%3Fperson%20wdt%3AP213%20%3Fisni.%7D%0A%20%20%20optional%7B%3Fperson%20wdt%3AP8079%20%3Felibrary.%7D%0A%20%20%20optional%7B%3Fperson%20wdt%3AP6366%20%3Fmagid.%7D%20%20%20%0A%20%20%20%20optional%7B%3Fperson%20wdt%3AP496%20%3Forcid.%7D%20%20%20%0A%20%20%20%20optional%7B%3Fperson%20wdt%3AP3829%20%3Fpublons.%7D%0A%20%20%20%20optional%7B%3Fperson%20wdt%3AP1053%20%3Freseacher_id.%7D%0A%20%20%20%20optional%7B%3Fperson%20wdt%3AP1153%20%3Fscopus_id.%7D%20%20%20%0A%20%7D) where you can see a SPARQL query. 
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+sparql_author_query <- function(person_name){
+  paste0('SELECT ?person ?personlabel_ru ?personlabel_en
+          ?persondesc_en ?occupations ?employers  
+        ?viaf ?magid ?isni ?lc ?elibrary ?scopus_id ?reseacher_id ?orcid ?publons
+WITH {
+  SELECT ?person  
+        (GROUP_CONCAT(DISTINCT ?occupation; SEPARATOR=" | ") AS ?occupations)
+        (GROUP_CONCAT(DISTINCT ?employer; SEPARATOR=" | ") AS ?employers)
+   WHERE {
+    hint:Query hint:optimizer "None".
+      SERVICE wikibase:mwapi {
+        bd:serviceParam wikibase:api "Search";
+                        wikibase:endpoint "www.wikidata.org";
+                        mwapi:srsearch "', person_name, '".
+    ?person wikibase:apiOutputItem mwapi:title.    
+      }
+      FILTER BOUND (?person)       
+        ?person wdt:P31 wd:Q5.  
+      optional{?person wdt:P106 ?occup.}
+      optional{?person wdt:P108 ?employer_.} 
+      SERVICE wikibase:label {bd:serviceParam wikibase:language "en".
+                           ?occup rdfs:label ?occupation.
+                            ?employer_ rdfs:label ?employer.
+                            }  
+  }
+  GROUP BY ?person
+  LIMIT 10           
+} AS %result
+WHERE {
+  INCLUDE %result
+   optional{?person rdfs:label ?personlabel_en . FILTER(lang(?personlabel_en)="en")}
+   optional{?person rdfs:label ?personlabel_ru . FILTER(lang(?personlabel_ru)="ru")}
+   optional{?person schema:description ?persondesc_en . FILTER(lang(?persondesc_en)="en")}  
+   optional{?person wdt:P214 ?viaf.}  
+   optional{?person wdt:P244 ?lc.}
+    optional{?person wdt:P213 ?isni.}
+   optional{?person wdt:P8079 ?elibrary.}
+   optional{?person wdt:P6366 ?magid.}   
+    optional{?person wdt:P496 ?orcid.}   
+    optional{?person wdt:P3829 ?publons.}
+    optional{?person wdt:P1053 ?reseacher_id.}
+    optional{?person wdt:P1153 ?scopus_id.}   
+ }') %>% 
+    WikidataQueryServiceR::query_wikidata() 
+}
+```
+
+This function accepts the person name, quoted or unquoted, and can also process the name variants separated by OR (like in example below designed to find the Wikidata profiles of 2 prominent Russian scientists from Novosibirsk).  
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+sparql_author_query("\\\"Valentin Parmon\\\" OR \\\"Valentin Vlasov\\\"") %>%
+  DT::datatable(rownames = FALSE, escape = FALSE, class = 'compact striped',
+               caption = htmltools::tags$caption(
+               style = 'caption-side: bottom; 
+               text-align: left; font-size: 80%; 
+               color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org.'),
+    options = list(searchHighlight = TRUE, dom = 'Brtip',
+                   autoWidth = TRUE, 
+                columnDefs = list(
+                  list(width = '350px', targets = c(5)),
+                   list(width = '170px', targets = c(1,3,13)))
+                  ))
+```
+
+By adding the name variants we increase 3.5 times a number of requests required to find the Wikidata items for 28 authors (97 name variants). Therefore, I am going to use ... OR ... syntax to reduce a number of queries back to 28.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+## grouping the name variants into ... OR ... strings
+zz2grouped <- zz2 %>% 
+  mutate(name_variant = paste0('\\\"',name_variant,'\\\"')) %>% 
+  group_by(doi, order) %>% 
+  summarize(name_variants = paste0(name_variant, collapse = " OR ")) %>% 
+  ungroup()
+
+wiki_persons_file <- paste0(dir,"wiki_persons.RDS")
+
+if(!file.exists(wiki_persons_file)){
+  wiki_persons <- unique(zz2grouped$name_variants) %>%
+    map_df(~sparql_author_query(.x) %>%
+             ## as some identifiers can be returned as characters & double
+             mutate_all(~as.character(.x)) %>% 
+             mutate(name_variants = .x))
+
+  write_rds(wiki_persons, wiki_persons_file)
+} else { 
+  wiki_persons <- read_rds(wiki_persons_file)
+}
+
+wiki_persons %>%  
+  DT::datatable(rownames = FALSE, escape = FALSE, class = 'compact striped',
+               caption = htmltools::tags$caption(
+               style = 'caption-side: bottom; 
+               text-align: left; font-size: 80%; 
+               color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org.'),
+    options = list(searchHighlight = TRUE, dom = 'Brtip', autoWidth = TRUE, 
+                columnDefs = list(
+                  list(width = '350px', targets = c(3, 5)),
+                   list(width = '450px', targets = c(15)),
+                   list(width = '170px', targets = c(1,8, 13)))
+                  ))
+```
+
+We have found 11 persons, of which 4 are the right persons (Wladimir Andreff, Peter Kaznacheev, Viktor Ryazanov, and twice Sergey Kalendzhyan). This I decided by manually checking the suggested variants (Step 4). It was helpful, of course, that 3 of 4 are also marked as economists in the "description" or "occupations" columns. By the way, Sergey Kalendzhyan in the original articles was spelled both as Sergei and Sergey, but due to step 1 (when we added all known name variants), we have found Sergey Kalendzhyan's Wikidata profile in both cases. 
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+wd_authors_by_names_file <- paste0(dir, "wd_authors_by_names.csv")
+right_ones <- c("Wladimir Andreff", "Peter Kaznacheev", 
+                "Viktor Ryazanov", "Sergey Kalendzhyan")
+wiki_persons %>% 
+  filter(personlabel_en %in% right_ones) %>% 
+  left_join(zz2grouped, .) %>%
+  write_excel_csv(wd_authors_by_names_file)
+```
+
+Now we are ready for a final step! 
+
+### Uploading the Author Info into Wikidata 
+
+This is what we have had by the end of our journey.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+data_wd  <- bind_rows(
+  read_csv(wd_authors_by_ids_file, 
+           col_types = cols(.default = col_character())) %>% 
+    select(any_of(c("doi", "order", "wikidata"))),
+  read_csv(wd_authors_by_names_file, 
+           col_types = cols(.default = col_character()))%>% 
+    mutate(wikidata = str_extract(person, "Q\\d+$")) %>% 
+    select(any_of(c("doi", "order", "wikidata")))
+  ) %>% 
+    filter(!is.na(wikidata)) %>% 
+    rename(wd_author = wikidata)
+  
+data4wiki <- final_data_checked %>% 
+  left_join(dois) %>% 
+  left_join(data_wd) %>%
+  left_join(wd_pub_existing_data %>% 
+              select(wikidata = qid, order, current_author = author_wiki, 
+                     current_statement = author_wiki_type)) %>% 
+  unite("author_string", c("CRF given", "CRF family"), sep = " ") %>% 
+  mutate(author_string = str_to_title(author_string)) %>% 
+  mutate(author_statement = ifelse(is.na(wd_author), "P2093", "P50")) %>%  
+  select(article_wiki = wikidata, order,
+         current_author, current_statement, 
+         author_statement, author_wiki = wd_author, author_string) 
+
+data4wiki %>%  
+  DT::datatable(rownames = FALSE, escape = FALSE, class = 'compact striped',
+               caption = htmltools::tags$caption(
+               style = 'caption-side: bottom; 
+               text-align: left; font-size: 80%; 
+               color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org.'),
+    options = list(searchHighlight = TRUE, dom = 'Brtip', autoWidth = TRUE))
+  
+```
+
+We know the wikidata items, corresponding to the articles (column "article_wiki"), and how the authors are currently present in Wikidata (see the columns "current_author" and "current_statement"). The "current_author" strings have only the initials, so we can improve it by substituting with the authorname strings from CrossRef (P2093 property for the statement). For the authors with Wikidata items (4 authors with non-empty values in the author_wiki column) we will introduce the P50 statements (connecting the Wikidata items for article and person).
+
+In both cases we should also not to forget to delete the existing statements (see below the example of statements).
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include = TRUE}
+wd_statements <-  data4wiki %>% rowwise() %>% 
+  mutate(statement = ifelse(!is.na(author_wiki),
+           paste0("-",article_wiki,"|", current_statement,"|\"", 
+                  current_author,"\"||",
+                  article_wiki,"|P50|",author_wiki,"|P1545|\"", 
+                  order,"\"|S248|Q5188229"), 
+           paste0("-",article_wiki,"|", current_statement,"|\"", 
+                  current_author,"\"||",
+                  article_wiki,"|P2093|\"",author_string, "\"|P1545|\"", 
+                  order,"\"|S248|Q5188229"))) %>% 
+  select(statement) %>% 
+  mutate(statement = str_split(statement, "\\|\\|")) %>% 
+  unnest(statement) %>% 
+  unlist(use.names = FALSE) 
+
+wd_statements %>% 
+  paste0(., collapse = "\n") %>% 
+  write_file(paste0(dir, "for qs_auths.tsv"))  
+  
+wd_statements %>% enframe(name = NULL, value = "wikidata_statements") %>% 
+   DT::datatable(rownames = FALSE, escape = FALSE, class = 'compact striped',
+               caption = htmltools::tags$caption(
+               style = 'caption-side: bottom; 
+               text-align: left; font-size: 80%; 
+               color: #969696; font-family: Roboto Condensed;',
+               'Data: wikidata.org.'),
+    options = list(searchHighlight = TRUE, dom = 'Brtip', autoWidth = FALSE))
+  
+```
+
+With the line (-Q107266290|P2093|"Kalendzhyan S.O.") we remove the existing statement that claims {wikidata item Q107266290 has an author string "Kalendzhyan S.O."}. 
+
+With the next line (Q107266290|P50|Q4209279|P1545|"1"|S248|Q5188229) we create a new statement that claims {wikidata item Q107266290 has an author (P50) relation to Q4209279 that is positioned (P1545) first ("1") as stated (P248) in CrossRef (Q5188229)}. 
+
+Mind S instead of P for the statement used as a reference. More details on QuickStatements syntax can be found [here](https://www.wikidata.org/wiki/Help:QuickStatements#Using_QuickStatements_version_2_in_batch_mode))  
+
+The process looks like this:
+
+1. Open [QuickStatemets interface](https://quickstatements.toolforge.org/#/batch). To have an access, you have to be [an autoconfirmed user](https://www.wikidata.org/wiki/Wikidata:Autoconfirmed_users). Paste the prepared statements (the pictures below show the result just for 2 lines, as an example!). Click Import V1 commands.
+
+```{r, layout="l-body-outset", echo = FALSE}
+knitr::include_graphics(paste0(getwd(),"/images/wd_statement_sok1.PNG"))
+```
+
+2. Check that the suggested revisions make sense (the properties are recognized and shown as active URLs). Click Run. 
+
+```{r, layout="l-body-outset", echo = FALSE}
+knitr::include_graphics(paste0(getwd(),"/images/wd_statement_sok2.PNG"))
+```
+
+3. Watch. Enjoy.
+
+```{r, layout="l-body-outset", echo = FALSE}
+knitr::include_graphics(paste0(getwd(),"/images/wd_statement_sok3.PNG"))
+```
+
+4. This is how the updated article page looks like in [Wikidata](https://www.wikidata.org/wiki/Q107266380). The "authors" and "author name strings" are separated. 
+
+```{r, layout="l-body-outset", echo = FALSE}
+knitr::include_graphics(paste0(getwd(),"/images/wd_statement_sok4.PNG"))
+```
+
+5. And this is how the article page looks like in [Scholia](https://scholia.toolforge.org/work/Q107266380). 
+
+```{r, layout="l-body-outset", echo = FALSE}
+knitr::include_graphics(paste0(getwd(),"/images/wd_statement_sok5.PNG"))
+``` 
+
+If you click on the authors marked as UNRESOLVED:, you will be moved to the [Author Disambiguator](https://author-disambiguator.toolforge.org/), another extra-useful tool for editing the author information for academic publications in Wikidata. 
+
+```{r, layout="l-body-outset", echo = FALSE}
+knitr::include_graphics(paste0(getwd(),"/images/wd_statement_sok6.PNG"))
+``` 
+
+This application tries to find the author profile in Wikidata (I am not sure how complex its recommendation algorithm), and you can search the person by ORCID and by name. If nothing is found,  the application suggests to create the new Wikidata item (this is something I decided not to do in my exercise). 
+
+```{r, layout="l-body-outset", echo = FALSE}
+knitr::include_graphics(paste0(getwd(),"/images/wd_statement_sok7.PNG"))
+``` 
+
+The only "but", again, it is also for autoconfirmed users only.
+
+### Final Remarks (to the journal editors) 
+
+Wikidata has a lot of valuable tools and options for the academic journals to highlight their impact. To deal with it is just a question of having one dedicated person enrolled to take care of uploading the articles' metadata into Wikidata and doing the author disambiguation (after getting a status of autoconfirmed user). Even if I failed to convince you to deal with Wikidata, please, do pay attention to a quality of articles' metadata.  
+
+I will continue this exercise to add the affiliations and other details to Wikidata in close future.  
+
+### Acknowledgments {.appendix}
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+pkgs <- c('dplyr', 'readr', 'tidyr', 'purrr', 'stringr',
+          'jsonlite', 'DT', 'knitr', 'rmarkdown', 'WikidataQueryServiceR',
+          'stringi', 'WikidataR')
+
+do.call('c',lapply(pkgs, citation)) %>% sort()
+```
+
+Allaire J, Xie Y, McPherson J, Luraschi J, Ushey K, Atkins A, Wickham H, Cheng J, Chang
+W, Iannone R (2021). _rmarkdown: Dynamic Documents for R_. R package version 2.7, <URL:
+https://github.com/rstudio/rmarkdown>.
+
+Gagolewski M (2020). _R package stringi: Character string processing facilities_. <URL:
+http://www.gagolewski.com/software/stringi/>.
+
+Henry L, Wickham H (2020). _purrr: Functional Programming Tools_. R package version
+0.3.4, <URL: https://CRAN.R-project.org/package=purrr>.
+
+Ooms J (2014). “The jsonlite Package: A Practical and Consistent Mapping Between JSON
+Data and R Objects.” _arXiv:1403.2805 [stat.CO]_. <URL:
+https://arxiv.org/abs/1403.2805>.
+
+Popov M (2020). _WikidataQueryServiceR: API Client Library for 'Wikidata Query
+Service'_. R package version 1.0.0, <URL:
+https://CRAN.R-project.org/package=WikidataQueryServiceR>.
+
+Shafee T, Keyes O, Signorelli S, Lum A, Graul C, Popov M (2021). _WikidataR: Read-Write
+API Client Library for 'Wikidata'_. R package version 2.2.0, <URL:
+https://github.com/TS404/WikidataR/issues>.
+
+Wickham H (2020). _tidyr: Tidy Messy Data_. R package version 1.1.2, <URL:
+https://CRAN.R-project.org/package=tidyr>.
+
+Wickham H (2019). _stringr: Simple, Consistent Wrappers for Common String Operations_. R
+package version 1.4.0, <URL: https://CRAN.R-project.org/package=stringr>.
+
+Wickham H, Francois R, Henry L, Muller K (2021). _dplyr: A Grammar of Data
+Manipulation_. R package version 1.0.3, <URL: https://CRAN.R-project.org/package=dplyr>.
+
+Wickham H, Hester J (2020). _readr: Read Rectangular Text Data_. R package version
+1.4.0, <URL: https://CRAN.R-project.org/package=readr>.
+
+Xie Y (2020). _knitr: A General-Purpose Package for Dynamic Report Generation in R_. R
+package version 1.30, <URL: https://yihui.org/knitr/>.
+
+Xie Y (2015). _Dynamic Documents with R and knitr_, 2nd edition. Chapman and Hall/CRC,
+Boca Raton, Florida. ISBN 978-1498716963, <URL: https://yihui.org/knitr/>.
+
+Xie Y (2014). “knitr: A Comprehensive Tool for Reproducible Research in R.” In Stodden
+V, Leisch F, Peng RD (eds.), _Implementing Reproducible Computational Research_. Chapman
+and Hall/CRC. ISBN 978-1466561595, <URL:
+http://www.crcpress.com/product/isbn/9781466561595>.
+
+Xie Y, Allaire J, Grolemund G (2018). _R Markdown: The Definitive Guide_. Chapman and
+Hall/CRC, Boca Raton, Florida. ISBN 9781138359338, <URL:
+https://bookdown.org/yihui/rmarkdown>.
+
+Xie Y, Cheng J, Tan X (2021). _DT: A Wrapper of the JavaScript Library 'DataTables'_. R
+package version 0.17, <URL: https://CRAN.R-project.org/package=DT>.
+
+Xie Y, Dervieux C, Riederer E (2020). _R Markdown Cookbook_. Chapman and Hall/CRC, Boca
+Raton, Florida. ISBN 9780367563837, <URL:
+https://bookdown.org/yihui/rmarkdown-cookbook>.

@@ -7,7 +7,22 @@
     <description>Using R to solve the practical tasks in the library information science and other fields.  
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Sun, 27 Jun 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 04 Jul 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Importing Author Information from CrossRef to Wikidata via QuickStatements</title>
+      <dc:creator>Aleksei Lutai</dc:creator>
+      <link>https://dwayzer.netlify.app/posts/2021-07-02-importing-author-information-from-crossref-to-wikidata-via-quickstatements</link>
+      <description>The post continues my quest to improve the presence of academic journal(s) in Wikidata. I reviewed the different searching approaches to find the authors, especially those with with non-English names, in Wikidata and upload the author metadata via QuickStatements.</description>
+      <category>crossref</category>
+      <category>wikidata</category>
+      <category>r</category>
+      <category>quickstatements</category>
+      <category>sparql</category>
+      <category>author metadata</category>
+      <guid>https://dwayzer.netlify.app/posts/2021-07-02-importing-author-information-from-crossref-to-wikidata-via-quickstatements</guid>
+      <pubDate>Sun, 04 Jul 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://dwayzer.netlify.app/posts/2021-07-02-importing-author-information-from-crossref-to-wikidata-via-quickstatements/images/wd_statement_sok2.PNG" medium="image" type="image/png" width="1345" height="524"/>
+    </item>
     <item>
       <title>Post-Publication Collecting ORCIDs for the Authors</title>
       <dc:creator>Aleksei Lutai</dc:creator>
@@ -23,7 +38,7 @@
       <category>open citations</category>
       <category>coauthorship analysis</category>
       <guid>https://dwayzer.netlify.app/posts/2021-06-28-post-publication-collecting-orcids-for-the-authors</guid>
-      <pubDate>Sun, 27 Jun 2021 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 28 Jun 2021 00:00:00 +0000</pubDate>
       <media:content url="https://dwayzer.netlify.app/posts/2021-06-28-post-publication-collecting-orcids-for-the-authors/images/graph.png" medium="image" type="image/png" width="2834" height="2047"/>
     </item>
     <item>
