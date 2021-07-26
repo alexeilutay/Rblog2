@@ -1,0 +1,335 @@
+---
+title: "New Release of RIRO is here"
+description: |
+  RIRO is a Russian Index of Research Organizations and here I am writing about (briefly) what this project is by its 1.1 version.
+author:
+  - first_name: "Aleksei"
+    last_name: "Lutai" 
+    url: https://www.linkedin.com/in/lutaya/
+    orcid_id: 0000-0003-1341-781X
+date: 07-26-2021
+categories:
+  - ror
+  - russian data
+  - organization identifier
+  - riro
+  - r
+creative_commons: CC BY
+preview: images/ror_network.png
+output:
+  distill::distill_article:
+    self_contained: false
+    code_folding: true
+    highlight: kate
+    highlight_downlit: true
+    toc: true
+    toc_depth: 3
+    toc_float: true
+---
+
+```{r eval=TRUE, message=FALSE, warning=FALSE, include=FALSE, echo=TRUE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+
+library(tidyverse)
+library(DT)
+library(jsonlite)
+library(igraph)
+library(ggraph)
+library(tidygraph)
+
+options(DT.options = list(pageLength = 5, dom = "Brftip",  
+  deferRender = TRUE, ordering = TRUE, autoWidth = TRUE, scrollX = TRUE))
+
+onedrive <- list.dirs("C:/Users", recursive = FALSE) %>% 
+  .[grepl("alexe|WD|lutay",.)] %>% list.dirs(., recursive = FALSE) %>% 
+  .[grepl("onedrive",., ignore.case = TRUE)]
+
+dir <- paste0(onedrive, "/RusOrgReg/")
+
+## create dir for images (blog)
+img_dir <- paste0(getwd(), "/images/")
+if(!dir.exists(img_dir)){dir.create(img_dir)}
+
+```
+
+As promised, briefly, in "5 things you need to know about..." format.
+
+### 1. Web site 
+
+With its 1.1 release [RIRO project](https://openriro.github.io/) has got a web site https://openriro.github.io/. 
+
+```{r, layout="l-body", echo = FALSE}
+knitr::include_graphics(paste0(img_dir, "site.png"))
+```
+
+This is another Distill-driven online site for RIRO official releases, use cases & code examples. The RIRO releases are both in [English](https://openriro.github.io/posts/rirov11eng) and [in Russian](https://openriro.github.io/posts/rirov11).
+
+### 2. Coverage
+
+The current version of RIRO covers 2818 parent organizations (universities, research centres, regional hospitals, etc) - together with branches and predecessors it is over 8000 entities.
+
+```{r, layout="l-body", echo = FALSE}
+knitr::include_graphics(paste0(img_dir, "chart_upset_v1.1.eng.png"))
+```
+
+### 3. New Org ID type
+
+We have a long expected newcomer - eLIBRARY organization identifier. eLIBRARY is the largest Russian aggregator of scholarly publications, so their index of organizations is almost 15000 names. We matched 1827 largest accounts and publish it in Table 12.
+
+So far eLIBRARY offers no free/freemium API to use this ID, so if you are not a subscriber to their special services, the value of these IDs is not high.
+
+Well, one can open organization profile on eLIRBARY.ru web site using the ID. The picture below shows the profile of [Kaluga State University named after K. E. Tsiolkovski](https://www.elibrary.ru/org_about.asp?orgsid=1052) (ID = 1052).
+
+```{r, layout="l-body-outset", echo = FALSE}
+knitr::include_graphics(paste0(img_dir, "elibrary.png"))
+```
+
+### 4. Quick links to Zotero
+
+All versions of RIRO dataset (CSV tables) are available in [Zenodo community](https://zenodo.org/communities/riro/), one can easily get it via OAI-PMH Harvesting API or by using REST API. On assumption that somebody is not willing to use Zenodo APIs we decided to publish the direct URLs to RIRO CSV files (always the latest version) here: https://openriro.github.io/latest_riro_links.csv 
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+read_csv("https://openriro.github.io/latest_riro_links.csv") %>% 
+  mutate(download = paste0('<a href=\"',download,'\" target=\"_blank\">',download,'</a>')) %>% 
+  datatable(rownames = FALSE, escape = FALSE,
+            options = list(pageLength = 4, deferRender = FALSE,
+                           dom = "Brtip",  autoWidth = FALSE))
+```
+
+To cite RIRO dataset (without version):
+
+- Sterligov, Ivan, & Lutay, Aleksei. (2021). Russian Index of the Research Organizations (RIRO) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.4775290
+
+### 5. Use Case - ROR and RIRO
+
+ROR and GRID records for the Russian organizations are confusing, because they are based on outdated sources. Like this [Russian Academy of Sciences account](https://extendror.toolforge.org/wikidata/05qrfxd25) that lists both parent orgs, branchs, territorial divisions, subject departments, and many others who are no longer with RAS.   
+
+Many relations currently present in ROR are of specific, non-judicial nature. One institution can belong to the Mathematical Division of RAS, to Ural Branch of RAS, to the Federal Research Center. These relations are of different nature: 
+
+- being a part of RAS Math Division is mostly about who votes for whom on RAS elections, and how the results are packed into the RAS Annual Reports. Little funding is behind these relations and no legal responsibility.
+
+- being a part of the Ural or Siberian Branch is a bit about money that RAS bracnhes are provided (tiny part of total R&D budget) and no responsibility compared to the relations between the preant organization and its subsidiary.
+
+- being part of the regional research center can be different. In some cases the institutions are the subsidiaries of the federal research center (the branches). In other cases the institutions bear the historic name referring to the regional RAS center, but are totally independent in legal way.
+
+Is it important to keep the hierarchy of RAS subject divisions and territorial branches? 
+
+Well, only if the relations are clearly labelled and defined. Without labelling the relations are mixed with the real subsidiary-based relations and can be misleading.
+
+RIRO data can help to this.
+
+ROR is one of the identifiers present in RIRO. We have matched 1210 ROR IDs related to the Russian Federation (ROR Dataset v.9 https://doi.org/10.6084/m9.figshare.c.4596503.v9) to the RIRO identifiers - not all, but a majority of those that are state-owned and public. 
+
+```{r message=FALSE, warning=FALSE}
+ror <- list.dirs(paste0(dir, "/final_tables/"), recursive =  FALSE) %>% 
+  sort(., decreasing = TRUE) %>% .[grepl("1.1.1",.)] %>% 
+  list.files(full.names = TRUE) %>% 
+  .[grepl("table4_",.)] %>% 
+  read_csv(col_types = cols(.default = col_character()))
+
+ror %>%  datatable(rownames = FALSE, filter = "none", 
+            escape = FALSE, class = "row-border", 
+            options = list(columnDefs = list(
+              list(width = '250px', targets = c(3:4)),
+              list(width = '400px', targets = c(5,8)))))
+
+```
+
+In RIRO the relations between ROR accounts are packed in compact strings. In the code below I will unpack the strings and build a network to see an hierarchy of ROR Russian accounts and to match them against the relationships present in RIRO.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ror_net <- ror %>% 
+  select(ror_id, ror_name, ror_relationships) %>%
+  filter(nchar(ror_relationships)>2) %>% 
+  separate(ror_relationships, into = c("label", "type", "id"),  sep = "\\|") %>% 
+  mutate_at(c("label", "type", "id"), ~str_replace(.x, "^[^:]+:","")) %>% 
+  mutate_at(c("label", "type", "id"), ~gsub("^c|\\(|\\)","", .x)) %>%  
+  mutate_at(c("label", "type", "id"), ~str_extract_all(.x, '".+?"')) %>% 
+  unnest(c("label", "type", "id")) %>% 
+  mutate_all(~gsub('"', '', .x)) %>% 
+  mutate(id = str_extract(id, "(?<=/)0.+$")) %>% 
+  select(ror_id, ror_name, type, id, label) %>% 
+  mutate_all(~str_squish(.x))
+
+g_ror <- ror_net %>% 
+  select(from = ror_id, to = id) %>% 
+  graph_from_data_frame(directed = FALSE)
+
+summary(g_ror)
+```
+
+So the hierarchy of the Russian ROR IDs comprises of 135 organizations connected by 202 relations.
+
+```{r layout="l-body", echo=FALSE, message=FALSE, warning=FALSE, fig.height=5.5}
+g_ror %>% as_tbl_graph() %>% 
+  mutate(node_degree = degree(.)) %>% 
+  ggraph(layout = "stress", bbox = 10) + 
+  geom_edge_link0(alpha = 0.5) + 
+  geom_node_point(aes(x = x, y = y, size = node_degree), 
+                  fill = "lightblue", shape = 21, alpha = 0.9)+
+  scale_size_continuous(range = c(2,8), name = "Degree")+
+  labs(title = "Hierarchy of Russian ROR accounts", 
+       subtitle = "based on 1210 ROR Russian accounts match against RIRO", 
+       caption = "dwayzer.netlify.app")+
+  theme_graph()
+```
+
+As stated earlier, the subject and territorial subdivisions of the Russian Academy of Sciences play central roles in this network.
+
+In RIRO the Table 3 lists the hierarchical relations between the parent orgs and their subsidiaries, and also with the predecessors. Use of predecessors helps to deal with the accounts that ceased to exist after merger, but still present in the foreign registries of Org IDs (like ROR, Scopus, etc).  
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+riro <- list.dirs(paste0(dir, "/final_tables/"), recursive =  FALSE) %>% 
+  sort(., decreasing = TRUE) %>% .[grepl("1.1.1",.)] %>% 
+  list.files(full.names = TRUE) %>% 
+  .[grepl("table3_",.)] %>% 
+  read_csv(col_types = cols(.default = col_character())) 
+```
+
+Let's build a RIRO network where the nodes are the organizations matched to ROR. In other words we will use RIRO for linking the ROR accounts and build a network where every node corresponds to ROR account, and a proved relation (subsidiary or predecessor) is behind every edge.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+riro_net <- riro %>% 
+  left_join(ror %>% select(code, ror_id) %>% distinct()) %>% 
+  left_join(ror %>% select(child_code = code, ror_id2 = ror_id) %>% distinct()) %>% 
+  select(ror_id, relation, ror_id2) %>% distinct() %>% na.omit() 
+
+g_riro <- riro_net %>% 
+  select(from = ror_id, to = ror_id2) %>% 
+  graph_from_data_frame(directed = FALSE) 
+
+summary(g_riro)
+```
+
+Such network has 195 nodes and 123 edges. Over 15%+ of ROR accounts that we matched to RIRO has some relations (in juridicial way, like parent and subsidiary entities). Attributions to the Ministries or RAS are not included here. 
+
+```{r layout="l-body", echo=FALSE, message=FALSE, warning=FALSE, fig.height=5.5}
+g_riro %>% as_tbl_graph() %>% 
+  mutate(node_degree = degree(.)) %>% 
+  ggraph(layout = "nicely") + 
+  geom_edge_link0(alpha = 0.5) + 
+  geom_node_point(aes(x = x, y = y, size = node_degree), fill = "coral", shape = 21, alpha = 0.9)+
+  scale_size_continuous(range = c(2,4), name = "Degree")+
+  labs(title = "Hierarchy of RIRO accounts matched to ROR", 
+       subtitle = "based on 1210 ROR Russian accounts matched against RIRO", 
+       caption = "dwayzer.netlify.app")+
+  theme_graph()
+```
+
+The critical part here is that these 2 graphs have a tiny intersection - there are just 3 shared relations. 
+
+```{r}
+g1 <- g_riro %s% g_ror
+print_all(g1)
+```
+
+In other words:
+
+- 198 out of 202 relations (that we built based on ROR data) do not exist in RIRO (because of specific nature of those relations)
+
+- just 3 out of 123 proven relations present in RIRO are also present in ROR.   
+
+The chart below shows 2 networks joint on share plot. The shared nodes (present in both networks are shown in violet). The 3 shared edges are exactly those that connect the violet nodes (not marked with color).
+
+```{r layout="l-body-outset", echo=FALSE, message=FALSE, warning=FALSE, fig.height=4.5}
+graph_join(g_riro %>% as_tbl_graph(), 
+           g_ror %>% as_tbl_graph()) %>% 
+  mutate(color = ifelse(name %in% V(g_ror)$name, "lightblue", "coral")) %>% 
+  mutate(color = ifelse(name %in% V(g_ror)$name & name %in% V(g_riro)$name, "violet", color)) %>% 
+  mutate(node_degree = degree(.)) %>% 
+  ggraph(layout = "nicely") + 
+  geom_edge_link0(alpha = 0.5) + 
+  geom_node_point(aes(x = x, y = y, size = node_degree, fill = color), shape = 21, alpha = 0.9)+
+  scale_size_continuous(range = c(1.5,5), name = "Degree")+
+    labs(title = "Hierarchy of ROR and RIRO accounts", 
+       subtitle = "based on 1210 ROR Russian accounts matched against RIRO", 
+       caption = "dwayzer.netlify.app")+
+  scale_fill_manual(labels = c("lightblue" = "in ROR only", 
+                                 "coral" = "in RIRO only", 
+                               "violet" = "in both RIRO and ROR"),
+                    values = c("lightblue" = "lightblue", 
+                                 "coral" = "coral", "violet" = "violet"), 
+                    name = "Accounts with\nhierarchical relations")+
+  guides("fill" = guide_legend(override.aes = list(size = 3), order = 1))+
+  theme_graph()
+```
+
+### Next steps
+
+The RIRO roadmap is still in the air, but we will certainly try to 
+
+- cooperate with ROR
+
+- pay more attention to Wikidata
+
+- publish more use cases.
+
+### Acknowledgments {.appendix}
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+pkgs <- c('dplyr', 'readr', 'tidyr', 'purrr', 'stringr',
+          'DT', 'knitr', 'rmarkdown', 'igraph',
+          'stringi', 'ggraph', 'tidygraph')
+
+do.call('c',lapply(pkgs, citation)) %>% sort()
+```
+
+Allaire J, Xie Y, McPherson J, Luraschi J, Ushey K, Atkins A, Wickham H, Cheng J,
+Chang W, Iannone R (2021). _rmarkdown: Dynamic Documents for R_. R package version
+2.7, <URL: https://github.com/rstudio/rmarkdown>.
+
+Csardi G, Nepusz T (2006). “The igraph software package for complex network
+research.” _InterJournal_, *Complex Systems*, 1695. <URL: https://igraph.org>.
+
+Gagolewski M (2020). _R package stringi: Character string processing facilities_.
+<URL: http://www.gagolewski.com/software/stringi/>.
+
+Henry L, Wickham H (2020). _purrr: Functional Programming Tools_. R package version
+0.3.4, <URL: https://CRAN.R-project.org/package=purrr>.
+
+Pedersen T (2021). _ggraph: An Implementation of Grammar of Graphics for Graphs and
+Networks_. R package version 2.0.5, <URL:
+https://CRAN.R-project.org/package=ggraph>.
+
+Pedersen T (2020). _tidygraph: A Tidy API for Graph Manipulation_. R package version
+1.2.0, <URL: https://CRAN.R-project.org/package=tidygraph>.
+
+Wickham H (2020). _tidyr: Tidy Messy Data_. R package version 1.1.2, <URL:
+https://CRAN.R-project.org/package=tidyr>.
+
+Wickham H (2019). _stringr: Simple, Consistent Wrappers for Common String
+Operations_. R package version 1.4.0, <URL:
+https://CRAN.R-project.org/package=stringr>.
+
+Wickham H, Francois R, Henry L, Muller K (2021). _dplyr: A Grammar of Data
+Manipulation_. R package version 1.0.3, <URL:
+https://CRAN.R-project.org/package=dplyr>.
+
+Wickham H, Hester J (2020). _readr: Read Rectangular Text Data_. R package version
+1.4.0, <URL: https://CRAN.R-project.org/package=readr>.
+
+Xie Y (2020). _knitr: A General-Purpose Package for Dynamic Report Generation in R_.
+R package version 1.30, <URL: https://yihui.org/knitr/>.
+
+Xie Y (2015). _Dynamic Documents with R and knitr_, 2nd edition. Chapman and
+Hall/CRC, Boca Raton, Florida. ISBN 978-1498716963, <URL: https://yihui.org/knitr/>.
+
+Xie Y (2014). “knitr: A Comprehensive Tool for Reproducible Research in R.” In
+Stodden V, Leisch F, Peng RD (eds.), _Implementing Reproducible Computational
+Research_. Chapman and Hall/CRC. ISBN 978-1466561595, <URL:
+http://www.crcpress.com/product/isbn/9781466561595>.
+
+Xie Y, Allaire J, Grolemund G (2018). _R Markdown: The Definitive Guide_. Chapman
+and Hall/CRC, Boca Raton, Florida. ISBN 9781138359338, <URL:
+https://bookdown.org/yihui/rmarkdown>.
+
+Xie Y, Cheng J, Tan X (2021). _DT: A Wrapper of the JavaScript Library
+'DataTables'_. R package version 0.17, <URL: https://CRAN.R-project.org/package=DT>.
+
+Xie Y, Dervieux C, Riederer E (2020). _R Markdown Cookbook_. Chapman and Hall/CRC,
+Boca Raton, Florida. ISBN 9780367563837, <URL:
+https://bookdown.org/yihui/rmarkdown-cookbook>.

@@ -7,7 +7,21 @@
     <description>Using R to solve the practical tasks in the library information science and other fields.  
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Sun, 04 Jul 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 25 Jul 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>New Release of RIRO is here</title>
+      <dc:creator>Aleksei Lutai</dc:creator>
+      <link>https://dwayzer.netlify.app/posts/2021-07-27-new-release-of-riro-is-here</link>
+      <description>RIRO is a Russian Index of Research Organizations and here I am writing about (briefly) what this project is by its 1.1 version.</description>
+      <category>ror</category>
+      <category>russian data</category>
+      <category>organization identifier</category>
+      <category>riro</category>
+      <category>r</category>
+      <guid>https://dwayzer.netlify.app/posts/2021-07-27-new-release-of-riro-is-here</guid>
+      <pubDate>Sun, 25 Jul 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://dwayzer.netlify.app/posts/2021-07-27-new-release-of-riro-is-here/images/ror_network.png" medium="image" type="image/png" width="784" height="474"/>
+    </item>
     <item>
       <title>Importing Author Information from CrossRef to Wikidata via QuickStatements</title>
       <dc:creator>Aleksei Lutai</dc:creator>
@@ -20,7 +34,7 @@
       <category>sparql</category>
       <category>author metadata</category>
       <guid>https://dwayzer.netlify.app/posts/2021-07-02-importing-author-information-from-crossref-to-wikidata-via-quickstatements</guid>
-      <pubDate>Sun, 04 Jul 2021 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 05 Jul 2021 00:00:00 +0000</pubDate>
       <media:content url="https://dwayzer.netlify.app/posts/2021-07-02-importing-author-information-from-crossref-to-wikidata-via-quickstatements/images/wd_statement_sok2.PNG" medium="image" type="image/png" width="1345" height="524"/>
     </item>
     <item>
