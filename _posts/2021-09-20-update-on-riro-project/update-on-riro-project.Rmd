@@ -1,0 +1,102 @@
+---
+title: "Update on RIRO project"
+description: |
+  RIRO v.1.2 is out! Here are just some personal reflections on RIRO project's development.
+author:
+  - first_name: "Aleksei"
+    last_name: "Lutai" 
+    url: https://www.linkedin.com/in/lutaya/
+    orcid_id: 0000-0003-1341-781X
+date: 09-20-2021
+categories:
+  - ror
+  - wikidata
+  - russian data
+  - organization identifier
+  - riro
+  - r
+creative_commons: CC BY
+preview: images/leninsky.png
+output:
+  distill::distill_article:
+    self_contained: false
+    code_folding: true
+    highlight: kate
+    highlight_downlit: true
+    toc: true
+    toc_depth: 3
+    toc_float: true
+---
+
+```{r eval=TRUE, message=FALSE, warning=FALSE, include=FALSE, echo=TRUE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+
+library(tidyverse)
+library(DT)
+library(jsonlite)
+library(WikidataQueryServiceR)
+
+options(DT.options = list(pageLength = 5, dom = "Brftip",  
+  deferRender = TRUE, ordering = TRUE, autoWidth = TRUE, scrollX = TRUE))
+
+onedrive <- list.dirs("C:/Users", recursive = FALSE) %>% 
+  .[grepl("alexe|WD|lutay",.)] %>% list.dirs(., recursive = FALSE) %>% 
+  .[grepl("onedrive",., ignore.case = TRUE)]
+
+dir <- paste0(onedrive, "/RusOrgReg/")
+
+## create dir for images (blog)
+img_dir <- paste0(getwd(), "/images/")
+if(!dir.exists(img_dir)){dir.create(img_dir)}
+
+```
+
+RIRO stands for the Russian Index of Research Organizations - this is a web project matching the Russian research organizations with the official info and their profiles in ROR, Scopus, Wikidata, and other databases.
+
+There is an official press release [in English](https://openriro.github.io/posts/rirov12eng/) at the web site, so here I can focus only on the things that I find most crucial about the project. 
+
+### (1) Russian organizations
+
+Step by step the project grows and now includes 3214 unique (head only, no branches) Russian organizations. With the branches and predecessors there are more than 8000 records. The project is focused on public sector of science - i.e. on the organizations having web sites (do not expect to find any secret underground orc plants).
+
+### (2) Scopus profiles
+
+We matched more than 4000 Scopus profiles. More than 800 organizations have more than 1 Scopus profile. More interesting that 300+ profiles were present in July, but disappeared in August. Any researcher relying on the Scopus affiliation profiles should not forget about its constant evolution. Though the profiles are not stable, a list of matched RIRO profiles can be helpful if one has a data exported from SciVal. We used SciVal data on 2020 Russian publications, assigned it to the regions  using RIRO, and analyzed a cooperation of the organizations in the bordering regions [i.e. interregional collaboration](https://openriro.github.io/posts/regional-collaboration/).
+
+The idea was pretty simple - the organizations produce the publications in different collaborative models. There are (1) intraregional articles, produced by a sole organization or by the organizations within one region, (2) double interregional collaborations where the organizations from 2 regions have found a reason to cooperate regardless of the distance and produced something, and (3) there are collaborations with 3 or more regions involved.   
+
+The figure below shows the tile map of Russian regions and for each region the number shows a contribution of the neighbour regions into the publication output produced by the double interregional (2 regions only) collaboration (i.e. no multicollaborations, no domestic, no intra-regional publications).
+
+```{r fig.cap="Figure from RIRO project https://openriro.github.io/posts/regional-collaboration/"}
+knitr::include_graphics(paste0(img_dir, "/map_region.png"))
+```
+
+This could be not an issue for many countries, but for Russia it is very interesting - some regions have very low direct collaboration with their neighbours.    
+
+### (3) ROR
+
+Everything I wrote about [ROR](https://dwayzer.netlify.app/posts/2021-07-27-new-release-of-riro-is-here/#use-case---ror-and-riro) 2 months ago, unfortunately, is still valid. Global brouhaha about the values is understood, the solution was long time expected, but there is still a list of questions to be answered - who will be updating the ROR? who will be updating the CrossRef to fix the incorrectly assigned RORs (like "Russian Academy of Sciences")? What type of hierarchy & historical background will be reflected in ROR profiles?
+
+### (4) Wikidata
+
+In the last 2 months this is my favourite topic. I am impressed with a flexibility of Wikidata properties and thinking that every research organization or university should pay attention to its Wikidata profile. This is the only service that allows any organization to set the things right (history, hierarchy, relations, identifiers).
+
+In the RIRO v.1.2. the table 5 lists over 1600 Wikidata items matched to Russian organizations. There's lot of info yet to be added adn set up, but I already managed to parse the web sites and added into the profiles the social networks info - so there are 564 Facebook pages, 676 VKontakte pages, 149 Telegram, 205 Twitter, and 373 Youtube channels. I am also trying to set up the hierarchies, linking the organizations to the ministries, branches and predecessors. 
+
+Example 1: Wikidata items for the organizations whose parent organization is the MInistry of Healthcare and their Facebook IDs. 
+
+<iframe style="width: 70vw; height: 60vh; border: none;" src="https://query.wikidata.org/embed.html#SELECT%20DISTINCT%20%3Fitem%20%3FitemLabel%20%0A%20%20%20%20%20%20(URI(CONCAT(%22https%3A%2F%2Ffacebook.com%2F%22%2C%20%3Ffb))%20as%20%3Flink)%0AWHERE%20%7B%20%20%0A%20%20%3Fitem%20wdt%3AP749%20wd%3AQ2624248%20.%0A%20%20%3Fitem%20wdt%3AP131%20wd%3AQ649.%0A%20%20optional%20%7B%3Fitem%20wdt%3AP2013%20%3Ffb%20.%7D%0AFILTER%20NOT%20EXISTS%7B%20%3Fitem%20wdt%3AP576%20%3Fdate%20%7D%0AFILTER%20NOT%20EXISTS%7B%20%3Fitem%20wdt%3AP582%20%3Fdate2%20%7D%0ASERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%20%7D%0A%20%20%7D%0AORDER%20BY%20DESC(%3Flink)" referrerpolicy="origin" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+
+Example 2: Wikidata items for the organizations whose parent organization is the Ministry of Science and Higher Education that have coordinates (set in Wikidata). A piece of this map you can also see as a post preview picture (at the blog's parent page). 
+
+<iframe style="width: 70vw; height: 60vh; border: none;" src="https://query.wikidata.org/embed.html#%23defaultView%3AMap%0ASELECT%20DISTINCT%20%3Fitem%20%3FitemLabel%20%3Fcoords%0AWHERE%20%7B%20%20%0A%20%20%3Fitem%20wdt%3AP749%20wd%3AQ53579434%20.%0A%20%20%3Fitem%20wdt%3AP131%20wd%3AQ649%3B%0A%20%20%20%20%20%20%20%20wdt%3AP625%20%3Fcoords%20.%0AFILTER%20NOT%20EXISTS%7B%20%3Fitem%20wdt%3AP576%20%3Fdate%20%7D%0AFILTER%20NOT%20EXISTS%7B%20%3Fitem%20wdt%3AP582%20%3Fdate2%20%7D%0ASERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%20%7D%0A%20%20%7D" referrerpolicy="origin" sandbox="allow-scripts allow-same-origin allow-popups" ></iframe>
+
+I do hope that the Wikidata info about the Russian organizations will be the most accurate source of information, and other service providers (like ROR, Scopus, [the Lens](https://www.lens.org/lens/institutions/roadmap)) will be using the Wikidata at least for checking.
+
+In order to attract more attention to Wikidata profiles, the RIRO team releases an article "[Wikidata profile for the research organizations](https://openriro.github.io/posts/wikidata-profile)" (so far in Russian only).
+
+If anyone is interested in this topic - how the research organizations are present in Wikidata - I would be glad to chat or share more from my experience. 

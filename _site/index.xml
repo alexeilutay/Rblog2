@@ -7,7 +7,22 @@
     <description>Using R to solve the practical tasks in the library information science and other fields.  
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Sun, 25 Jul 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 19 Sep 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Update on RIRO project</title>
+      <dc:creator>Aleksei Lutai</dc:creator>
+      <link>https://dwayzer.netlify.app/posts/2021-09-20-update-on-riro-project</link>
+      <description>RIRO v.1.2 is out! Here are just some personal reflections on RIRO project's development.</description>
+      <category>ror</category>
+      <category>wikidata</category>
+      <category>russian data</category>
+      <category>organization identifier</category>
+      <category>riro</category>
+      <category>r</category>
+      <guid>https://dwayzer.netlify.app/posts/2021-09-20-update-on-riro-project</guid>
+      <pubDate>Sun, 19 Sep 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://dwayzer.netlify.app/posts/2021-09-20-update-on-riro-project/images/leninsky.png" medium="image" type="image/png" width="540" height="309"/>
+    </item>
     <item>
       <title>New Release of RIRO is here</title>
       <dc:creator>Aleksei Lutai</dc:creator>
@@ -19,7 +34,7 @@
       <category>riro</category>
       <category>r</category>
       <guid>https://dwayzer.netlify.app/posts/2021-07-27-new-release-of-riro-is-here</guid>
-      <pubDate>Sun, 25 Jul 2021 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 26 Jul 2021 00:00:00 +0000</pubDate>
       <media:content url="https://dwayzer.netlify.app/posts/2021-07-27-new-release-of-riro-is-here/images/ror_network.png" medium="image" type="image/png" width="784" height="474"/>
     </item>
     <item>
