@@ -88,7 +88,7 @@ Well, one can open organization profile on eLIRBARY.ru web site using the ID. Th
 knitr::include_graphics(paste0(img_dir, "elibrary.png"))
 ```
 
-### 4. Quick links to Zotero
+### 4. Quick links to Zenodo
 
 All versions of RIRO dataset (CSV tables) are available in [Zenodo community](https://zenodo.org/communities/riro/), one can easily get it via OAI-PMH Harvesting API or by using REST API. On assumption that somebody is not willing to use Zenodo APIs we decided to publish the direct URLs to RIRO CSV files (always the latest version) here: https://openriro.github.io/latest_riro_links.csv 
 
