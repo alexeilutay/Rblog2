@@ -7,7 +7,32 @@
     <description>Using R to solve the practical tasks in the library information science and other fields.  
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Sun, 19 Sep 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 09 Feb 2024 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Zodiac Charts</title>
+      <dc:creator>Aleksei Lutai</dc:creator>
+      <link>https://dwayzer.netlify.app/posts/2024-02-10-drawing-a-zodiac-chart</link>
+      <description>Zodiac signs are popular in many countries. In this post I am offering a routine for creation of fancy zodiac charts based on the birth dates. The example charts are drawn for the elected members of some national parliaments (US House of Representative, UK House of Commons, France National Assembly, German Bundestag, and Russian Duma). The text and the charts are free of any political implications.</description>
+      <category>r</category>
+      <category>wikidata</category>
+      <category>ggplot2</category>
+      <guid>https://dwayzer.netlify.app/posts/2024-02-10-drawing-a-zodiac-chart</guid>
+      <pubDate>Fri, 09 Feb 2024 00:00:00 +0000</pubDate>
+      <media:content url="https://dwayzer.netlify.app/posts/2024-02-10-drawing-a-zodiac-chart/images/eu_combo_zodiac.png" medium="image" type="image/png" width="1653" height="1062"/>
+    </item>
+    <item>
+      <title>Using CC unicode symbols in ggplot2</title>
+      <dc:creator>Aleksei Lutai</dc:creator>
+      <link>https://dwayzer.netlify.app/posts/2021-11-22-using-cc-unicode-symbols-in-ggplot2</link>
+      <description>In this post I am using a R package tabulizer to extract a large table from 853-page PDF, containing a list of VAK (Russian) journal titles.</description>
+      <category>open science</category>
+      <category>r</category>
+      <category>unicode</category>
+      <category>ggplot2</category>
+      <guid>https://dwayzer.netlify.app/posts/2021-11-22-using-cc-unicode-symbols-in-ggplot2</guid>
+      <pubDate>Mon, 22 Nov 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://dwayzer.netlify.app/posts/2021-11-22-using-cc-unicode-symbols-in-ggplot2/using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-2-1.png" medium="image" type="image/png" width="1248" height="768"/>
+    </item>
     <item>
       <title>Update on RIRO project</title>
       <dc:creator>Aleksei Lutai</dc:creator>
@@ -20,7 +45,7 @@
       <category>riro</category>
       <category>r</category>
       <guid>https://dwayzer.netlify.app/posts/2021-09-20-update-on-riro-project</guid>
-      <pubDate>Sun, 19 Sep 2021 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 20 Sep 2021 00:00:00 +0000</pubDate>
       <media:content url="https://dwayzer.netlify.app/posts/2021-09-20-update-on-riro-project/images/leninsky.png" medium="image" type="image/png" width="540" height="309"/>
     </item>
     <item>

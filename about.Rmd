@@ -13,21 +13,21 @@ This blog is about using R language for various tasks. I expect that majority of
 - open science / Wiki
 - "last man standing" office routines 
 
-### Who is the author?
+### Who is the blog's author?
 
-My name is Lutay Aleksei ([LinkedIn](https://www.linkedin.com/in/lutaya/), [Twitter](https://twitter.com/Waydze1)). Few years ago I decided to learn R programming and it brought a lot of fun into my digital routines. The drawback is that now I have a way too many R projects and datasets that I am unlikely to use myself in future. That's why I decided to make this blog in order to share those of my scripts and data that could be interesting to other people.     
+My name is Lutay Aleksei ([LinkedIn](https://www.linkedin.com/in/lutaya/), [Twitter](https://twitter.com/Waydze1)). I started to learn R programming in 2017 and it brought a lot of fun into my digital routines. The drawback is that now I have a way too many R projects and datasets that I am unlikely to use myself in future. That's why I decided to make this blog in order to share those of my scripts and data that could be interesting to other R users.     
 
 ### Why in English?
 
-I live and work in Russia, and some of this blog's topics are of particular interest for the Russian community. But as this blog is mainly about using R, I decided to write in English. Yes, it is not my native language, so my apologies to those who are sensitive to incorrect use of English language.
+I live and work in Russia, and some of this blog's topics are of particular interest for the Russian community. But as this blog is mainly about using R, I would like to address my posts to the international audience. English is not my native language, so apologies to those who are really sensitive to the linguistic aspects.
 
 ### What is conviviaR?
 
-This blog's title is a connotation to the term "convivial tools" introduced in 1973 by [Ivan Illich](https://en.wikipedia.org/wiki/Ivan_Illich) in his book ["Tools for Conviviality"](https://en.wikipedia.org/wiki/Tools_for_Conviviality). Illich believed that, instead of enforcing power or compulsion, the tools should encourage participation and sociability:
+This blog's title is a connotation to the term "convivial tools" introduced in 1973 by [Ivan Illich](https://en.wikipedia.org/wiki/Ivan_Illich) in his book ["Tools for Conviviality"](https://en.wikipedia.org/wiki/Tools_for_Conviviality). Illich believed that, instead of enforcing power or compulsion? the tools should encourage participation and sociability:
 
 >"Convivial tools are those which give each person who uses them the greatest opportunity to enrich the environment with the fruits of his or her vision. Industrial tools deny this possibility to those who use them, and they allow their designers to determine the meaning and expectations of others."
 
-To me R is quite a convivial tool due to sharing culture and a spirit of cooperation within [#rstats community](https://twitter.com/hashtag/rstats?src=hashtag_click) - these things are very embracing and encouraging for the newcomers.
+To my opinion R is very much a convivial tool due to its sharing culture and a spirit of cooperation within [#rstats community](https://twitter.com/hashtag/rstats?src=hashtag_click) - these things are very embracing and encouraging for the newcomers.
 
 ### Any conflicts of interest?
 
@@ -35,4 +35,4 @@ In this blog I will share only my own views that do not represent my employee's 
 
 ### How to contact?
 
-**As the modern governments and corporations seem to share a vision that blocking the Internet resources can help them to achieve their goals, I may be not quick to respond through the abovementioned channels. If you really need to contact me, please send me an email to alexei(dot)lutay(at)gmail(dot)com.**
+As the modern governments and corporations seem to share a vision that blocking the Internet resources can help them to achieve their goals, I may be not quick to respond through the abovementioned channels. My current internet service providers block X/Twitter, Facebook and LinkedIn, so if you really need to contact me, please do not hesitate to send an email to alexei(dot)lutay(at)gmail(dot)com.
