@@ -92,36 +92,36 @@ code span.wa { color: #bf0303; } /* Warning */
   <!--radix_placeholder_meta_tags-->
   <title>Using CC unicode symbols in ggplot2</title>
 
-  <meta property="description" itemprop="description" content="In this post I am using a R package tabulizer to extract a large table from 853-page PDF, containing a list of VAK (Russian) journal titles."/>
+  <meta property="description" itemprop="description" content="A short tutorial on how to use the icons for the Creative Commons licenses into ggplot2 charts."/>
 
   <link rel="license" href="https://creativecommons.org/licenses/by/4.0/"/>
 
   <!--  https://schema.org/Article -->
-  <meta property="article:published" itemprop="datePublished" content="2021-11-22"/>
-  <meta property="article:created" itemprop="dateCreated" content="2021-11-22"/>
+  <meta property="article:published" itemprop="datePublished" content="2024-02-13"/>
+  <meta property="article:created" itemprop="dateCreated" content="2024-02-13"/>
   <meta name="article:author" content="Aleksei Lutai"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
   <meta property="og:title" content="Using CC unicode symbols in ggplot2"/>
   <meta property="og:type" content="article"/>
-  <meta property="og:description" content="In this post I am using a R package tabulizer to extract a large table from 853-page PDF, containing a list of VAK (Russian) journal titles."/>
+  <meta property="og:description" content="A short tutorial on how to use the icons for the Creative Commons licenses into ggplot2 charts."/>
   <meta property="og:locale" content="en_US"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
   <meta property="twitter:title" content="Using CC unicode symbols in ggplot2"/>
-  <meta property="twitter:description" content="In this post I am using a R package tabulizer to extract a large table from 853-page PDF, containing a list of VAK (Russian) journal titles."/>
+  <meta property="twitter:description" content="A short tutorial on how to use the icons for the Creative Commons licenses into ggplot2 charts."/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","draft","categories","creative_commons","output"]}},"value":[{"type":"character","attributes":{},"value":["Using CC unicode symbols in ggplot2"]},{"type":"character","attributes":{},"value":["In this post I am using a R package tabulizer to extract a large table from 853-page PDF, containing a list of VAK (Russian) journal titles.   \n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["first_name","last_name","url","orcid_id"]}},"value":[{"type":"character","attributes":{},"value":["Aleksei"]},{"type":"character","attributes":{},"value":["Lutai"]},{"type":"character","attributes":{},"value":["https://www.linkedin.com/in/lutaya/"]},{"type":"character","attributes":{},"value":["0000-0003-1341-781X"]}]}]},{"type":"character","attributes":{},"value":["11-22-2021"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["open science","r","unicode","ggplot2"]},{"type":"character","attributes":{},"value":["CC BY"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","code_folding","highlight","highlight_downlit","toc","toc_depth"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["kate"]},{"type":"logical","attributes":{},"value":[true]},{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[3]}]}]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","categories","preview","creative_commons","output"]}},"value":[{"type":"character","attributes":{},"value":["Using CC unicode symbols in ggplot2"]},{"type":"character","attributes":{},"value":["A short tutorial on how to use the icons for the Creative Commons licenses into ggplot2 charts.    \n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["first_name","last_name","url","orcid_id"]}},"value":[{"type":"character","attributes":{},"value":["Aleksei"]},{"type":"character","attributes":{},"value":["Lutai"]},{"type":"character","attributes":{},"value":["https://www.linkedin.com/in/lutaya/"]},{"type":"character","attributes":{},"value":["0000-0003-1341-781X"]}]}]},{"type":"character","attributes":{},"value":["2024-02-13"]},{"type":"character","attributes":{},"value":["open science","r","unicode","ggplot2"]},{"type":"character","attributes":{},"value":["images/cc_in_ggplot.png"]},{"type":"character","attributes":{},"value":["CC BY"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","code_folding","highlight","highlight_downlit","toc","toc_depth"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["kate"]},{"type":"logical","attributes":{},"value":[true]},{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[3]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["images/cc_icons.png","using-cc-unicode-symbols-in-ggplot2_files/anchor-4.2.2/anchor.min.js","using-cc-unicode-symbols-in-ggplot2_files/bowser-1.9.3/bowser.min.js","using-cc-unicode-symbols-in-ggplot2_files/distill-2.2.21/template.v2.js","using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-2-1.png","using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-3-1.png","using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-5-1.png","using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-6-1.png","using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-7-1.png","using-cc-unicode-symbols-in-ggplot2_files/jquery-1.11.3/jquery.min.js","using-cc-unicode-symbols-in-ggplot2_files/popper-2.6.0/popper.min.js","using-cc-unicode-symbols-in-ggplot2_files/tippy-6.2.7/tippy-bundle.umd.min.js","using-cc-unicode-symbols-in-ggplot2_files/tippy-6.2.7/tippy-light-border.css","using-cc-unicode-symbols-in-ggplot2_files/tippy-6.2.7/tippy.css","using-cc-unicode-symbols-in-ggplot2_files/tippy-6.2.7/tippy.umd.min.js","using-cc-unicode-symbols-in-ggplot2_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["images/cc_in_ggplot.png","using-cc-unicode-symbols-in-ggplot2_files/anchor-4.2.2/anchor.min.js","using-cc-unicode-symbols-in-ggplot2_files/bowser-1.9.3/bowser.min.js","using-cc-unicode-symbols-in-ggplot2_files/distill-2.2.21/template.v2.js","using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-2-1.png","using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-3-1.png","using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-4-1.png","using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-5-1.png","using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-6-1.png","using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-7-1.png","using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-8-1.png","using-cc-unicode-symbols-in-ggplot2_files/header-attrs-2.22/header-attrs.js","using-cc-unicode-symbols-in-ggplot2_files/jquery-1.11.3/jquery.min.js","using-cc-unicode-symbols-in-ggplot2_files/jquery-3.6.0/jquery-3.6.0.js","using-cc-unicode-symbols-in-ggplot2_files/jquery-3.6.0/jquery-3.6.0.min.js","using-cc-unicode-symbols-in-ggplot2_files/jquery-3.6.0/jquery-3.6.0.min.map","using-cc-unicode-symbols-in-ggplot2_files/popper-2.6.0/popper.min.js","using-cc-unicode-symbols-in-ggplot2_files/tippy-6.2.7/tippy-bundle.umd.min.js","using-cc-unicode-symbols-in-ggplot2_files/tippy-6.2.7/tippy-light-border.css","using-cc-unicode-symbols-in-ggplot2_files/tippy-6.2.7/tippy.css","using-cc-unicode-symbols-in-ggplot2_files/tippy-6.2.7/tippy.umd.min.js","using-cc-unicode-symbols-in-ggplot2_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1499,7 +1499,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Using CC unicode symbols in ggplot2","description":"In this post I am using a R package tabulizer to extract a large table from 853-page PDF, containing a list of VAK (Russian) journal titles.","authors":[{"author":"Aleksei Lutai","authorURL":"https://www.linkedin.com/in/lutaya/","affiliation":"&nbsp;","affiliationURL":"#","orcidID":"0000-0003-1341-781X"}],"publishedDate":"2021-11-22T00:00:00.000+03:00","citationText":"Lutai, 2021"}
+{"title":"Using CC unicode symbols in ggplot2","description":"A short tutorial on how to use the icons for the Creative Commons licenses into ggplot2 charts.","authors":[{"author":"Aleksei Lutai","authorURL":"https://www.linkedin.com/in/lutaya/","affiliation":"&nbsp;","affiliationURL":"#","orcidID":"0000-0003-1341-781X"}],"publishedDate":"2024-02-13T00:00:00.000+03:00","citationText":"Lutai, 2024"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -1518,14 +1518,14 @@ code span.wa { color: #bf0303; } /* Warning */
 <div class="dt-tag">ggplot2</div>
 </div>
 <!--/radix_placeholder_categories-->
-<p><p>In this post I am using a R package tabulizer to extract a large table from 853-page PDF, containing a list of VAK (Russian) journal titles.</p></p>
+<p><p>A short tutorial on how to use the icons for the Creative Commons licenses into ggplot2 charts.</p></p>
 </div>
 
 <div class="d-byline">
   
   true
   
-<br/>11-22-2021
+<br/>2024-02-13
 </div>
 
 <div class="d-article">
@@ -1534,199 +1534,269 @@ code span.wa { color: #bf0303; } /* Warning */
 <h3>Contents</h3>
 <ul>
 <li><a href="#introduction">Introduction</a></li>
-<li><a href="#trivial-c-in-image-cc-in-html-as-text">Trivial: (c) in image, (cc) in html as text</a></li>
-<li><a href="#web-in-html">Web: <i class="fab fa-creative-commons"></i> in html</a></li>
-<li><a href="#image-in-images">Image: <i class="fab fa-creative-commons"></i> in images</a></li>
-<li><a href="#short-resume">Short resume</a></li>
+<li><a href="#fonts">Fonts</a></li>
+<li><a href="#c-symbol-in-html">(C) symbol in html</a></li>
+<li><a href="#c-symbol-in-ggplot2">(C) symbol in ggplot2</a></li>
+<li><a href="#cc-snippets-in-html">CC-snippets in html</a></li>
+<li><a href="#unicode-cc-symbols-in-html">Unicode CC symbols in html</a></li>
+<li><a href="#font-awesome-in-html">Font Awesome in html</a></li>
+<li><a href="#font-awesome-in-ggplot2">Font Awesome in ggplot2</a></li>
+<li><a href="#acknowledgments">Acknowledgments</a></li>
 </ul>
 </nav>
 </div>
 <h3 id="introduction">Introduction</h3>
-<p>Thing is that I build a lot of HTML reports in Rmarkdown using interactive features of DT tables &amp; ggiraph pictures. I do like it and am living under impression that most of those who get my reports like this format as well. Or they would tell me, wouldn’t they?</p>
-<p>Most often the reports have the Creative Commons license. I usually mark the images with a copyright sign in ggplot2 caption, which is easy to do with a unicode letter (U+00A9), and describe the CC terms in the special section of the report using a ready-to-go html snippet from <a href="https://creativecommons.org/about/downloads/">Creative Commons</a>.</p>
-<p>Life was fine until one guy asked me why I use a copyright sign and not the creative commons. It didn’t take much time to find a news that <a href="https://creativecommons.org/2020/03/18/the-unicode-standard-now-includes-cc-license-symbols/">starting from Match 2020 the latest version of the Unicode Standard includes Creative Commons (CC) license symbols</a>.</p>
-<p><img src="https://d15omoko64skxi.cloudfront.net/wp-content/uploads/2020/03/licnesing-options-unicode-13.0-symbols-1024x726.png" style="width:60.0%" /></p>
-<p>Now I am recalling that there was something. At the very moment I decided to try to use these unicode symbols, I had a feeling. Now I know that my subconscience did warn me that this would be very much not like having fun, but I could not imagine to what extent and did not listen.</p>
-<p>In this post below I am going to describe the different approaches I used to incorporate CC lisense symbols into my Rmarkdown reports. This story can hurt some feelings, IT professionals are warned.</p>
-<p>The last preparation, a theme for ggplot.</p>
+<p>For years I used a copyright sign in a caption of my ggplot2 charts, as most of the fonts I like to use allow to put a copyright sign as a unicode letter (U+00A9). This left me with a need to describe the Creative Commons terms somewhere in a text. <a href="https://creativecommons.org/about/downloads/">Creative Commons</a> provides cosy html badges that can be easily added to Rmarkdown reports.</p>
+<blockquote>
+<p>Some people have strong feelings about using © to designate the open license, as in the past the copyright sign was used to say “Keep your hands off our property”. But this is a correct way, since the <a href="https://creativecommons.org/faq/#is-creative-commons-against-copyright">Creative Commons licenses are copyright licenses</a>.</p>
+</blockquote>
+<p>Recently I came across an old news saying <a href="https://creativecommons.org/2020/03/18/the-unicode-standard-now-includes-cc-license-symbols/">“from Match 2020 the latest version of the Unicode Standard includes Creative Commons (CC) license symbols”</a> and decided to find out how to use it.</p>
+<p>My plan was to check whether I can:</p>
+<ul>
+<li><p>use my favourite Google fonts to add new unicode symbols into ggplot2</p></li>
+<li><p>use the awesome fonts to add CC signs into ggplot2</p></li>
+<li><p>use unicode letters in html reports, generated with knit from Rmarkdown).</p></li>
+</ul>
+<p>This post is about what I learned.</p>
+<h3 id="fonts">Fonts</h3>
+<p>In the script below some Google fonts and Awesome Fonts are loaded from a local folder on my hard disk (referred as local_font_folder). If you decide to use the code below, you will have to set the correct paths to the font files, saved on your hard disk in advance, or you may try to use (a) sysfonts::font_add_google() or (b) gfonts::download_font().</p>
 <div class="layout-chunk" data-layout="l-body">
 <details>
 <summary>
 Show code
 </summary>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/wch/extrafont'>extrafont</a></span><span class='op'>)</span></span>
-<span><span class='va'>my_theme</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_void</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>text<span class='op'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>family<span class='op'>=</span><span class='st'>"Roboto Condensed"</span>, color <span class='op'>=</span> <span class='st'>"#53565A"</span>, size <span class='op'>=</span> <span class='fl'>13</span><span class='op'>)</span>,</span>
-<span>        panel.background <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_rect</a></span><span class='op'>(</span>fill <span class='op'>=</span> <span class='st'>"#ffffe7"</span>, color <span class='op'>=</span> <span class='st'>"#dfe6e9"</span>, size <span class='op'>=</span> <span class='fl'>0.5</span><span class='op'>)</span>,</span>
-<span>        panel.grid.major <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_blank</a></span><span class='op'>(</span><span class='op'>)</span>,</span>
-<span>        axis.ticks <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_line</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>0.3</span>, linetype <span class='op'>=</span> <span class='fl'>1</span>, color<span class='op'>=</span><span class='st'>"grey10"</span><span class='op'>)</span>,</span>
-<span>        plot.caption <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>size <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>rel</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>, hjust<span class='op'>=</span><span class='fl'>1</span>, color <span class='op'>=</span> <span class='st'>"#969696"</span><span class='op'>)</span>,</span>
-<span>        plot.title <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>rel</a></span><span class='op'>(</span><span class='fl'>1.3</span><span class='op'>)</span>, margin <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>margin</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>5</span>,<span class='fl'>0</span><span class='op'>)</span>,</span>
-<span>                                  face<span class='op'>=</span><span class='st'>"bold"</span>, color <span class='op'>=</span> <span class='st'>"#4582ec"</span><span class='op'>)</span>,</span>
-<span>        plot.margin <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>margin</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>, plot.title.position <span class='op'>=</span> <span class='st'>"plot"</span><span class='op'>)</span></span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/pkg/showtext/man/showtext_auto.html'>showtext_auto</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>local_font_folder</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Sys.getenv.html'>Sys.getenv</a></span><span class='op'>(</span><span class='st'>"OneDrive"</span><span class='op'>)</span>, <span class='st'>"/gfonts/"</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/pkg/sysfonts/man/font_add.html'>font_add</a></span><span class='op'>(</span><span class='st'>"RobotoC"</span>, regular <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>local_font_folder</span>, <span class='st'>"RobotoCondensed-Regular.ttf"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/pkg/sysfonts/man/font_add.html'>font_add</a></span><span class='op'>(</span><span class='st'>"Sofia"</span>, </span>
+<span>         regular <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>local_font_folder</span>, <span class='st'>"SofiaSansCondensed-SemiBold.ttf"</span><span class='op'>)</span>,</span>
+<span>         bold <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>local_font_folder</span>, <span class='st'>"SofiaSansCondensed-SemiBold.ttf"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'>sysfonts</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sysfonts/man/font_add.html'>font_add</a></span><span class='op'>(</span><span class='st'>"fa_brands"</span>,</span>
+<span>                    regular <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>local_font_folder</span>, </span>
+<span>                                     <span class='st'>"/fontawesome/otfs/Font Awesome 6 Brands-Regular-400.otf"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># font_add(regular = "C:/W2indows/Fonts/unifont_upper-14.0.01.ttf", family = "Unifont Upper")</span></span>
+<span><span class='co'># font_add(regular = "C:/Windows/Fonts/cc-icons.ttf", family = "CC Icons")</span></span>
+<span><span class='co'># font_add(regular = "C:/Windows/Fonts/CCSymbols.ttf", family = "CCSymbols")</span></span>
+<span></span>
+<span><span class='va'>my_theme</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_void</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>text <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>colour <span class='op'>=</span> <span class='st'>"white"</span><span class='op'>)</span>,</span>
+<span>        plot.background<span class='op'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_rect</a></span><span class='op'>(</span>fill <span class='op'>=</span> <span class='st'>"#232323"</span>, colour <span class='op'>=</span> <span class='st'>"#232323"</span><span class='op'>)</span>, </span>
+<span>        panel.background<span class='op'>=</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_rect</a></span><span class='op'>(</span>fill <span class='op'>=</span> <span class='st'>"#232323"</span>, colour <span class='op'>=</span> <span class='st'>"#232323"</span><span class='op'>)</span>,  </span>
+<span>        plot.margin <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>t<span class='op'>=</span><span class='fl'>0.2</span>,r<span class='op'>=</span><span class='fl'>0.2</span>,b<span class='op'>=</span><span class='fl'>0.2</span>,l<span class='op'>=</span><span class='fl'>0.2</span><span class='op'>)</span>, <span class='st'>"cm"</span><span class='op'>)</span>,</span>
+<span>        plot.title.position <span class='op'>=</span> <span class='st'>"plot"</span>, </span>
+<span>        plot.caption.position <span class='op'>=</span> <span class='st'>"plot"</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'>showtext</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/showtext/man/showtext_opts.html'>showtext_opts</a></span><span class='op'>(</span>dpi <span class='op'>=</span> <span class='fl'>192</span><span class='op'>)</span></span></code></pre>
 </div>
 </details>
 </div>
-<h3 id="trivial-c-in-image-cc-in-html-as-text">Trivial: (c) in image, (cc) in html as text</h3>
-<p>This way is simple – just paste U00A9 preceded by a backlash into any string and it will bring you a ©.</p>
-<p>Once a copyright sign is in the image, an author can use <a href="https://wiki.creativecommons.org/wiki/Marking_your_work_with_a_CC_license">different approaches</a> to inform the readers about Creative Commons license.</p>
-<ul>
-<li><ol type="1">
-<li>This infomation can be added into a ggplot2 caption. If the caption text is too long, it can be wrapped into a multi-line – either automatically with stringr::str_wrap(n) or manually (as on the picture avove).</li>
-</ol></li>
-<li><ol start="2" type="1">
-<li>An html caption for images is another versatile alternative. Set up a special CSS-class so that the caption text can be visually associated with the images, and place the text there. <a href="https://johnallbritten.com/">John Allbritten</a> wrote a very informative <a href="https://thesynack.com/posts/markdown-captions/">blog post</a> about the image captions in Rmarkdown. For the picture below I used figcaption HTML tag and the code generated by <a href="https://creativecommons.org/choose/">Creative Commons</a> web site – so this can get together a text, reference to the license text and the related CC image.</li>
-</ol></li>
-</ul>
+<h3 id="c-symbol-in-html">(C) symbol in html</h3>
+<p>This is plain – using <code>&amp;#169;</code> in Rmarkdown will return © in html.</p>
+<h3 id="c-symbol-in-ggplot2">(C) symbol in ggplot2</h3>
+<p>Simple too – we have to use <code>\U00A9</code> in geom_text or geom_label, as well as the theme elements (title, subtitle, caption). The cc license terms can be added as text.</p>
 <div class="layout-chunk" data-layout="l-body">
 <details>
 <summary>
 Show code
 </summary>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"1"</span>, y <span class='op'>=</span> <span class='st'>"1"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>geom_text</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, y <span class='op'>=</span> <span class='va'>y</span><span class='op'>)</span>, label<span class='op'>=</span><span class='st'>"\U00A9"</span>, </span>
-<span>             size <span class='op'>=</span> <span class='fl'>40</span>, family<span class='op'>=</span><span class='st'>"Arial"</span>, vjust <span class='op'>=</span> <span class='fl'>0.5</span><span class='op'>)</span><span class='op'>+</span></span>
-<span>   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Using \U00A9 in ggplot2 is easy"</span>, </span>
-<span>       caption <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"\U00A9 Company X, 2021"</span>,</span>
-<span>                       <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"Date: "</span>, <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.time</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>'%m/%d/%Y'</span><span class='op'>)</span><span class='op'>)</span>, </span>
-<span>                       <span class='st'>"some additional information"</span>, sep <span class='op'>=</span> <span class='st'>"\n"</span><span class='op'>)</span>, </span>
-<span>       x <span class='op'>=</span> <span class='cn'>NULL</span>, y <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span><span class='op'>+</span></span>
-<span>  <span class='va'>my_theme</span></span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>chart</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"1"</span>, y <span class='op'>=</span> <span class='st'>"1"</span><span class='op'>)</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, y <span class='op'>=</span> <span class='va'>y</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='va'>my_theme</span></span>
+<span> </span>
+<span><span class='va'>chart</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>geom_label</a></span><span class='op'>(</span>label<span class='op'>=</span><span class='st'>"This is label with a \U00A9"</span>, size <span class='op'>=</span> <span class='fl'>10</span>, vjust <span class='op'>=</span> <span class='fl'>0.5</span>, </span>
+<span>             colour <span class='op'>=</span> <span class='st'>"white"</span>, fill <span class='op'>=</span> <span class='st'>"transparent"</span>, label.padding <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='st'>"lines"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Using \U00A9 in ggplot2 is easy"</span>, </span>
+<span>       caption <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"\U00A9 Rights owner, 2024\n"</span>,</span>
+<span>                       <span class='st'>"CC BY-NC-SA 4.0 Deed\n"</span>,</span>
+<span>                       <span class='st'>"Attribution-NonCommercial-ShareAlike 4.0 International\n"</span>,</span>
+<span>                       <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"Date: "</span>, <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.time</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>'%Y-%m-%d'</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
 </div>
 </details>
 <p><img src="using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-2-1.png" width="864" /></p>
 </div>
+<p>This approach also works with custom fonts, opening a lot of opportunities.</p>
+<div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>
+Show code
+</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>chart</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>geom_label</a></span><span class='op'>(</span>label<span class='op'>=</span><span class='st'>"This is label with a \U00A9"</span>, size <span class='op'>=</span> <span class='fl'>10</span>, vjust <span class='op'>=</span> <span class='fl'>0.5</span>, </span>
+<span>             family <span class='op'>=</span> <span class='st'>"RobotoC"</span>, colour <span class='op'>=</span> <span class='st'>"white"</span>, </span>
+<span>             fill <span class='op'>=</span> <span class='st'>"transparent"</span>, label.padding <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='st'>"lines"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Using \U00A9 in ggplot2 is easy"</span>, </span>
+<span>       caption <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"\U00A9 Rights owner, 2024\n"</span>,</span>
+<span>                       <span class='st'>"CC BY-NC-SA 4.0 Deed\n"</span>,</span>
+<span>                       <span class='st'>"Attribution-NonCommercial-ShareAlike 4.0 International\n"</span>,</span>
+<span>                       <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"Date: "</span>, <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>'%Y-%m-%d'</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span></span>
+<span>    plot.title <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>36</span>, hjust <span class='op'>=</span> <span class='fl'>0</span>, face <span class='op'>=</span> <span class='st'>"bold"</span>, colour <span class='op'>=</span> <span class='st'>"#ffffff"</span>, family <span class='op'>=</span> <span class='st'>"Sofia"</span><span class='op'>)</span>, </span>
+<span>    plot.subtitle <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>hjust <span class='op'>=</span> <span class='fl'>0</span>, family <span class='op'>=</span> <span class='st'>"RobotoC"</span>, vjust <span class='op'>=</span> <span class='fl'>2</span>,  </span>
+<span>                                              colour <span class='op'>=</span> <span class='st'>"#ffffff"</span>, face <span class='op'>=</span> <span class='st'>"plain"</span>, size <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>rel</a></span><span class='op'>(</span><span class='fl'>0.7</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span>    plot.caption <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>hjust <span class='op'>=</span> <span class='fl'>1</span>, size <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>rel</a></span><span class='op'>(</span><span class='fl'>0.8</span><span class='op'>)</span>, colour <span class='op'>=</span> <span class='st'>"#827C82"</span><span class='op'>)</span></span>
+<span>    <span class='op'>)</span></span></code></pre>
+</div>
+</details>
+<p><img src="using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-3-1.png" width="864" /></p>
+</div>
+<p>But CC-license terms can take too much space in a caption, so the options we have to consider are eirther to place the terms out of the chart, or use the CC license icons.</p>
+<h3 id="cc-snippets-in-html">CC-snippets in html</h3>
+<p>You can generate an HTML snippets at <a href="https://creativecommons.org/choose/">Creative Commons</a> web site and place it next to the image using the figcaption tag. <a href="https://johnallbritten.com/">John Allbritten</a> wrote a very informative <a href="https://thesynack.com/posts/markdown-captions/">blog post</a> about the image captions in Rmarkdown. You may see the result below under the chart.</p>
+<div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>
+Show code
+</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>chart</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>geom_label</a></span><span class='op'>(</span>label<span class='op'>=</span><span class='st'>"This is label with a \U00A9"</span>, size <span class='op'>=</span> <span class='fl'>10</span>, vjust <span class='op'>=</span> <span class='fl'>0.5</span>, </span>
+<span>             family <span class='op'>=</span> <span class='st'>"RobotoC"</span>, colour <span class='op'>=</span> <span class='st'>"white"</span>, </span>
+<span>             fill <span class='op'>=</span> <span class='st'>"transparent"</span>, label.padding <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='st'>"lines"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Using \U00A9 in ggplot2 is easy"</span>, </span>
+<span>       caption <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"\U00A9 Rights owner, 2024"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span></span>
+<span>    plot.title <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>36</span>, hjust <span class='op'>=</span> <span class='fl'>0</span>, face <span class='op'>=</span> <span class='st'>"bold"</span>, colour <span class='op'>=</span> <span class='st'>"#ffffff"</span>, family <span class='op'>=</span> <span class='st'>"Sofia"</span><span class='op'>)</span>, </span>
+<span>    plot.subtitle <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>hjust <span class='op'>=</span> <span class='fl'>0</span>, family <span class='op'>=</span> <span class='st'>"RobotoC"</span>, vjust <span class='op'>=</span> <span class='fl'>2</span>,  </span>
+<span>                                              colour <span class='op'>=</span> <span class='st'>"#ffffff"</span>, face <span class='op'>=</span> <span class='st'>"plain"</span>, size <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>rel</a></span><span class='op'>(</span><span class='fl'>0.7</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span>    plot.caption <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>hjust <span class='op'>=</span> <span class='fl'>1</span>, size <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>rel</a></span><span class='op'>(</span><span class='fl'>0.8</span><span class='op'>)</span>, colour <span class='op'>=</span> <span class='st'>"#827C82"</span><span class='op'>)</span></span>
+<span>    <span class='op'>)</span></span></code></pre>
+</div>
+</details>
+<p><img src="using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-4-1.png" width="864" /></p>
+</div>
+<p>
 <figcaption>
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
 </figcaption>
-<p>But what about those Unicode symbols for Creative Commons licenses, how can we use <i class="fab fa-creative-commons"></i>?</p>
-<h3 id="web-in-html">Web: <i class="fab fa-creative-commons"></i> in html</h3>
-<p>Using the Unicode symbols for Creative Common licenses in HTML is not as easy as with ©. The copyright symbol is present in all popular fonts, so one need just paste (which is a hexadecimal format of Unicode symbol U+00A9) in Rmarkdown document, and most viewers will see the correct symbol (©).</p>
-<p>But this will not work with code (which is a hex representation for a Unicode symbol U+1F16D, corresponding to <i class="fab fa-creative-commons"></i>). You may notice that this Unicode has 5-symbols (1F16D), while &amp;#169 in its Unicode format had only 4 (00A9). This is because the copyright symbol belongs to the basic section of the Unicode tables (named <a href="https://en.wikipedia.org/wiki/Latin-1_Supplement_(Unicode_block)">Latin-1 Supplement block of Unicode symbols</a>), while the new Unicode symbols for CC belong to the extended part (named <a href="https://en.wikipedia.org/wiki/Enclosed_Alphanumeric_Supplement">Enclosed Alphanumeric Supplement</a>). The creators of the popular fonts that are currenty used in the browsers and Office programs seemed to focus on the main symbols of the Unicode Table, so most modern fonts have no graphical representation (a glyph) for Creative Common Unicode symbols. If you just put into Rmd text, most viewers will see hex-abracadabra in HTML output.</p>
-<p>Yes, that’s correct – after few decades of talking and declarating about the Openness, we still have the browsers &amp; the fonts that are not quite prepared to designate the open licenses. The only exclusion is ND symbol (its Unicode is U+229C).</p>
+</p>
+<p>While this option works fine for a whole HTML document, it is not very practical for the illustrations, as someone willing to re-use the chart will not save the related CC info.</p>
+<p>So what about using those special Unicode symbols for Creative Commons licenses?</p>
+<h3 id="unicode-cc-symbols-in-html">Unicode CC symbols in html</h3>
+<p>Using the Unicode symbols for Creative Common licenses in HTML is not as easy as with ©. Placing &amp;#xf25e; (which is a hex representation for a Unicode symbol U+1F16D, corresponding to <i class="fab fa-creative-commons"></i>) in Rmarkdown will not draw a sign.</p>
+<p>This is because its unicode has 5-symbols (1F16D), while unicode for &amp;#169 has only 4 (00A9). The latter belongs to the basic section of the Unicode tables (named <a href="https://en.wikipedia.org/wiki/Latin-1_Supplement_(Unicode_block)">Latin-1 Supplement block of Unicode symbols</a>), while the new Unicode symbols (like the ones introduced for CC) belong to the extended part (named <a href="https://en.wikipedia.org/wiki/Enclosed_Alphanumeric_Supplement">Enclosed Alphanumeric Supplement</a>). The only exclusion is ND symbol (its Unicode is U+229C).</p>
+<p>The creators of the popular fonts, widely used in the browsers and Office programs, seem to focus on the main symbols of the Unicode Table, so most modern fonts have no graphical representation (a glyph) for Creative Common Unicode symbols. That’s why if you just use &amp;#xf25e; in Rmarkdown, most viewers will not see the proper symbols in HTML output. I apologize if my explanation is not very precise, I am not a computer expert, but this is how I understand this.</p>
+<p>And, yes, after few decades of talking and declarat-ing about the Open this and Open that, most users still have the browsers and the fonts that are not quite prepared to show the open licenses.</p>
 <p>This <a href="https://en.wikipedia.org/wiki/Unicode_font#List_of_SMP_Unicode_fonts">table in Wikipedia</a> shows the fonts supporting <a href="https://en.wikipedia.org/wiki/Plane_(Unicode)#Supplementary_Multilingual_Plane">Supplementary Multilanguage Plane</a>. One of it is a <a href="https://en.wikipedia.org/wiki/GNU_Unifont">GNU Unifont</a>. Its “upper” companion (<a href="http://unifoundry.com/pub/unifont/unifont-14.0.01/font-builds/unifont_upper-14.0.01.ttf">ttf</a>, 2Mb) covers significant parts of the Supplementary Multilingual Plane (SMP).</p>
 <p>I have also founded few fonts specifically designed to show CC symbols:</p>
 <ul>
 <li><p><a href="http://cc-icons.github.io/installation/">CC Icons</a>, created by someone whose nickname on GitHub is richardba <a href="https://github.com/richardba"><i class="fab fa-github"></i></a>. Here is an <a href="http://cc-icons.github.io/installation/">installation guide</a>.</p></li>
 <li><p><a href="https://www.ctrl.blog/entry/creative-commons-unicode-fallback-font.html">CCSymbols</a> by Daniel Aleksandersen <a href="https://twitter.com/DaAleksandersen"><i class="fab fa-twitter"></i></a></p></li>
 </ul>
-<p>I do not review in details the technical aspects of how the fonts need to be attached to the Rmarkdown to appear in the produced HTML output. If you know how to deal with the CSS and the fonts, you can easily start using any of these fonts for your Rmarkdown documents. I will not be able to explain this properly, as I am a real noub in what concerns the web/css/js/etc.</p>
-<p>But this can be avoided if you decide to use FontAwesome that also have CC icons – <i class="fab fa-creative-commons"></i>, <i class="fab fa-creative-commons-by"></i>, <i class="fab fa-creative-commons-nc"></i>, <i class="fab fa-creative-commons-sa"></i>, <i class="fab fa-creative-commons-nd"></i>.</p>
-<p>The <a href="https://github.com/rstudio/fontawesome">fontawesome</a> R package (by Richard Iannone <a href="https://twitter.com/riannone"><i class="fab fa-twitter"></i></a>) makes it very easy to insert Font Awesome icons into R Markdown documents and Shiny apps.</p>
-<p>The <a href="https://rstudio.github.io/distill/">Distill blogs and web sites</a> has a built-in support of <a href="https://fontawesome.com/plans">Font Awesome</a>, so you can just insert <code>&lt;i class="fab fa-creative-commons-nd"&gt;&lt;/i&gt;</code> in the Rmarkdown where needed.</p>
-<h3 id="image-in-images">Image: <i class="fab fa-creative-commons"></i> in images</h3>
-<p>My initial desire was to learn how to use Unicode letters in order to avoid insetting the tiny raster images of CC license PNGs into my SVG illustrations, produced by ggiraph.</p>
-<p>To use one of the fonts mentioned above, a Windows user need to download the font and to install it to C:/Windows/Fonts.</p>
-<p>Then there are few options:</p>
-<ul>
-<li><a href="https://ragg.r-lib.org/">ragg</a> If your RStudio is v.1.4 or higher, then according to <a href="https://www.tidyverse.org/blog/2021/02/modern-text-features/">this post</a> (by Thomas Lee Pedersen <a href="https://twitter.com/thomas85"><i class="fab fa-twitter"></i></a>), setting up AGG in RStudio as a default graphic device together with agg_ functions will allow to use all the fonts installed in your system without any preparations.</li>
-</ul>
-<p>I am still using Rstudio v.1.2., so I have to help R to see the system fonts (so to say), which can be done in few ways.</p>
-<ul>
-<li><a href="https://github.com/wch/extrafont">extrafont</a>. To add a new font one should use a workflow like below:</li>
-</ul>
+<p>In order to use those fonts in Rmarkdown, you have to deal with CSS – set the classes and properly wrap the letters. The tutorials on this I found useful are: <a href="https://geomoer.github.io/moer-base-r/unit99/sl03_css.html">1</a>, <a href="https://bookdown.org/yihui/rmarkdown/custom-css-1.html">2</a>, <a href="https://bookdown.org/yihui/rmarkdown-cookbook/html-output.html">3</a>.</p>
+<p>I did not exploit this option, as the same result can be reached with <a href="https://fontawesome.com/">Font Awesome</a>.</p>
+<h3 id="font-awesome-in-html">Font Awesome in html</h3>
+<p><a href="https://fontawesome.com/search?o=r&amp;m=free&amp;f=brands">Font Awesome Brand Collection</a> contains CC icons – <i class="fab fa-creative-commons"></i>, <i class="fab fa-creative-commons-by"></i>, <i class="fab fa-creative-commons-nc"></i>, <i class="fab fa-creative-commons-sa"></i>, <i class="fab fa-creative-commons-nd"></i>, not requiring to purchase PRO license.</p>
+<p>The <a href="https://github.com/rstudio/fontawesome">fontawesome</a> R package (by Richard Iannone <a href="https://twitter.com/riannone"><i class="fab fa-twitter"></i></a>) makes it very easy to insert Font Awesome icons into R Markdown documents and Shiny apps. The package generates SVG and PNG icons that can be put into Rmarkdown without using internet connection.</p>
 <div class="layout-chunk" data-layout="l-body">
 <details>
 <summary>
 Show code
 </summary>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/wch/extrafont'>extrafont</a></span><span class='op'>)</span></span>
-<span><span class='fu'><a href='https://rdrr.io/pkg/extrafont/man/font_import.html'>font_import</a></span><span class='op'>(</span>paths <span class='op'>=</span> <span class='st'>"C:/Windows/Fonts/"</span>, pattern <span class='op'>=</span> <span class='st'>"unifont_upper-14.0.01.ttf"</span><span class='op'>)</span></span>
-<span><span class='fu'><a href='https://rdrr.io/pkg/extrafont/man/font_import.html'>font_import</a></span><span class='op'>(</span>paths <span class='op'>=</span> <span class='st'>"C:/Windows/Fonts/"</span>, pattern <span class='op'>=</span> <span class='st'>"cc-icons.ttf"</span><span class='op'>)</span></span>
-<span><span class='fu'><a href='https://rdrr.io/pkg/extrafont/man/font_import.html'>font_import</a></span><span class='op'>(</span>paths <span class='op'>=</span> <span class='st'>"C:/Windows/Fonts/"</span>, pattern <span class='op'>=</span> <span class='st'>"CCSymbols.ttf"</span><span class='op'>)</span></span>
-<span><span class='fu'>extrafont</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/extrafont/man/fonttable.html'>fonttable</a></span><span class='op'>(</span><span class='op'>)</span> <span class='co'># this command returns a list of available fonts</span></span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/rstudio/fontawesome'>fontawesome</a></span><span class='op'>)</span></span></code></pre>
 </div>
 </details>
 </div>
-<ul>
-<li><a href="https://cran.r-project.org/web/packages/showtext/vignettes/introduction.html">showtext</a>. A typical workflow to add new fonts is as follows:</li>
-</ul>
+<p>This colored icon <svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:steelblue;overflow:visible;position:relative;"><path d="M245.83 214.87l-33.22 17.28c-9.43-19.58-25.24-19.93-27.46-19.93-22.13 0-33.22 14.61-33.22 43.84 0 23.57 9.21 43.84 33.22 43.84 14.47 0 24.65-7.09 30.57-21.26l30.55 15.5c-6.17 11.51-25.69 38.98-65.1 38.98-22.6 0-73.96-10.32-73.96-77.05 0-58.69 43-77.06 72.63-77.06 30.72-.01 52.7 11.95 65.99 35.86zm143.05 0l-32.78 17.28c-9.5-19.77-25.72-19.93-27.9-19.93-22.14 0-33.22 14.61-33.22 43.84 0 23.55 9.23 43.84 33.22 43.84 14.45 0 24.65-7.09 30.54-21.26l31 15.5c-2.1 3.75-21.39 38.98-65.09 38.98-22.69 0-73.96-9.87-73.96-77.05 0-58.67 42.97-77.06 72.63-77.06 30.71-.01 52.58 11.95 65.56 35.86zM247.56 8.05C104.74 8.05 0 123.11 0 256.05c0 138.49 113.6 248 247.56 248 129.93 0 248.44-100.87 248.44-248 0-137.87-106.62-248-248.44-248zm.87 450.81c-112.54 0-203.7-93.04-203.7-202.81 0-105.42 85.43-203.27 203.72-203.27 112.53 0 202.82 89.46 202.82 203.26-.01 121.69-99.68 202.82-202.84 202.82z"/></svg> is created in Rmarkdown with <code>'r fa(name = \"creative-commons\", fill = \"steelblue\")'</code>.</p>
+<p>The <a href="https://rstudio.github.io/distill/">Distill blogs and web sites</a> has a built-in support of <a href="https://fontawesome.com/plans">Font Awesome</a>, and there is an <a href="https://github.com/quarto-ext/fontawesome">extension</a> for Quarto, so if you blog, you can just use a syntax like <code>&lt;i class="fab fa-creative-commons"&gt;&lt;/i&gt;</code> in Rmarkdown.</p>
+<h3 id="font-awesome-in-ggplot2">Font Awesome in ggplot2</h3>
+<p>Font Awesome icons can also be used in ggplot2 due to the ggtext package that allows to format the <a href="https://wilkelab.org/ggtext/articles/plotting_text.html">text</a> and the <a href="https://wilkelab.org/ggtext/articles/theme_elements.html">theme elements</a> as markdown. See an example below.</p>
+<p>Have a nice plotting!</p>
 <div class="layout-chunk" data-layout="l-body">
 <details>
 <summary>
 Show code
 </summary>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/yixuan/showtext'>showtext</a></span><span class='op'>)</span></span>
-<span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/r-lib/systemfonts'>systemfonts</a></span><span class='op'>)</span></span>
-<span><span class='fu'><a href='https://rdrr.io/pkg/sysfonts/man/font_add.html'>font_add</a></span><span class='op'>(</span>regular <span class='op'>=</span> <span class='st'>"C:/Windows/Fonts/unifont_upper-14.0.01.ttf"</span>, family <span class='op'>=</span> <span class='st'>"Unifont Upper"</span><span class='op'>)</span></span>
-<span><span class='fu'><a href='https://rdrr.io/pkg/sysfonts/man/font_add.html'>font_add</a></span><span class='op'>(</span>regular <span class='op'>=</span> <span class='st'>"C:/Windows/Fonts/cc-icons.ttf"</span>, family <span class='op'>=</span> <span class='st'>"CC Icons"</span><span class='op'>)</span></span>
-<span><span class='fu'><a href='https://rdrr.io/pkg/sysfonts/man/font_add.html'>font_add</a></span><span class='op'>(</span>regular <span class='op'>=</span> <span class='st'>"C:/Windows/Fonts/CCSymbols.ttf"</span>, family <span class='op'>=</span> <span class='st'>"CCSymbols"</span><span class='op'>)</span></span>
-<span><span class='fu'>systemfonts</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/systemfonts/man/system_fonts.html'>system_fonts</a></span><span class='op'>(</span><span class='op'>)</span> <span class='co'># this command returns a list of available fonts  </span></span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>chartx</span> <span class='op'>&lt;-</span> <span class='va'>chart</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'>ggtext</span><span class='fu'>::</span><span class='fu'><a href='https://wilkelab.org/ggtext/reference/geom_richtext.html'>geom_richtext</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"1"</span>, y <span class='op'>=</span> <span class='st'>"1"</span><span class='op'>)</span>,</span>
+<span>    label<span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"&lt;span style='font-family:\"Sofia\"; font-size:32pt; color:#82c91e;'&gt;"</span>,</span>
+<span>                  <span class='st'>"Cool CC Licenses&lt;/span&gt;&lt;br/&gt;"</span>,</span>
+<span>                  <span class='st'>"&lt;span style='font-family:\"fa_brands\"; font-size:32pt;'&gt;&amp;#xf4f3;&lt;/span&gt;"</span>,</span>
+<span>                  <span class='st'>"&lt;span style='font-family:\"RobotoC\"; font-size:32pt;'&gt; = \\&amp;#xf4f3;&lt;br/&gt;"</span>,</span>
+<span>                  <span class='st'>"&lt;span style='font-family:\"fa_brands\"; font-size:32pt;'&gt;&amp;#xf25e;&lt;/span&gt;"</span>,</span>
+<span>                  <span class='st'>"&lt;span style='font-family:\"RobotoC\"; font-size:32pt; '&gt; = \\&amp;#xf25e;&lt;br/&gt;"</span>,</span>
+<span>                  <span class='st'>"&lt;span style='font-family:\"fa_brands\"; font-size:32pt;'&gt;&amp;#xf4e7;&lt;/span&gt;"</span>,</span>
+<span>                  <span class='st'>"&lt;span style='font-family:\"RobotoC\"; font-size:32pt; '&gt; = \\&amp;#xf4e7;&lt;/span&gt;"</span><span class='op'>)</span>,</span>
+<span>    vjust <span class='op'>=</span> <span class='fl'>0.5</span>, colour <span class='op'>=</span> <span class='st'>"white"</span>, fill <span class='op'>=</span> <span class='cn'>NA</span>, </span>
+<span>    label.padding <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.5</span>, <span class='fl'>0.5</span>, <span class='fl'>0.5</span><span class='op'>)</span>, <span class='st'>"lines"</span><span class='op'>)</span>,</span>
+<span>    label.r <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fl'>0.25</span>, <span class='st'>"lines"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'>ggtext</span><span class='fu'>::</span><span class='fu'><a href='https://wilkelab.org/ggtext/reference/geom_richtext.html'>geom_richtext</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"2"</span>, y <span class='op'>=</span> <span class='st'>"1"</span><span class='op'>)</span>,</span>
+<span>    label<span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"&lt;span style='font-family:\"Sofia\"; font-size:32pt; color:#fcc419;'&gt;"</span>,</span>
+<span>                  <span class='st'>"Restrictive CC Licenses&lt;/span&gt;&lt;br/&gt;"</span>,</span>
+<span>                  <span class='st'>"&lt;span style='font-family:\"fa_brands\"; font-size:32pt;'&gt;&amp;#xf4ef;&lt;/span&gt;"</span>,</span>
+<span>                  <span class='st'>"&lt;span style='font-family:\"RobotoC\"; font-size:32pt;'&gt; = \\&amp;#xf4ef;&lt;br/&gt;"</span>,</span>
+<span>                  <span class='st'>"&lt;span style='font-family:\"fa_brands\"; font-size:32pt;'&gt;&amp;#xf4e8;&lt;/span&gt;"</span>,</span>
+<span>                  <span class='st'>"&lt;span style='font-family:\"RobotoC\"; font-size:32pt; '&gt; = \\&amp;#xf4e8;&lt;br/&gt;"</span>,</span>
+<span>                  <span class='st'>"&lt;span style='font-family:\"fa_brands\"; font-size:32pt;'&gt;&amp;#xf4eb;&lt;/span&gt;"</span>,</span>
+<span>                  <span class='st'>"&lt;span style='font-family:\"RobotoC\"; font-size:32pt; '&gt; = \\&amp;#xf4eb;&lt;/span&gt;"</span><span class='op'>)</span>,</span>
+<span>    vjust <span class='op'>=</span> <span class='fl'>0.5</span>, colour <span class='op'>=</span> <span class='st'>"white"</span>, fill <span class='op'>=</span> <span class='cn'>NA</span>, </span>
+<span>    label.padding <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.5</span>, <span class='fl'>0.5</span>, <span class='fl'>0.5</span><span class='op'>)</span>, <span class='st'>"lines"</span><span class='op'>)</span>,</span>
+<span>    label.r <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fl'>0.25</span>, <span class='st'>"lines"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"&lt;span style='font-family:\"fa_brands\"; font-size:40pt;'&gt;&amp;#xf25e;&lt;/span&gt;"</span>,</span>
+<span>                <span class='st'>"&lt;span style='font-family:\"Sofia\"; font-size:40pt;'&gt;"</span>,</span>
+<span>                <span class='st'>" license icons are possible in ggplot2 charts&lt;/span&gt;"</span><span class='op'>)</span>, </span>
+<span>       subtitle <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"&lt;span style='font-family:\"RobotoC\"; font-size:25pt;'&gt;"</span>,</span>
+<span>                <span class='st'>"Custom styling is possible due to ggtext package &lt;/span&gt;"</span>,</span>
+<span>                <span class='st'>"&lt;span style='font-family:\"fa_brands\"; font-size:25pt; color:#4facf7;'&gt;&amp;#xf25e; &lt;/span&gt;"</span>,</span>
+<span>                <span class='st'>"&lt;span style='font-family:\"fa_brands\"; font-size:25pt; color:#D55E00;'&gt;&amp;#xf4e7;&lt;/span&gt;"</span><span class='op'>)</span>, </span>
+<span>       caption <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"&lt;span style='font-family:\"fa_brands\"; font-size:15pt;'&gt;&amp;#xf25e;&amp;#xf4e7;&lt;/span&gt;"</span>,</span>
+<span>                <span class='st'>"&lt;span style='font-family:\"RobotoC\"; font-size:15pt;'&gt;"</span>,</span>
+<span>                <span class='st'>" ConviviaR Tools, 2024&lt;br/&gt;"</span>,</span>
+<span>                <span class='st'>"https:\\/\\/dwayzer.netlify.app&lt;br/&gt;"</span>,</span>
+<span>                <span class='st'>"The CC symbols are introduced with the Awesome Fonts&lt;br/&gt;"</span>,</span>
+<span>                <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Date: "</span>, <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>'%Y-%m-%d'</span><span class='op'>)</span>,<span class='st'>"&lt;/span&gt;"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span></span>
+<span>    plot.title <span class='op'>=</span> <span class='fu'><a href='https://wilkelab.org/ggtext/reference/element_markdown.html'>element_markdown</a></span><span class='op'>(</span>halign <span class='op'>=</span> <span class='fl'>0</span>, hjust <span class='op'>=</span> <span class='fl'>0</span>, face <span class='op'>=</span> <span class='st'>"bold"</span>, colour <span class='op'>=</span> <span class='st'>"#ffffff"</span><span class='op'>)</span>, </span>
+<span>    plot.subtitle <span class='op'>=</span> <span class='fu'><a href='https://wilkelab.org/ggtext/reference/element_markdown.html'>element_markdown</a></span><span class='op'>(</span>halign <span class='op'>=</span> <span class='fl'>0</span>, hjust <span class='op'>=</span> <span class='fl'>0</span>, vjust <span class='op'>=</span> <span class='fl'>2</span>,  </span>
+<span>                                     colour <span class='op'>=</span> <span class='st'>"#ffffff"</span>, face <span class='op'>=</span> <span class='st'>"plain"</span>, size <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>rel</a></span><span class='op'>(</span><span class='fl'>1.2</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span>    plot.caption <span class='op'>=</span> <span class='fu'><a href='https://wilkelab.org/ggtext/reference/element_markdown.html'>element_markdown</a></span><span class='op'>(</span>halign <span class='op'>=</span> <span class='fl'>1</span>, hjust <span class='op'>=</span> <span class='fl'>1</span>, size <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>rel</a></span><span class='op'>(</span><span class='fl'>0.8</span><span class='op'>)</span>, colour <span class='op'>=</span> <span class='st'>"#827C82"</span><span class='op'>)</span></span>
+<span>    <span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>dir_charts</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/getwd.html'>getwd</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"/images/"</span><span class='op'>)</span></span>
+<span><span class='kw'>if</span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/files2.html'>dir.exists</a></span><span class='op'>(</span><span class='va'>dir_charts</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span> <span class='fu'><a href='https://rdrr.io/r/base/files2.html'>dir.create</a></span><span class='op'>(</span><span class='va'>dir_charts</span><span class='op'>)</span> <span class='op'>}</span></span>
+<span><span class='kw'>if</span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>dir_charts</span>, <span class='st'>"cc_in_ggplot.png"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span></span>
+<span>  <span class='fu'>ggplot2</span><span class='fu'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggsave.html'>ggsave</a></span><span class='op'>(</span>filename <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>dir_charts</span>, <span class='st'>"cc_in_ggplot.png"</span><span class='op'>)</span>, </span>
+<span>                plot <span class='op'>=</span> <span class='va'>chartx</span>, </span>
+<span>                height <span class='op'>=</span> <span class='fl'>6</span>, width <span class='op'>=</span> <span class='fl'>9</span>, units <span class='op'>=</span> <span class='st'>"cm"</span>, dpi <span class='op'>=</span> <span class='fl'>300</span><span class='op'>)</span></span>
+<span><span class='op'>}</span></span>
+<span><span class='va'>chartx</span></span></code></pre>
 </div>
 </details>
+<p><img src="using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-6-1.png" width="864" /></p>
 </div>
-<p>Let’s see if 3 fonts I found earlier (Unifont Upper, CC Icons and CCSymbols) can do what I expect.
-In the chart below I mix a string “text” with the Unicode symbols for CC to see how the CC symbols look in the final text. I expect it to look like <strong>Text<i class="fab fa-creative-commons"></i><i class="fab fa-creative-commons-by"></i><i class="fab fa-creative-commons-nc"></i><i class="fab fa-creative-commons-sa"></i><i class="fab fa-creative-commons-nd"></i>Text</strong>.</p>
-<p>Please notice that with CC Icons you should not be using the Unicode combinations, but the special letters (c - CC, by = BY, n = NC, s = SA, d = ND, so I used a string “cbynsd”).</p>
-<div class="layout-chunk" data-layout="l-body">
-<details>
-<summary>
-Show code
-</summary>
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>chart</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>geom_text</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='st'>"CCSymbols"</span><span class='op'>)</span>, label<span class='op'>=</span><span class='st'>"Text \U1F16D\U1F16F\U1F10F\U1F10E\U229C Text"</span>, </span>
-<span>            size <span class='op'>=</span> <span class='fl'>10</span>, family<span class='op'>=</span><span class='st'>"CCSymbols"</span>, vjust <span class='op'>=</span> <span class='fl'>0.25</span>, hjust <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span><span class='op'>+</span> </span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>geom_text</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='st'>"Unifont Upper"</span><span class='op'>)</span>, label<span class='op'>=</span><span class='st'>"Text \U1F16D\U1F16F\U1F10F\U1F10E\U229C Text"</span>, </span>
-<span>            size <span class='op'>=</span> <span class='fl'>10</span>, family<span class='op'>=</span><span class='st'>"Unifont Upper"</span>, vjust <span class='op'>=</span> <span class='fl'>0.25</span>, hjust <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span><span class='op'>+</span> </span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>geom_text</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='st'>"CC Icons"</span><span class='op'>)</span>, label<span class='op'>=</span><span class='st'>"Text cbynsd Text"</span>, </span>
-<span>            size <span class='op'>=</span> <span class='fl'>10</span>, family<span class='op'>=</span><span class='st'>"CC Icons"</span>, vjust <span class='op'>=</span> <span class='fl'>0.25</span>, hjust <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span><span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_discrete.html'>scale_y_discrete</a></span><span class='op'>(</span>expand <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/expansion.html'>expansion</a></span><span class='op'>(</span>add <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>,<span class='fl'>0.5</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_x_continuous</a></span><span class='op'>(</span>expand <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/expansion.html'>expansion</a></span><span class='op'>(</span>add <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span></span>
-<span>  <span class='va'>my_theme</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>axis.text.y <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span>
-<span><span class='va'>chart</span></span></code></pre>
-</div>
-</details>
-<p><img src="using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-5-1.png" width="768" /></p>
-</div>
-<p>And here we have few problems:</p>
-<ul>
-<li><p>Unifont Upper fonts are of quality that limits its use for hi-res illustrations</p></li>
-<li><p>Unifont Upper and CCSymbols symbols are larger than the text and the symbol for ND (U+229C)</p></li>
-<li><p>CC Icons do not mix together with the strings.</p></li>
-</ul>
-<p>So if we want to put CC symbols into a caption, we shall</p>
-<ul>
-<li><p>either use CCSymbols enframed by the text and be ready for different sizes</p></li>
-<li><p>or build a double caption (<a href="https://stackoverflow.com/questions/47025729/how-to-add-multiple-captions-in-ggplot2-outside-of-the-main-graph-area">see an example at SO</a>).</p></li>
-</ul>
-<p>Both options will require some caution and limit the customization.</p>
-<div class="layout-chunk" data-layout="l-body">
-<details>
-<summary>
-Show code
-</summary>
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fl'>1</span>, y <span class='op'>=</span> <span class='st'>"1"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>geom_text</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>, hjust <span class='op'>=</span> <span class='fl'>1</span>, vjust <span class='op'>=</span> <span class='fl'>0</span>, </span>
-<span>            label<span class='op'>=</span><span class='st'>"Are we ready for"</span>, size <span class='op'>=</span> <span class='fl'>11</span>, family<span class='op'>=</span><span class='st'>"Roboto"</span><span class='op'>)</span><span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>geom_text</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fl'>1.02</span><span class='op'>)</span>, hjust <span class='op'>=</span> <span class='fl'>0</span>, vjust <span class='op'>=</span> <span class='fl'>0</span>, </span>
-<span>            label <span class='op'>=</span> <span class='st'>"\U1F16D"</span>, size <span class='op'>=</span> <span class='fl'>10</span>, family<span class='op'>=</span><span class='st'>"CCSymbols"</span><span class='op'>)</span><span class='op'>+</span> </span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>geom_text</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fl'>1.1</span><span class='op'>)</span>, hjust <span class='op'>=</span> <span class='fl'>0</span>, vjust <span class='op'>=</span> <span class='fl'>0</span>, </span>
-<span>            label <span class='op'>=</span> <span class='st'>"?"</span>, size <span class='op'>=</span> <span class='fl'>11</span>, family<span class='op'>=</span><span class='st'>"Roboto"</span><span class='op'>)</span><span class='op'>+</span> </span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_discrete.html'>scale_y_discrete</a></span><span class='op'>(</span>expand <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/expansion.html'>expansion</a></span><span class='op'>(</span>add <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>,<span class='fl'>0.5</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_x_continuous</a></span><span class='op'>(</span>expand <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/expansion.html'>expansion</a></span><span class='op'>(</span>add <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.2</span>, <span class='fl'>0.2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Using CCSymbols font for \U1F16D\U1F16F"</span>, </span>
-<span>    caption <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Font:https://www.ctrl.blog/entry/creative-commons-unicode-fallback-font.html"</span>,</span>
-<span>                     <span class='st'>"\nThis image can be re-used via \U1F16D\U1F16F"</span>,</span>
-<span>                     <span class='st'>"\nDate: "</span>, <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.time</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>'%m/%d/%Y'</span><span class='op'>)</span><span class='op'>)</span>, x <span class='op'>=</span> <span class='cn'>NULL</span>, y <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span><span class='op'>+</span></span>
-<span>  <span class='va'>my_theme</span><span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>text <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>family <span class='op'>=</span> <span class='st'>"CCSymbols"</span><span class='op'>)</span>,</span>
-<span>        axis.text <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_blank</a></span><span class='op'>(</span><span class='op'>)</span>, axis.line <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_blank</a></span><span class='op'>(</span><span class='op'>)</span>,</span>
-<span>        axis.ticks <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_blank</a></span><span class='op'>(</span><span class='op'>)</span>, axis.title <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_blank</a></span><span class='op'>(</span><span class='op'>)</span>,</span>
-<span>        panel.grid.major.x <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_blank</a></span><span class='op'>(</span><span class='op'>)</span>, </span>
-<span>        panel.grid.major.y <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_blank</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
-</div>
-</details>
-<p><img src="using-cc-unicode-symbols-in-ggplot2_files/figure-html5/unnamed-chunk-6-1.png" width="480" /></p>
-</div>
-<p>There is also <a href="https://github.com/GuangchuangYu/emojifont">emojifont</a> package (by Guangchuang Yu <a href="Guangchuang Yu"><i class="fab fa-twitter"></i></a>), which allows to use emojis and <a href="https://guangchuangyu.github.io/2016/03/font-awesome-supported-in-emojifont/">FontAwesome icons</a> in ggplot2, but it contains only CC symbol. My attempt to fork &amp; update its font database to include the other icons… failed, so I had to step back.</p>
-<h3 id="short-resume">Short resume</h3>
-<p>I spent dozen of hours reading about graphic devices, Unicode hexabracadabra, code points, surrogate pairs, and other wild things. So far my solution is using FontAwesome for HTML and CCSymbols for images.</p>
-<p>know where was my fault, I will be happy to hear this from you – send me an email and I will update this post with a reference to your support.</p>
+<h3 class="appendix" id="acknowledgments">Acknowledgments</h3>
+<p>Allaire J, Xie Y, Dervieux C, McPherson J, Luraschi J, Ushey K, Atkins A, Wickham H, Cheng J, Chang
+W, Iannone R (2023). <em>rmarkdown: Dynamic Documents for R</em>. R package version 2.22,
+<a href="https://github.com/rstudio/rmarkdown" class="uri">https://github.com/rstudio/rmarkdown</a>.</p>
+<p>Iannone R (2023). <em>fontawesome: Easily Work with ‘Font Awesome’ Icons</em>. R package version 0.5.2,
+<a href="https://CRAN.R-project.org/package=fontawesome" class="uri">https://CRAN.R-project.org/package=fontawesome</a>.</p>
+<p>Qiu Y, details. aotifSfAf (2022). <em>sysfonts: Loading Fonts into R</em>. R package version 0.8.8,
+<a href="https://CRAN.R-project.org/package=sysfonts" class="uri">https://CRAN.R-project.org/package=sysfonts</a>.</p>
+<p>Qiu Y, details. aotisSfAf (2023). <em>showtext: Using Fonts More Easily in R Graphs</em>. R package
+version 0.9-6, <a href="https://CRAN.R-project.org/package=showtext" class="uri">https://CRAN.R-project.org/package=showtext</a>.</p>
+<p>Wickham H (2016). <em>ggplot2: Elegant Graphics for Data Analysis</em>. Springer-Verlag New York. ISBN
+978-3-319-24277-4, <a href="https://ggplot2.tidyverse.org" class="uri">https://ggplot2.tidyverse.org</a>.</p>
+<p>Wilke C, Wiernik B (2022). <em>ggtext: Improved Text Rendering Support for ‘ggplot2’</em>. R package
+version 0.1.2, <a href="https://CRAN.R-project.org/package=ggtext" class="uri">https://CRAN.R-project.org/package=ggtext</a>.</p>
+<p>Xie Y (2023). <em>knitr: A General-Purpose Package for Dynamic Report Generation in R</em>. R package
+version 1.43, <a href="https://yihui.org/knitr/" class="uri">https://yihui.org/knitr/</a>.</p>
+<p>Xie Y (2015). <em>Dynamic Documents with R and knitr</em>, 2nd edition. Chapman and Hall/CRC, Boca Raton,
+Florida. ISBN 978-1498716963, <a href="https://yihui.org/knitr/" class="uri">https://yihui.org/knitr/</a>.</p>
+<p>Xie Y (2014). “knitr: A Comprehensive Tool for Reproducible Research in R.” In Stodden V, Leisch F,
+Peng RD (eds.), <em>Implementing Reproducible Computational Research</em>. Chapman and Hall/CRC. ISBN
+978-1466561595.</p>
+<p>Xie Y, Allaire J, Grolemund G (2018). <em>R Markdown: The Definitive Guide</em>. Chapman and Hall/CRC,
+Boca Raton, Florida. ISBN 9781138359338, <a href="https://bookdown.org/yihui/rmarkdown" class="uri">https://bookdown.org/yihui/rmarkdown</a>.</p>
+<p>Xie Y, Dervieux C, Riederer E (2020). <em>R Markdown Cookbook</em>. Chapman and Hall/CRC, Boca Raton,
+Florida. ISBN 9780367563837, <a href="https://bookdown.org/yihui/rmarkdown-cookbook" class="uri">https://bookdown.org/yihui/rmarkdown-cookbook</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->

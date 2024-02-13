@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:distill="https://distill.pub/journal/" version="2.0">
   <channel>
     <title>ConviviaR Tools</title>
     <link>https://dwayzer.netlify.app/</link>
@@ -7,7 +7,354 @@
     <description>Using R to solve the practical tasks in the library information science and other fields.  
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Sat, 10 Feb 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 12 Feb 2024 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Using CC unicode symbols in ggplot2</title>
+      <dc:creator>Aleksei Lutai</dc:creator>
+      <link>https://dwayzer.netlify.app/posts/2021-11-22-using-cc-unicode-symbols-in-ggplot2</link>
+      <description>
+
+
+&lt;h3 id="introduction"&gt;Introduction&lt;/h3&gt;
+&lt;p&gt;For years I used a copyright sign in a caption of my ggplot2 charts,
+as most of the fonts I like to use allow to put a copyright sign as a
+unicode letter (U+00A9). This left me with a need to describe the
+Creative Commons terms somewhere in a text. &lt;a
+href="https://creativecommons.org/about/downloads/"&gt;Creative Commons&lt;/a&gt;
+provides cosy html badges that can be easily added to Rmarkdown
+reports.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Some people have strong feelings about using © to designate the open
+license, as in the past the copyright sign was used to say “Keep your
+hands off our property”. But this is a correct way, since the &lt;a
+href="https://creativecommons.org/faq/#is-creative-commons-against-copyright"&gt;Creative
+Commons licenses are copyright licenses&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Recently I came across an old news saying &lt;a
+href="https://creativecommons.org/2020/03/18/the-unicode-standard-now-includes-cc-license-symbols/"&gt;“from
+Match 2020 the latest version of the Unicode Standard includes Creative
+Commons (CC) license symbols”&lt;/a&gt; and decided to find out how to use
+it.&lt;/p&gt;
+&lt;p&gt;My plan was to check whether I can:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;use my favourite Google fonts to add new unicode symbols into
+ggplot2&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;use the awesome fonts to add CC signs into ggplot2&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;use unicode letters in html reports, generated with knit from
+Rmarkdown).&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This post is about what I learned.&lt;/p&gt;
+&lt;h3 id="fonts"&gt;Fonts&lt;/h3&gt;
+&lt;p&gt;In the script below some Google fonts and Awesome Fonts are loaded
+from a local folder on my hard disk (referred as local_font_folder). If
+you decide to use the code below, you will have to set the correct paths
+to the font files, saved on your hard disk in advance, or you may try to
+use (a) sysfonts::font_add_google() or (b) gfonts::download_font().&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;showtext_auto()
+
+local_font_folder &amp;lt;- paste0(Sys.getenv(&amp;quot;OneDrive&amp;quot;), &amp;quot;/gfonts/&amp;quot;)
+
+font_add(&amp;quot;RobotoC&amp;quot;, regular = paste0(local_font_folder, &amp;quot;RobotoCondensed-Regular.ttf&amp;quot;))
+
+font_add(&amp;quot;Sofia&amp;quot;, 
+         regular = paste0(local_font_folder, &amp;quot;SofiaSansCondensed-SemiBold.ttf&amp;quot;),
+         bold = paste0(local_font_folder, &amp;quot;SofiaSansCondensed-SemiBold.ttf&amp;quot;))
+
+sysfonts::font_add(&amp;quot;fa_brands&amp;quot;,
+                    regular = paste0(local_font_folder, 
+                                     &amp;quot;/fontawesome/otfs/Font Awesome 6 Brands-Regular-400.otf&amp;quot;))
+
+# font_add(regular = &amp;quot;C:/W2indows/Fonts/unifont_upper-14.0.01.ttf&amp;quot;, family = &amp;quot;Unifont Upper&amp;quot;)
+# font_add(regular = &amp;quot;C:/Windows/Fonts/cc-icons.ttf&amp;quot;, family = &amp;quot;CC Icons&amp;quot;)
+# font_add(regular = &amp;quot;C:/Windows/Fonts/CCSymbols.ttf&amp;quot;, family = &amp;quot;CCSymbols&amp;quot;)
+
+my_theme &amp;lt;- theme_void() + 
+  theme(text = element_text(colour = &amp;quot;white&amp;quot;),
+        plot.background=element_rect(fill = &amp;quot;#232323&amp;quot;, colour = &amp;quot;#232323&amp;quot;), 
+        panel.background=element_rect(fill = &amp;quot;#232323&amp;quot;, colour = &amp;quot;#232323&amp;quot;),  
+        plot.margin = unit(c(t=0.2,r=0.2,b=0.2,l=0.2), &amp;quot;cm&amp;quot;),
+        plot.title.position = &amp;quot;plot&amp;quot;, 
+        plot.caption.position = &amp;quot;plot&amp;quot;)
+
+showtext::showtext_opts(dpi = 192)&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="c-symbol-in-html"&gt;(C) symbol in html&lt;/h3&gt;
+&lt;p&gt;This is plain – using &lt;code&gt;&amp;amp;#169;&lt;/code&gt; in Rmarkdown will
+return © in html.&lt;/p&gt;
+&lt;h3 id="c-symbol-in-ggplot2"&gt;(C) symbol in ggplot2&lt;/h3&gt;
+&lt;p&gt;Simple too – we have to use &lt;code&gt;\U00A9&lt;/code&gt; in geom_text or
+geom_label, as well as the theme elements (title, subtitle, caption).
+The cc license terms can be added as text.&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;chart &amp;lt;- ggplot(tibble(x = &amp;quot;1&amp;quot;, y = &amp;quot;1&amp;quot;), aes(x = x, y = y)) + my_theme
+ 
+chart + 
+  geom_label(label=&amp;quot;This is label with a \U00A9&amp;quot;, size = 10, vjust = 0.5, 
+             colour = &amp;quot;white&amp;quot;, fill = &amp;quot;transparent&amp;quot;, label.padding = unit(0.5, &amp;quot;lines&amp;quot;)) + 
+  labs(title = &amp;quot;Using \U00A9 in ggplot2 is easy&amp;quot;, 
+       caption = paste(&amp;quot;\U00A9 Rights owner, 2024\n&amp;quot;,
+                       &amp;quot;CC BY-NC-SA 4.0 Deed\n&amp;quot;,
+                       &amp;quot;Attribution-NonCommercial-ShareAlike 4.0 International\n&amp;quot;,
+                       paste(&amp;quot;Date: &amp;quot;, format(Sys.time(), &amp;#39;%Y-%m-%d&amp;#39;))))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src="file191c593761f_files/figure-html/unnamed-chunk-2-1.png" width="864" /&gt;&lt;/p&gt;
+&lt;p&gt;This approach also works with custom fonts, opening a lot of
+opportunities.&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;chart + 
+  geom_label(label=&amp;quot;This is label with a \U00A9&amp;quot;, size = 10, vjust = 0.5, 
+             family = &amp;quot;RobotoC&amp;quot;, colour = &amp;quot;white&amp;quot;, 
+             fill = &amp;quot;transparent&amp;quot;, label.padding = unit(0.5, &amp;quot;lines&amp;quot;)) + 
+  labs(title = &amp;quot;Using \U00A9 in ggplot2 is easy&amp;quot;, 
+       caption = paste(&amp;quot;\U00A9 Rights owner, 2024\n&amp;quot;,
+                       &amp;quot;CC BY-NC-SA 4.0 Deed\n&amp;quot;,
+                       &amp;quot;Attribution-NonCommercial-ShareAlike 4.0 International\n&amp;quot;,
+                       paste(&amp;quot;Date: &amp;quot;, format(Sys.Date(), &amp;#39;%Y-%m-%d&amp;#39;)))) + 
+  theme(
+    plot.title = element_text(size = 36, hjust = 0, face = &amp;quot;bold&amp;quot;, colour = &amp;quot;#ffffff&amp;quot;, family = &amp;quot;Sofia&amp;quot;), 
+    plot.subtitle = element_text(hjust = 0, family = &amp;quot;RobotoC&amp;quot;, vjust = 2,  
+                                              colour = &amp;quot;#ffffff&amp;quot;, face = &amp;quot;plain&amp;quot;, size = rel(0.7)),
+    plot.caption = element_text(hjust = 1, size = rel(0.8), colour = &amp;quot;#827C82&amp;quot;)
+    )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src="file191c593761f_files/figure-html/unnamed-chunk-3-1.png" width="864" /&gt;&lt;/p&gt;
+&lt;p&gt;But CC-license terms can take too much space in a caption, so the
+options we have to consider are eirther to place the terms out of the
+chart, or use the CC license icons.&lt;/p&gt;
+&lt;h3 id="cc-snippets-in-html"&gt;CC-snippets in html&lt;/h3&gt;
+&lt;p&gt;You can generate an HTML snippets at &lt;a
+href="https://creativecommons.org/choose/"&gt;Creative Commons&lt;/a&gt; web site
+and place it next to the image using the figcaption tag. &lt;a
+href="https://johnallbritten.com/"&gt;John Allbritten&lt;/a&gt; wrote a very
+informative &lt;a
+href="https://thesynack.com/posts/markdown-captions/"&gt;blog post&lt;/a&gt;
+about the image captions in Rmarkdown. You may see the result below
+under the chart.&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;chart + 
+  geom_label(label=&amp;quot;This is label with a \U00A9&amp;quot;, size = 10, vjust = 0.5, 
+             family = &amp;quot;RobotoC&amp;quot;, colour = &amp;quot;white&amp;quot;, 
+             fill = &amp;quot;transparent&amp;quot;, label.padding = unit(0.5, &amp;quot;lines&amp;quot;)) + 
+  labs(title = &amp;quot;Using \U00A9 in ggplot2 is easy&amp;quot;, 
+       caption = paste(&amp;quot;\U00A9 Rights owner, 2024&amp;quot;)) + 
+  theme(
+    plot.title = element_text(size = 36, hjust = 0, face = &amp;quot;bold&amp;quot;, colour = &amp;quot;#ffffff&amp;quot;, family = &amp;quot;Sofia&amp;quot;), 
+    plot.subtitle = element_text(hjust = 0, family = &amp;quot;RobotoC&amp;quot;, vjust = 2,  
+                                              colour = &amp;quot;#ffffff&amp;quot;, face = &amp;quot;plain&amp;quot;, size = rel(0.7)),
+    plot.caption = element_text(hjust = 1, size = rel(0.8), colour = &amp;quot;#827C82&amp;quot;)
+    )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src="file191c593761f_files/figure-html/unnamed-chunk-4-1.png" width="864" /&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;figcaption&gt;
+&lt;a rel="license" href="http://creativecommons.org/licenses/by/4.0/"&gt;&lt;img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /&gt;&lt;/a&gt;
+This work is licensed under a
+&lt;a rel="license" href="http://creativecommons.org/licenses/by/4.0/"&gt;Creative
+Commons Attribution 4.0 International License&lt;/a&gt;.
+&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;While this option works fine for a whole HTML document, it is not
+very practical for the illustrations, as someone willing to re-use the
+chart will not save the related CC info.&lt;/p&gt;
+&lt;p&gt;So what about using those special Unicode symbols for Creative
+Commons licenses?&lt;/p&gt;
+&lt;h3 id="unicode-cc-symbols-in-html"&gt;Unicode CC symbols in html&lt;/h3&gt;
+&lt;p&gt;Using the Unicode symbols for Creative Common licenses in HTML is not
+as easy as with ©. Placing &amp;amp;#xf25e; (which is a hex representation
+for a Unicode symbol U+1F16D, corresponding to
+&lt;i class="fab fa-creative-commons"&gt;&lt;/i&gt;) in Rmarkdown will not draw a
+sign.&lt;/p&gt;
+&lt;p&gt;This is because its unicode has 5-symbols (1F16D), while unicode for
+&amp;amp;#169 has only 4 (00A9). The latter belongs to the basic section of
+the Unicode tables (named &lt;a
+href="https://en.wikipedia.org/wiki/Latin-1_Supplement_(Unicode_block)"&gt;Latin-1
+Supplement block of Unicode symbols&lt;/a&gt;), while the new Unicode symbols
+(like the ones introduced for CC) belong to the extended part (named &lt;a
+href="https://en.wikipedia.org/wiki/Enclosed_Alphanumeric_Supplement"&gt;Enclosed
+Alphanumeric Supplement&lt;/a&gt;). The only exclusion is ND symbol (its
+Unicode is U+229C).&lt;/p&gt;
+&lt;p&gt;The creators of the popular fonts, widely used in the browsers and
+Office programs, seem to focus on the main symbols of the Unicode Table,
+so most modern fonts have no graphical representation (a glyph) for
+Creative Common Unicode symbols. That’s why if you just use &amp;amp;#xf25e;
+in Rmarkdown, most viewers will not see the proper symbols in HTML
+output. I apologize if my explanation is not very precise, I am not a
+computer expert, but this is how I understand this.&lt;/p&gt;
+&lt;p&gt;And, yes, after few decades of talking and declarat-ing about the
+Open this and Open that, most users still have the browsers and the
+fonts that are not quite prepared to show the open licenses.&lt;/p&gt;
+&lt;p&gt;This &lt;a
+href="https://en.wikipedia.org/wiki/Unicode_font#List_of_SMP_Unicode_fonts"&gt;table
+in Wikipedia&lt;/a&gt; shows the fonts supporting &lt;a
+href="https://en.wikipedia.org/wiki/Plane_(Unicode)#Supplementary_Multilingual_Plane"&gt;Supplementary
+Multilanguage Plane&lt;/a&gt;. One of it is a &lt;a
+href="https://en.wikipedia.org/wiki/GNU_Unifont"&gt;GNU Unifont&lt;/a&gt;. Its
+“upper” companion (&lt;a
+href="http://unifoundry.com/pub/unifont/unifont-14.0.01/font-builds/unifont_upper-14.0.01.ttf"&gt;ttf&lt;/a&gt;,
+2Mb) covers significant parts of the Supplementary Multilingual Plane
+(SMP).&lt;/p&gt;
+&lt;p&gt;I have also founded few fonts specifically designed to show CC
+symbols:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href="http://cc-icons.github.io/installation/"&gt;CC Icons&lt;/a&gt;,
+created by someone whose nickname on GitHub is richardba
+&lt;a href="https://github.com/richardba"&gt;&lt;i class="fab fa-github"&gt;&lt;/i&gt;&lt;/a&gt;.
+Here is an &lt;a
+href="http://cc-icons.github.io/installation/"&gt;installation
+guide&lt;/a&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a
+href="https://www.ctrl.blog/entry/creative-commons-unicode-fallback-font.html"&gt;CCSymbols&lt;/a&gt;
+by Daniel Aleksandersen
+&lt;a href="https://twitter.com/DaAleksandersen"&gt;&lt;i class="fab fa-twitter"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In order to use those fonts in Rmarkdown, you have to deal with CSS –
+set the classes and properly wrap the letters. The tutorials on this I
+found useful are: &lt;a
+href="https://geomoer.github.io/moer-base-r/unit99/sl03_css.html"&gt;1&lt;/a&gt;,
+&lt;a href="https://bookdown.org/yihui/rmarkdown/custom-css-1.html"&gt;2&lt;/a&gt;,
+&lt;a
+href="https://bookdown.org/yihui/rmarkdown-cookbook/html-output.html"&gt;3&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I did not exploit this option, as the same result can be reached with
+&lt;a href="https://fontawesome.com/"&gt;Font Awesome&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 id="font-awesome-in-html"&gt;Font Awesome in html&lt;/h3&gt;
+&lt;p&gt;&lt;a
+href="https://fontawesome.com/search?o=r&amp;amp;m=free&amp;amp;f=brands"&gt;Font
+Awesome Brand Collection&lt;/a&gt; contains CC icons –
+&lt;i class="fab fa-creative-commons"&gt;&lt;/i&gt;,
+&lt;i class="fab fa-creative-commons-by"&gt;&lt;/i&gt;,
+&lt;i class="fab fa-creative-commons-nc"&gt;&lt;/i&gt;,
+&lt;i class="fab fa-creative-commons-sa"&gt;&lt;/i&gt;,
+&lt;i class="fab fa-creative-commons-nd"&gt;&lt;/i&gt;, not requiring to purchase
+PRO license.&lt;/p&gt;
+&lt;p&gt;The &lt;a href="https://github.com/rstudio/fontawesome"&gt;fontawesome&lt;/a&gt;
+R package (by Richard Iannone
+&lt;a href="https://twitter.com/riannone"&gt;&lt;i class="fab fa-twitter"&gt;&lt;/i&gt;&lt;/a&gt;)
+makes it very easy to insert Font Awesome icons into R Markdown
+documents and Shiny apps. The package generates SVG and PNG icons that
+can be put into Rmarkdown without using internet connection.&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;library(fontawesome)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This colored icon
+&lt;svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:steelblue;overflow:visible;position:relative;"&gt;&lt;path d="M245.83 214.87l-33.22 17.28c-9.43-19.58-25.24-19.93-27.46-19.93-22.13 0-33.22 14.61-33.22 43.84 0 23.57 9.21 43.84 33.22 43.84 14.47 0 24.65-7.09 30.57-21.26l30.55 15.5c-6.17 11.51-25.69 38.98-65.1 38.98-22.6 0-73.96-10.32-73.96-77.05 0-58.69 43-77.06 72.63-77.06 30.72-.01 52.7 11.95 65.99 35.86zm143.05 0l-32.78 17.28c-9.5-19.77-25.72-19.93-27.9-19.93-22.14 0-33.22 14.61-33.22 43.84 0 23.55 9.23 43.84 33.22 43.84 14.45 0 24.65-7.09 30.54-21.26l31 15.5c-2.1 3.75-21.39 38.98-65.09 38.98-22.69 0-73.96-9.87-73.96-77.05 0-58.67 42.97-77.06 72.63-77.06 30.71-.01 52.58 11.95 65.56 35.86zM247.56 8.05C104.74 8.05 0 123.11 0 256.05c0 138.49 113.6 248 247.56 248 129.93 0 248.44-100.87 248.44-248 0-137.87-106.62-248-248.44-248zm.87 450.81c-112.54 0-203.7-93.04-203.7-202.81 0-105.42 85.43-203.27 203.72-203.27 112.53 0 202.82 89.46 202.82 203.26-.01 121.69-99.68 202.82-202.84 202.82z"/&gt;&lt;/svg&gt;
+is created in Rmarkdown with
+&lt;code&gt;'r fa(name = \"creative-commons\", fill = \"steelblue\")'&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The &lt;a href="https://rstudio.github.io/distill/"&gt;Distill blogs and
+web sites&lt;/a&gt; has a built-in support of &lt;a
+href="https://fontawesome.com/plans"&gt;Font Awesome&lt;/a&gt;, and there is an
+&lt;a href="https://github.com/quarto-ext/fontawesome"&gt;extension&lt;/a&gt; for
+Quarto, so if you blog, you can just use a syntax like
+&lt;code&gt;&amp;lt;i class="fab fa-creative-commons"&amp;gt;&amp;lt;/i&amp;gt;&lt;/code&gt; in
+Rmarkdown.&lt;/p&gt;
+&lt;h3 id="font-awesome-in-ggplot2"&gt;Font Awesome in ggplot2&lt;/h3&gt;
+&lt;p&gt;Font Awesome icons can also be used in ggplot2 due to the ggtext
+package that allows to format the &lt;a
+href="https://wilkelab.org/ggtext/articles/plotting_text.html"&gt;text&lt;/a&gt;
+and the &lt;a
+href="https://wilkelab.org/ggtext/articles/theme_elements.html"&gt;theme
+elements&lt;/a&gt; as markdown. See an example below.&lt;/p&gt;
+&lt;p&gt;Have a nice plotting!&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;chartx &amp;lt;- chart + 
+  ggtext::geom_richtext(aes(x = &amp;quot;1&amp;quot;, y = &amp;quot;1&amp;quot;),
+    label= paste0(&amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;Sofia\&amp;quot;; font-size:32pt; color:#82c91e;&amp;#39;&amp;gt;&amp;quot;,
+                  &amp;quot;Cool CC Licenses&amp;lt;/span&amp;gt;&amp;lt;br/&amp;gt;&amp;quot;,
+                  &amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;fa_brands\&amp;quot;; font-size:32pt;&amp;#39;&amp;gt;&amp;amp;#xf4f3;&amp;lt;/span&amp;gt;&amp;quot;,
+                  &amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;RobotoC\&amp;quot;; font-size:32pt;&amp;#39;&amp;gt; = \\&amp;amp;#xf4f3;&amp;lt;br/&amp;gt;&amp;quot;,
+                  &amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;fa_brands\&amp;quot;; font-size:32pt;&amp;#39;&amp;gt;&amp;amp;#xf25e;&amp;lt;/span&amp;gt;&amp;quot;,
+                  &amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;RobotoC\&amp;quot;; font-size:32pt; &amp;#39;&amp;gt; = \\&amp;amp;#xf25e;&amp;lt;br/&amp;gt;&amp;quot;,
+                  &amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;fa_brands\&amp;quot;; font-size:32pt;&amp;#39;&amp;gt;&amp;amp;#xf4e7;&amp;lt;/span&amp;gt;&amp;quot;,
+                  &amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;RobotoC\&amp;quot;; font-size:32pt; &amp;#39;&amp;gt; = \\&amp;amp;#xf4e7;&amp;lt;/span&amp;gt;&amp;quot;),
+    vjust = 0.5, colour = &amp;quot;white&amp;quot;, fill = NA, 
+    label.padding = unit(c(0.5, 0.5, 0.5, 0.5), &amp;quot;lines&amp;quot;),
+    label.r = unit(0.25, &amp;quot;lines&amp;quot;)) + 
+  ggtext::geom_richtext(aes(x = &amp;quot;2&amp;quot;, y = &amp;quot;1&amp;quot;),
+    label= paste0(&amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;Sofia\&amp;quot;; font-size:32pt; color:#fcc419;&amp;#39;&amp;gt;&amp;quot;,
+                  &amp;quot;Restrictive CC Licenses&amp;lt;/span&amp;gt;&amp;lt;br/&amp;gt;&amp;quot;,
+                  &amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;fa_brands\&amp;quot;; font-size:32pt;&amp;#39;&amp;gt;&amp;amp;#xf4ef;&amp;lt;/span&amp;gt;&amp;quot;,
+                  &amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;RobotoC\&amp;quot;; font-size:32pt;&amp;#39;&amp;gt; = \\&amp;amp;#xf4ef;&amp;lt;br/&amp;gt;&amp;quot;,
+                  &amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;fa_brands\&amp;quot;; font-size:32pt;&amp;#39;&amp;gt;&amp;amp;#xf4e8;&amp;lt;/span&amp;gt;&amp;quot;,
+                  &amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;RobotoC\&amp;quot;; font-size:32pt; &amp;#39;&amp;gt; = \\&amp;amp;#xf4e8;&amp;lt;br/&amp;gt;&amp;quot;,
+                  &amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;fa_brands\&amp;quot;; font-size:32pt;&amp;#39;&amp;gt;&amp;amp;#xf4eb;&amp;lt;/span&amp;gt;&amp;quot;,
+                  &amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;RobotoC\&amp;quot;; font-size:32pt; &amp;#39;&amp;gt; = \\&amp;amp;#xf4eb;&amp;lt;/span&amp;gt;&amp;quot;),
+    vjust = 0.5, colour = &amp;quot;white&amp;quot;, fill = NA, 
+    label.padding = unit(c(0.5, 0.5, 0.5, 0.5), &amp;quot;lines&amp;quot;),
+    label.r = unit(0.25, &amp;quot;lines&amp;quot;)) + 
+  labs(title = paste0(&amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;fa_brands\&amp;quot;; font-size:40pt;&amp;#39;&amp;gt;&amp;amp;#xf25e;&amp;lt;/span&amp;gt;&amp;quot;,
+                &amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;Sofia\&amp;quot;; font-size:40pt;&amp;#39;&amp;gt;&amp;quot;,
+                &amp;quot; license icons are possible in ggplot2 charts&amp;lt;/span&amp;gt;&amp;quot;), 
+       subtitle = paste0(&amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;RobotoC\&amp;quot;; font-size:25pt;&amp;#39;&amp;gt;&amp;quot;,
+                &amp;quot;Custom styling is possible due to ggtext package &amp;lt;/span&amp;gt;&amp;quot;,
+                &amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;fa_brands\&amp;quot;; font-size:25pt; color:#4facf7;&amp;#39;&amp;gt;&amp;amp;#xf25e; &amp;lt;/span&amp;gt;&amp;quot;,
+                &amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;fa_brands\&amp;quot;; font-size:25pt; color:#D55E00;&amp;#39;&amp;gt;&amp;amp;#xf4e7;&amp;lt;/span&amp;gt;&amp;quot;), 
+       caption = paste0(&amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;fa_brands\&amp;quot;; font-size:15pt;&amp;#39;&amp;gt;&amp;amp;#xf25e;&amp;amp;#xf4e7;&amp;lt;/span&amp;gt;&amp;quot;,
+                &amp;quot;&amp;lt;span style=&amp;#39;font-family:\&amp;quot;RobotoC\&amp;quot;; font-size:15pt;&amp;#39;&amp;gt;&amp;quot;,
+                &amp;quot; ConviviaR Tools, 2024&amp;lt;br/&amp;gt;&amp;quot;,
+                &amp;quot;https:\\/\\/dwayzer.netlify.app&amp;lt;br/&amp;gt;&amp;quot;,
+                &amp;quot;The CC symbols are introduced with the Awesome Fonts&amp;lt;br/&amp;gt;&amp;quot;,
+                paste0(&amp;quot;Date: &amp;quot;, format(Sys.Date(), &amp;#39;%Y-%m-%d&amp;#39;),&amp;quot;&amp;lt;/span&amp;gt;&amp;quot;))) + 
+  theme(
+    plot.title = element_markdown(halign = 0, hjust = 0, face = &amp;quot;bold&amp;quot;, colour = &amp;quot;#ffffff&amp;quot;), 
+    plot.subtitle = element_markdown(halign = 0, hjust = 0, vjust = 2,  
+                                     colour = &amp;quot;#ffffff&amp;quot;, face = &amp;quot;plain&amp;quot;, size = rel(1.2)),
+    plot.caption = element_markdown(halign = 1, hjust = 1, size = rel(0.8), colour = &amp;quot;#827C82&amp;quot;)
+    )
+
+dir_charts &amp;lt;- paste0(getwd(), &amp;quot;/images/&amp;quot;)
+if(!dir.exists(dir_charts)){ dir.create(dir_charts) }
+if(!file.exists(paste0(dir_charts, &amp;quot;cc_in_ggplot.png&amp;quot;))){
+  ggplot2::ggsave(filename = paste0(dir_charts, &amp;quot;cc_in_ggplot.png&amp;quot;), 
+                plot = chartx, 
+                height = 6, width = 9, units = &amp;quot;cm&amp;quot;, dpi = 300)
+}
+chartx&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src="file191c593761f_files/figure-html/unnamed-chunk-6-1.png" width="864" /&gt;&lt;/p&gt;
+&lt;h3 class="appendix" id="acknowledgments"&gt;Acknowledgments&lt;/h3&gt;
+&lt;p&gt;Allaire J, Xie Y, Dervieux C, McPherson J, Luraschi J, Ushey K,
+Atkins A, Wickham H, Cheng J, Chang W, Iannone R (2023). &lt;em&gt;rmarkdown:
+Dynamic Documents for R&lt;/em&gt;. R package version 2.22, &lt;a
+href="https://github.com/rstudio/rmarkdown"
+class="uri"&gt;https://github.com/rstudio/rmarkdown&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Iannone R (2023). &lt;em&gt;fontawesome: Easily Work with ‘Font Awesome’
+Icons&lt;/em&gt;. R package version 0.5.2, &lt;a
+href="https://CRAN.R-project.org/package=fontawesome"
+class="uri"&gt;https://CRAN.R-project.org/package=fontawesome&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Qiu Y, details. aotifSfAf (2022). &lt;em&gt;sysfonts: Loading Fonts into
+R&lt;/em&gt;. R package version 0.8.8, &lt;a
+href="https://CRAN.R-project.org/package=sysfonts"
+class="uri"&gt;https://CRAN.R-project.org/package=sysfonts&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Qiu Y, details. aotisSfAf (2023). &lt;em&gt;showtext: Using Fonts More
+Easily in R Graphs&lt;/em&gt;. R package version 0.9-6, &lt;a
+href="https://CRAN.R-project.org/package=showtext"
+class="uri"&gt;https://CRAN.R-project.org/package=showtext&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Wickham H (2016). &lt;em&gt;ggplot2: Elegant Graphics for Data
+Analysis&lt;/em&gt;. Springer-Verlag New York. ISBN 978-3-319-24277-4, &lt;a
+href="https://ggplot2.tidyverse.org"
+class="uri"&gt;https://ggplot2.tidyverse.org&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Wilke C, Wiernik B (2022). &lt;em&gt;ggtext: Improved Text Rendering
+Support for ‘ggplot2’&lt;/em&gt;. R package version 0.1.2, &lt;a
+href="https://CRAN.R-project.org/package=ggtext"
+class="uri"&gt;https://CRAN.R-project.org/package=ggtext&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Xie Y (2023). &lt;em&gt;knitr: A General-Purpose Package for Dynamic Report
+Generation in R&lt;/em&gt;. R package version 1.43, &lt;a
+href="https://yihui.org/knitr/"
+class="uri"&gt;https://yihui.org/knitr/&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Xie Y (2015). &lt;em&gt;Dynamic Documents with R and knitr&lt;/em&gt;, 2nd
+edition. Chapman and Hall/CRC, Boca Raton, Florida. ISBN 978-1498716963,
+&lt;a href="https://yihui.org/knitr/"
+class="uri"&gt;https://yihui.org/knitr/&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Xie Y (2014). “knitr: A Comprehensive Tool for Reproducible Research
+in R.” In Stodden V, Leisch F, Peng RD (eds.), &lt;em&gt;Implementing
+Reproducible Computational Research&lt;/em&gt;. Chapman and Hall/CRC. ISBN
+978-1466561595.&lt;/p&gt;
+&lt;p&gt;Xie Y, Allaire J, Grolemund G (2018). &lt;em&gt;R Markdown: The Definitive
+Guide&lt;/em&gt;. Chapman and Hall/CRC, Boca Raton, Florida. ISBN
+9781138359338, &lt;a href="https://bookdown.org/yihui/rmarkdown"
+class="uri"&gt;https://bookdown.org/yihui/rmarkdown&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Xie Y, Dervieux C, Riederer E (2020). &lt;em&gt;R Markdown Cookbook&lt;/em&gt;.
+Chapman and Hall/CRC, Boca Raton, Florida. ISBN 9780367563837, &lt;a
+href="https://bookdown.org/yihui/rmarkdown-cookbook"
+class="uri"&gt;https://bookdown.org/yihui/rmarkdown-cookbook&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class="r distill-force-highlighting-css"&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;</description>
+      <distill:md5>f683bdac103810aebeb6dd33577f224c</distill:md5>
+      <category>open science</category>
+      <category>r</category>
+      <category>unicode</category>
+      <category>ggplot2</category>
+      <guid>https://dwayzer.netlify.app/posts/2021-11-22-using-cc-unicode-symbols-in-ggplot2</guid>
+      <pubDate>Mon, 12 Feb 2024 00:00:00 +0000</pubDate>
+      <media:content url="https://dwayzer.netlify.app/posts/2021-11-22-using-cc-unicode-symbols-in-ggplot2/images/cc_in_ggplot.png" medium="image" type="image/png" width="1062" height="708"/>
+    </item>
     <item>
       <title>Zodiac Charts</title>
       <dc:creator>Aleksei Lutai</dc:creator>

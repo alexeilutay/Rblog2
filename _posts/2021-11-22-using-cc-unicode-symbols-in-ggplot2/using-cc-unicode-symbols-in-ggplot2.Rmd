@@ -1,19 +1,19 @@
 ---
 title: "Using CC unicode symbols in ggplot2"
 description: |
-  In this post I am using a R package tabulizer to extract a large table from 853-page PDF, containing a list of VAK (Russian) journal titles.   
+  A short tutorial on how to use the icons for the Creative Commons licenses into ggplot2 charts.    
 author:
   - first_name: "Aleksei"
     last_name: "Lutai" 
     url: https://www.linkedin.com/in/lutaya/
     orcid_id: 0000-0003-1341-781X
-date: 11-22-2021
-draft: true
+date: 2024-02-13
 categories:
   - open science
   - r
   - unicode
   - ggplot2
+preview: images/cc_in_ggplot.png
 creative_commons: CC BY
 output:
   distill::distill_article:
@@ -31,72 +31,144 @@ knitr::opts_chunk$set(
 	message = FALSE,
 	warning = FALSE
 )
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(ggtext)
+library(showtext)
+library(httr)
+options(readr.show_col_types = FALSE)
 ```
 
 ### Introduction
 
-Thing is that I build a lot of HTML reports in Rmarkdown using interactive features of DT tables & ggiraph pictures. I do like it and am living under impression that most of those who get my reports like this format as well. Or they would tell me, wouldn't they? 
+For years I used a copyright sign in a caption of my ggplot2 charts, as most of the fonts I like to use allow to put a copyright sign as a unicode letter (U+00A9). This left me with a need to describe the Creative Commons terms somewhere in a text. [Creative Commons](https://creativecommons.org/about/downloads/) provides cosy html badges that can be easily added to Rmarkdown reports. 
 
-Most often the reports have the Creative Commons license. I usually mark the images with a copyright sign in ggplot2 caption, which is easy to do with a unicode letter (U+00A9), and describe the CC terms in the special section of the report using a ready-to-go html snippet from [Creative Commons](https://creativecommons.org/about/downloads/).   
+> Some people have strong feelings about using &#169; to designate the open license, as in the past the copyright sign was used to say "Keep your hands off our property". But this is a correct way, since the [Creative Commons licenses are copyright licenses](https://creativecommons.org/faq/#is-creative-commons-against-copyright).
 
-Life was fine until one guy asked me why I use a copyright sign and not the creative commons. It didn't take much time to find a news that [starting from Match 2020 the latest version of the Unicode Standard includes Creative Commons (CC) license symbols](https://creativecommons.org/2020/03/18/the-unicode-standard-now-includes-cc-license-symbols/).
+Recently I came across an old news saying ["from Match 2020 the latest version of the Unicode Standard includes Creative Commons (CC) license symbols"](https://creativecommons.org/2020/03/18/the-unicode-standard-now-includes-cc-license-symbols/) and decided to find out how to use it.
 
-![](https://d15omoko64skxi.cloudfront.net/wp-content/uploads/2020/03/licnesing-options-unicode-13.0-symbols-1024x726.png){width="60%"} 
+My plan was to check whether I can:
 
-Now I am recalling that there was something. At the very moment I decided to try to use these unicode symbols, I had a feeling. Now I know that my subconscience did warn me that this would be very much not like having fun, but I could not imagine to what extent and did not listen.
+- use my favourite Google fonts to add new unicode symbols into ggplot2 
 
-In this post below I am going to describe the different approaches I used to incorporate CC lisense symbols into my Rmarkdown reports. This story can hurt some feelings, IT professionals are warned.
+- use the awesome fonts to add CC signs into ggplot2 
 
-The last preparation, a theme for ggplot.
+- use unicode letters in html reports, generated with knit from Rmarkdown).
+
+This post is about what I learned.
+
+### Fonts
+
+In the script below some Google fonts and Awesome Fonts are loaded from a local folder on my hard disk (referred as local_font_folder). If you decide to use the code below, you will have to set the correct paths to the font files, saved on your hard disk in advance, or you may try to use (a) sysfonts::font_add_google() or (b) gfonts::download_font(). 
 
 ```{r}
-library(extrafont)
-my_theme <- theme_void()+
-  theme(text=element_text(family="Roboto Condensed", color = "#53565A", size = 13),
-        panel.background = element_rect(fill = "#ffffe7", color = "#dfe6e9", size = 0.5),
-        panel.grid.major = element_blank(),
-        axis.ticks = element_line(size=0.3, linetype = 1, color="grey10"),
-        plot.caption = element_text(size = rel(1), hjust=1, color = "#969696"),
-        plot.title = element_text(size=rel(1.3), margin = margin(0,0,5,0),
-                                  face="bold", color = "#4582ec"),
-        plot.margin = margin(2, 2, 2, 2), plot.title.position = "plot")
+showtext_auto()
+
+local_font_folder <- paste0(Sys.getenv("OneDrive"), "/gfonts/")
+
+font_add("RobotoC", regular = paste0(local_font_folder, "RobotoCondensed-Regular.ttf"))
+
+font_add("Sofia", 
+         regular = paste0(local_font_folder, "SofiaSansCondensed-SemiBold.ttf"),
+         bold = paste0(local_font_folder, "SofiaSansCondensed-SemiBold.ttf"))
+
+sysfonts::font_add("fa_brands",
+                    regular = paste0(local_font_folder, 
+                                     "/fontawesome/otfs/Font Awesome 6 Brands-Regular-400.otf"))
+
+# font_add(regular = "C:/W2indows/Fonts/unifont_upper-14.0.01.ttf", family = "Unifont Upper")
+# font_add(regular = "C:/Windows/Fonts/cc-icons.ttf", family = "CC Icons")
+# font_add(regular = "C:/Windows/Fonts/CCSymbols.ttf", family = "CCSymbols")
+
+my_theme <- theme_void() + 
+  theme(text = element_text(colour = "white"),
+        plot.background=element_rect(fill = "#232323", colour = "#232323"), 
+        panel.background=element_rect(fill = "#232323", colour = "#232323"),  
+        plot.margin = unit(c(t=0.2,r=0.2,b=0.2,l=0.2), "cm"),
+        plot.title.position = "plot", 
+        plot.caption.position = "plot")
+
+showtext::showtext_opts(dpi = 192)
 ```
 
-### Trivial: (c) in image, (cc) in html as text  
+### (C) symbol in html  
 
-This way is simple -- just paste U00A9 preceded by a backlash into any string and it will bring you a &#169;. 
+This is plain -- using `&#169;` in Rmarkdown will return &#169; in html.
 
-Once a copyright sign is in the image, an author can use [different approaches](https://wiki.creativecommons.org/wiki/Marking_your_work_with_a_CC_license) to inform the readers about Creative Commons license.
+### (C) symbol in ggplot2  
 
-- (1) This infomation can be added into a ggplot2 caption. If the caption text is too long, it can be wrapped into a multi-line -- either automatically with stringr::str_wrap(n) or manually (as on the picture avove).
-
-- (2) An html caption for images is another versatile alternative. Set up a special CSS-class so that the caption text can be visually associated with the images, and place the text there. [John Allbritten](https://johnallbritten.com/) wrote a very informative [blog post](https://thesynack.com/posts/markdown-captions/) about the image captions in Rmarkdown. For the picture below I used figcaption HTML tag and the code generated by [Creative Commons](https://creativecommons.org/choose/) web site -- so this can get together a text, reference to the license text and the related CC image.  
+Simple too -- we have to use `\U00A9` in geom_text or geom_label, as well as the theme elements (title, subtitle, caption). The cc license terms can be added as text.
 
 ```{r fig.width=9, fig.height=3}
-ggplot(data = tibble(x = "1", y = "1")) +
-   geom_text(aes(x = x, y = y), label="\U00A9", 
-             size = 40, family="Arial", vjust = 0.5)+
-   labs(title = "Using \U00A9 in ggplot2 is easy", 
-       caption = paste("\U00A9 Company X, 2021",
-                       paste("Date: ", format(Sys.time(), '%m/%d/%Y')), 
-                       "some additional information", sep = "\n"), 
-       x = NULL, y = NULL)+
-  my_theme
+chart <- ggplot(tibble(x = "1", y = "1"), aes(x = x, y = y)) + my_theme
+ 
+chart + 
+  geom_label(label="This is label with a \U00A9", size = 10, vjust = 0.5, 
+             colour = "white", fill = "transparent", label.padding = unit(0.5, "lines")) + 
+  labs(title = "Using \U00A9 in ggplot2 is easy", 
+       caption = paste("\U00A9 Rights owner, 2024\n",
+                       "CC BY-NC-SA 4.0 Deed\n",
+                       "Attribution-NonCommercial-ShareAlike 4.0 International\n",
+                       paste("Date: ", format(Sys.time(), '%Y-%m-%d'))))
 ```
 
-<figcaption><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</figcaption>
+This approach also works with custom fonts, opening a lot of opportunities.  
 
+```{r fig.width=9, fig.height=3}
+chart + 
+  geom_label(label="This is label with a \U00A9", size = 10, vjust = 0.5, 
+             family = "RobotoC", colour = "white", 
+             fill = "transparent", label.padding = unit(0.5, "lines")) + 
+  labs(title = "Using \U00A9 in ggplot2 is easy", 
+       caption = paste("\U00A9 Rights owner, 2024\n",
+                       "CC BY-NC-SA 4.0 Deed\n",
+                       "Attribution-NonCommercial-ShareAlike 4.0 International\n",
+                       paste("Date: ", format(Sys.Date(), '%Y-%m-%d')))) + 
+  theme(
+    plot.title = element_text(size = 36, hjust = 0, face = "bold", colour = "#ffffff", family = "Sofia"), 
+    plot.subtitle = element_text(hjust = 0, family = "RobotoC", vjust = 2,  
+                                              colour = "#ffffff", face = "plain", size = rel(0.7)),
+    plot.caption = element_text(hjust = 1, size = rel(0.8), colour = "#827C82")
+    )
 
-But what about those Unicode symbols for Creative Commons licenses, how can we use <i class="fab fa-creative-commons"></i>?
+```
 
-### Web: <i class="fab fa-creative-commons"></i> in html  
+But CC-license terms can take too much space in a caption, so the options we have to consider are eirther to place the terms out of the chart, or use the CC license icons.
 
-Using the Unicode symbols for Creative Common licenses in HTML is not as easy as with &#169;. The copyright symbol is present in all popular fonts, so one need just paste `r print("&#169;")` (which is a hexadecimal format of Unicode symbol U+00A9) in Rmarkdown document, and most viewers will see the correct symbol (&#169;).
+### CC-snippets in html
 
-But this will not work with `r print("&#xf25e;")` code (which is a hex representation for a Unicode symbol U+1F16D, corresponding to <i class="fab fa-creative-commons"></i>). You may notice that this Unicode has 5-symbols (1F16D), while &#169 in its Unicode format had only 4  (00A9). This is because the copyright symbol belongs to the basic section of the Unicode tables (named [Latin-1 Supplement block of Unicode symbols](https://en.wikipedia.org/wiki/Latin-1_Supplement_(Unicode_block))), while the new Unicode symbols for CC belong to the extended part (named [Enclosed Alphanumeric Supplement](https://en.wikipedia.org/wiki/Enclosed_Alphanumeric_Supplement)). The creators of the popular fonts that are currenty used in the browsers and Office programs seemed to focus on the main symbols of the Unicode Table, so most modern fonts have no graphical representation (a glyph) for Creative Common Unicode symbols. If you just put `r print("&#xf25e;")` into Rmd text, most viewers will see hex-abracadabra in HTML output.
+You can generate an HTML snippets at [Creative Commons](https://creativecommons.org/choose/) web site and place it next to the image using the figcaption tag. [John Allbritten](https://johnallbritten.com/) wrote a very informative [blog post](https://thesynack.com/posts/markdown-captions/) about the image captions in Rmarkdown. You may see the result below under the chart.
 
-Yes, that's correct -- after few decades of talking and declarating about the Openness, we still have the browsers & the fonts that are not quite prepared to designate the open licenses. The only exclusion is ND symbol `r print("\U229C")` (its Unicode is U+229C).
+```{r fig.width=9, fig.height=3}
+chart + 
+  geom_label(label="This is label with a \U00A9", size = 10, vjust = 0.5, 
+             family = "RobotoC", colour = "white", 
+             fill = "transparent", label.padding = unit(0.5, "lines")) + 
+  labs(title = "Using \U00A9 in ggplot2 is easy", 
+       caption = paste("\U00A9 Rights owner, 2024")) + 
+  theme(
+    plot.title = element_text(size = 36, hjust = 0, face = "bold", colour = "#ffffff", family = "Sofia"), 
+    plot.subtitle = element_text(hjust = 0, family = "RobotoC", vjust = 2,  
+                                              colour = "#ffffff", face = "plain", size = rel(0.7)),
+    plot.caption = element_text(hjust = 1, size = rel(0.8), colour = "#827C82")
+    )
+```
+
+<p><figcaption><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</figcaption></p>
+
+While this option works fine for a whole HTML document, it is not very practical for the illustrations, as someone willing to re-use the chart will not save the related CC info.
+
+So what about using those special Unicode symbols for Creative Commons licenses? 
+
+### Unicode CC symbols in html  
+
+Using the Unicode symbols for Creative Common licenses in HTML is not as easy as with &#169;. Placing \&#xf25e; (which is a hex representation for a Unicode symbol U+1F16D, corresponding to <i class="fab fa-creative-commons"></i>) in Rmarkdown will not draw a sign. 
+
+This is because its unicode has 5-symbols (1F16D), while unicode for &#169 has only 4 (00A9). The latter belongs to the basic section of the Unicode tables (named [Latin-1 Supplement block of Unicode symbols](https://en.wikipedia.org/wiki/Latin-1_Supplement_(Unicode_block))), while the new Unicode symbols (like the ones introduced for CC) belong to the extended part (named [Enclosed Alphanumeric Supplement](https://en.wikipedia.org/wiki/Enclosed_Alphanumeric_Supplement)). The only exclusion is ND symbol (its Unicode is U+229C).
+
+The creators of the popular fonts, widely used in the browsers and Office programs, seem to focus on the main symbols of the Unicode Table, so most modern fonts have no graphical representation (a glyph) for Creative Common Unicode symbols. That's why if you just use \&#xf25e; in Rmarkdown, most viewers will not see the proper symbols in HTML output. I apologize if my explanation is not very precise, I am not a computer expert, but this is how I understand this.
+
+And, yes, after few decades of talking and declarat-ing about the Open this and Open that, most users still have the browsers and the fonts that are not quite prepared to show the open licenses.
 
 This [table in Wikipedia](https://en.wikipedia.org/wiki/Unicode_font#List_of_SMP_Unicode_fonts) shows the fonts supporting [Supplementary Multilanguage Plane](https://en.wikipedia.org/wiki/Plane_(Unicode)#Supplementary_Multilingual_Plane). One of it is a [GNU Unifont](https://en.wikipedia.org/wiki/GNU_Unifont). Its "upper" companion ([ttf](http://unifoundry.com/pub/unifont/unifont-14.0.01/font-builds/unifont_upper-14.0.01.ttf), 2Mb) covers significant parts of the Supplementary Multilingual Plane (SMP).
 
@@ -106,112 +178,126 @@ I have also founded few fonts specifically designed to show CC symbols:
 
 - [CCSymbols](https://www.ctrl.blog/entry/creative-commons-unicode-fallback-font.html) by Daniel Aleksandersen <a href="https://twitter.com/DaAleksandersen"><i class="fab fa-twitter"></i></a> 
 
-I do not review in details the technical aspects of how the fonts need to be attached to the Rmarkdown to appear in the produced HTML output. If you know how to deal with the CSS and the fonts, you can easily start using any of these fonts for your Rmarkdown documents. I will not be able to explain this properly, as I am a real noub in what concerns the web/css/js/etc. 
+In order to use those fonts in Rmarkdown, you have to deal with CSS -- set the classes and properly wrap the letters. The tutorials on this I found useful are:  [1](https://geomoer.github.io/moer-base-r/unit99/sl03_css.html), [2](https://bookdown.org/yihui/rmarkdown/custom-css-1.html), [3](https://bookdown.org/yihui/rmarkdown-cookbook/html-output.html). 
 
-But this can be avoided if you decide to use FontAwesome that also have CC icons -- <i class="fab fa-creative-commons"></i>, <i class="fab fa-creative-commons-by"></i>, <i class="fab fa-creative-commons-nc"></i>, <i class="fab fa-creative-commons-sa"></i>, <i class="fab fa-creative-commons-nd"></i>. 
+I did not exploit this option, as the same result can be reached with [Font Awesome](https://fontawesome.com/).
 
-The [fontawesome](https://github.com/rstudio/fontawesome) R package (by Richard Iannone <a href="https://twitter.com/riannone"><i class="fab fa-twitter"></i></a>) makes it very easy to insert Font Awesome icons into R Markdown documents and Shiny apps.
+### Font Awesome in html
 
-The [Distill blogs and web sites](https://rstudio.github.io/distill/) has a built-in support of [Font Awesome](https://fontawesome.com/plans), so you can just insert `<i class="fab fa-creative-commons-nd"></i>` in the Rmarkdown where needed.
+[Font Awesome Brand Collection](https://fontawesome.com/search?o=r&m=free&f=brands) contains CC icons -- <i class="fab fa-creative-commons"></i>, <i class="fab fa-creative-commons-by"></i>, <i class="fab fa-creative-commons-nc"></i>, <i class="fab fa-creative-commons-sa"></i>, <i class="fab fa-creative-commons-nd"></i>, not requiring to purchase PRO license. 
 
-### Image: <i class="fab fa-creative-commons"></i> in images
+The [fontawesome](https://github.com/rstudio/fontawesome) R package (by Richard Iannone <a href="https://twitter.com/riannone"><i class="fab fa-twitter"></i></a>) makes it very easy to insert Font Awesome icons into R Markdown documents and Shiny apps. The package generates SVG and PNG icons that can be put into Rmarkdown without using internet connection.
 
-My initial desire was to learn how to use Unicode letters in order to avoid insetting the tiny raster images of CC license PNGs into my SVG illustrations, produced by ggiraph.
-
-To use one of the fonts mentioned above, a Windows user need to download the font and to install it to C:/Windows/Fonts.
-
-Then there are few options:
-
-- [ragg](https://ragg.r-lib.org/) If your RStudio is v.1.4 or higher, then according to [this post](https://www.tidyverse.org/blog/2021/02/modern-text-features/) (by Thomas Lee Pedersen <a href="https://twitter.com/thomas85"><i class="fab fa-twitter"></i></a>), setting up AGG in RStudio as a default graphic device together with agg_ functions will allow to use all the fonts installed in your system without any preparations. 
-
-I am still using Rstudio v.1.2., so I have to help R to see the system fonts (so to say), which can be done in few ways. 
-
-- [extrafont](https://github.com/wch/extrafont). To add a new font one should use a workflow like below:
-
-```{r eval=FALSE, message=FALSE, warning=FALSE, include=TRUE, echo=TRUE}
-library(extrafont)
-font_import(paths = "C:/Windows/Fonts/", pattern = "unifont_upper-14.0.01.ttf")
-font_import(paths = "C:/Windows/Fonts/", pattern = "cc-icons.ttf")
-font_import(paths = "C:/Windows/Fonts/", pattern = "CCSymbols.ttf")
-extrafont::fonttable() # this command returns a list of available fonts
+```{r message=FALSE, warning=FALSE}
+library(fontawesome)
 ```
 
-- [showtext](https://cran.r-project.org/web/packages/showtext/vignettes/introduction.html). A typical workflow to add new fonts is as follows: 
+This colored icon `r fa(name = "creative-commons", fill = "steelblue")` is created in Rmarkdown with `'r fa(name = \"creative-commons\", fill = \"steelblue\")'`. 
 
-```{r eval=FALSE, message=FALSE, warning=FALSE, include=TRUE, echo=TRUE}
-library(showtext)
-library(systemfonts)
-font_add(regular = "C:/Windows/Fonts/unifont_upper-14.0.01.ttf", family = "Unifont Upper")
-font_add(regular = "C:/Windows/Fonts/cc-icons.ttf", family = "CC Icons")
-font_add(regular = "C:/Windows/Fonts/CCSymbols.ttf", family = "CCSymbols")
-systemfonts::system_fonts() # this command returns a list of available fonts  
+The [Distill blogs and web sites](https://rstudio.github.io/distill/) has a built-in support of [Font Awesome](https://fontawesome.com/plans), and there is an [extension](https://github.com/quarto-ext/fontawesome) for Quarto, so if you blog, you can just use a syntax like `<i class="fab fa-creative-commons"></i>` in Rmarkdown. 
+
+### Font Awesome in ggplot2
+
+Font Awesome icons can also be used in ggplot2 due to the ggtext package that allows to format the [text](https://wilkelab.org/ggtext/articles/plotting_text.html) and the [theme elements](https://wilkelab.org/ggtext/articles/theme_elements.html) as markdown. See an example below.
+
+Have a nice plotting!
+
+```{r fig.width=9, fig.height=6}
+chartx <- chart + 
+  ggtext::geom_richtext(aes(x = "1", y = "1"),
+    label= paste0("<span style='font-family:\"Sofia\"; font-size:32pt; color:#82c91e;'>",
+                  "Cool CC Licenses</span><br/>",
+                  "<span style='font-family:\"fa_brands\"; font-size:32pt;'>&#xf4f3;</span>",
+                  "<span style='font-family:\"RobotoC\"; font-size:32pt;'> = \\&#xf4f3;<br/>",
+                  "<span style='font-family:\"fa_brands\"; font-size:32pt;'>&#xf25e;</span>",
+                  "<span style='font-family:\"RobotoC\"; font-size:32pt; '> = \\&#xf25e;<br/>",
+                  "<span style='font-family:\"fa_brands\"; font-size:32pt;'>&#xf4e7;</span>",
+                  "<span style='font-family:\"RobotoC\"; font-size:32pt; '> = \\&#xf4e7;</span>"),
+    vjust = 0.5, colour = "white", fill = NA, 
+    label.padding = unit(c(0.5, 0.5, 0.5, 0.5), "lines"),
+    label.r = unit(0.25, "lines")) + 
+  ggtext::geom_richtext(aes(x = "2", y = "1"),
+    label= paste0("<span style='font-family:\"Sofia\"; font-size:32pt; color:#fcc419;'>",
+                  "Restrictive CC Licenses</span><br/>",
+                  "<span style='font-family:\"fa_brands\"; font-size:32pt;'>&#xf4ef;</span>",
+                  "<span style='font-family:\"RobotoC\"; font-size:32pt;'> = \\&#xf4ef;<br/>",
+                  "<span style='font-family:\"fa_brands\"; font-size:32pt;'>&#xf4e8;</span>",
+                  "<span style='font-family:\"RobotoC\"; font-size:32pt; '> = \\&#xf4e8;<br/>",
+                  "<span style='font-family:\"fa_brands\"; font-size:32pt;'>&#xf4eb;</span>",
+                  "<span style='font-family:\"RobotoC\"; font-size:32pt; '> = \\&#xf4eb;</span>"),
+    vjust = 0.5, colour = "white", fill = NA, 
+    label.padding = unit(c(0.5, 0.5, 0.5, 0.5), "lines"),
+    label.r = unit(0.25, "lines")) + 
+  labs(title = paste0("<span style='font-family:\"fa_brands\"; font-size:40pt;'>&#xf25e;</span>",
+                "<span style='font-family:\"Sofia\"; font-size:40pt;'>",
+                " license icons are possible in ggplot2 charts</span>"), 
+       subtitle = paste0("<span style='font-family:\"RobotoC\"; font-size:25pt;'>",
+                "Custom styling is possible due to ggtext package </span>",
+                "<span style='font-family:\"fa_brands\"; font-size:25pt; color:#4facf7;'>&#xf25e; </span>",
+                "<span style='font-family:\"fa_brands\"; font-size:25pt; color:#D55E00;'>&#xf4e7;</span>"), 
+       caption = paste0("<span style='font-family:\"fa_brands\"; font-size:15pt;'>&#xf25e;&#xf4e7;</span>",
+                "<span style='font-family:\"RobotoC\"; font-size:15pt;'>",
+                " ConviviaR Tools, 2024<br/>",
+                "https:\\/\\/dwayzer.netlify.app<br/>",
+                "The CC symbols are introduced with the Awesome Fonts<br/>",
+                paste0("Date: ", format(Sys.Date(), '%Y-%m-%d'),"</span>"))) + 
+  theme(
+    plot.title = element_markdown(halign = 0, hjust = 0, face = "bold", colour = "#ffffff"), 
+    plot.subtitle = element_markdown(halign = 0, hjust = 0, vjust = 2,  
+                                     colour = "#ffffff", face = "plain", size = rel(1.2)),
+    plot.caption = element_markdown(halign = 1, hjust = 1, size = rel(0.8), colour = "#827C82")
+    )
+
+dir_charts <- paste0(getwd(), "/images/")
+if(!dir.exists(dir_charts)){ dir.create(dir_charts) }
+if(!file.exists(paste0(dir_charts, "cc_in_ggplot.png"))){
+  ggplot2::ggsave(filename = paste0(dir_charts, "cc_in_ggplot.png"), 
+                plot = chartx, 
+                height = 6, width = 9, units = "cm", dpi = 300)
+}
+chartx
 ```
 
-Let's see if 3 fonts I found earlier (Unifont Upper, CC Icons and CCSymbols) can do what I expect. 
-In the chart below I mix a string "text" with the Unicode symbols for CC to see how the CC symbols look in the final text. I expect it to look like __Text<i class="fab fa-creative-commons"></i><i class="fab fa-creative-commons-by"></i><i class="fab fa-creative-commons-nc"></i><i class="fab fa-creative-commons-sa"></i><i class="fab fa-creative-commons-nd"></i>Text__.
+### Acknowledgments {.appendix}
 
-Please notice that with CC Icons you should not be using the Unicode combinations, but the special letters (c - CC, by = BY, n = NC, s = SA, d = ND, so I used a string "cbynsd").
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+pkgs <- c('ggplot2', 'knitr', 'rmarkdown', 'showtext', 'sysfonts', 'ggtext', 'fontawesome')
 
-```{r, fig.width = 8, fig.height=3}
-chart <- ggplot(data = NULL, aes(x = 1)) +
-  geom_text(aes(y = "CCSymbols"), label="Text \U1F16D\U1F16F\U1F10F\U1F10E\U229C Text", 
-            size = 10, family="CCSymbols", vjust = 0.25, hjust = 0)+ 
-  geom_text(aes(y = "Unifont Upper"), label="Text \U1F16D\U1F16F\U1F10F\U1F10E\U229C Text", 
-            size = 10, family="Unifont Upper", vjust = 0.25, hjust = 0)+ 
-  geom_text(aes(y = "CC Icons"), label="Text cbynsd Text", 
-            size = 10, family="CC Icons", vjust = 0.25, hjust = 0)+
-  scale_y_discrete(expand = expansion(add = c(0.5,0.5)))+
-  scale_x_continuous(expand = expansion(add = c(0.1, 1)))+
-  my_theme + theme(axis.text.y = element_text())
-chart
+do.call('c',lapply(pkgs, citation)) %>% sort()
 ```
 
-And here we have few problems: 
+Allaire J, Xie Y, Dervieux C, McPherson J, Luraschi J, Ushey K, Atkins A, Wickham H, Cheng J, Chang
+W, Iannone R (2023). _rmarkdown: Dynamic Documents for R_. R package version 2.22,
+<https://github.com/rstudio/rmarkdown>.
 
-- Unifont Upper fonts are of quality that limits its use for hi-res illustrations 
+Iannone R (2023). _fontawesome: Easily Work with 'Font Awesome' Icons_. R package version 0.5.2,
+<https://CRAN.R-project.org/package=fontawesome>.
 
-- Unifont Upper and CCSymbols symbols are larger than the text and the symbol for ND (U+229C)
+Qiu Y, details. aotifSfAf (2022). _sysfonts: Loading Fonts into R_. R package version 0.8.8,
+<https://CRAN.R-project.org/package=sysfonts>.
 
-- CC Icons do not mix together with the strings.
+Qiu Y, details. aotisSfAf (2023). _showtext: Using Fonts More Easily in R Graphs_. R package
+version 0.9-6, <https://CRAN.R-project.org/package=showtext>.
 
-So if we want to put CC symbols into a caption, we shall 
+Wickham H (2016). _ggplot2: Elegant Graphics for Data Analysis_. Springer-Verlag New York. ISBN
+978-3-319-24277-4, <https://ggplot2.tidyverse.org>.
 
-- either use CCSymbols enframed by the text and be ready for different sizes
+Wilke C, Wiernik B (2022). _ggtext: Improved Text Rendering Support for 'ggplot2'_. R package
+version 0.1.2, <https://CRAN.R-project.org/package=ggtext>.
 
-- or build a double caption ([see an example at SO](https://stackoverflow.com/questions/47025729/how-to-add-multiple-captions-in-ggplot2-outside-of-the-main-graph-area)). 
+Xie Y (2023). _knitr: A General-Purpose Package for Dynamic Report Generation in R_. R package
+version 1.43, <https://yihui.org/knitr/>.
 
-Both options will require some caution and limit the customization.
+Xie Y (2015). _Dynamic Documents with R and knitr_, 2nd edition. Chapman and Hall/CRC, Boca Raton,
+Florida. ISBN 978-1498716963, <https://yihui.org/knitr/>.
 
-```{r, fig.width = 5, fig.height=2.5}
-ggplot(data = NULL, aes(x = 1, y = "1")) +
-  geom_text(aes(x = 1), hjust = 1, vjust = 0, 
-            label="Are we ready for", size = 11, family="Roboto")+
-  geom_text(aes(x = 1.02), hjust = 0, vjust = 0, 
-            label = "\U1F16D", size = 10, family="CCSymbols")+ 
-  geom_text(aes(x = 1.1), hjust = 0, vjust = 0, 
-            label = "?", size = 11, family="Roboto")+ 
-  scale_y_discrete(expand = expansion(add = c(0.5,0.5)))+
-  scale_x_continuous(expand = expansion(add = c(0.2, 0.2)))+
-  labs(title = "Using CCSymbols font for \U1F16D\U1F16F", 
-    caption = paste0("Font:https://www.ctrl.blog/entry/creative-commons-unicode-fallback-font.html",
-                     "\nThis image can be re-used via \U1F16D\U1F16F",
-                     "\nDate: ", format(Sys.time(), '%m/%d/%Y')), x = NULL, y = NULL)+
-  my_theme+ theme(text = element_text(family = "CCSymbols"),
-        axis.text = element_blank(), axis.line = element_blank(),
-        axis.ticks = element_blank(), axis.title = element_blank(),
-        panel.grid.major.x = element_blank(), 
-        panel.grid.major.y = element_blank())
-```
+Xie Y (2014). “knitr: A Comprehensive Tool for Reproducible Research in R.” In Stodden V, Leisch F,
+Peng RD (eds.), _Implementing Reproducible Computational Research_. Chapman and Hall/CRC. ISBN
+978-1466561595.
 
-There is also [emojifont](https://github.com/GuangchuangYu/emojifont) package (by Guangchuang Yu <a href="Guangchuang Yu"><i class="fab fa-twitter"></i></a>), which allows to use emojis and [FontAwesome icons](https://guangchuangyu.github.io/2016/03/font-awesome-supported-in-emojifont/) in ggplot2, but it contains only CC symbol. My attempt to fork & update its font database to include the other icons... failed, so I had to step back.
+Xie Y, Allaire J, Grolemund G (2018). _R Markdown: The Definitive Guide_. Chapman and Hall/CRC,
+Boca Raton, Florida. ISBN 9781138359338, <https://bookdown.org/yihui/rmarkdown>.
 
-### Short resume
-
-I spent dozen of hours reading about graphic devices, Unicode hexabracadabra, code points, surrogate pairs, and other wild things. So far my solution is using FontAwesome for HTML and CCSymbols for images. 
-
-know where was my fault, I will be happy to hear this from you -- send me an email and I will update this post with a reference to your support.
-
-
-
-
+Xie Y, Dervieux C, Riederer E (2020). _R Markdown Cookbook_. Chapman and Hall/CRC, Boca Raton,
+Florida. ISBN 9780367563837, <https://bookdown.org/yihui/rmarkdown-cookbook>.
 
